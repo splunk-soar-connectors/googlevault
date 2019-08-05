@@ -1,0 +1,600 @@
+{
+    "appid": "0fade63a-8961-4f6e-be02-d82a393fa4c4",
+    "name": "Google Vault",
+    "description": "Google Vault is the eDiscovery and compliance solution for G Suite, allowing customers to retain, hold, search, and export their data.",
+    "type": "ticketing",
+    "product_vendor": "Google",
+    "logo": "googlevault.png",
+    "logo_dark": "googlevault_dark.png",
+    "product_name": "Google Vault",
+    "product_version_regex": ".*",
+    "publisher": "Phantom",
+    "license": "Copyright (c) Phantom, 2018",
+    "app_version": "1.0.0",
+    "utctime_updated": "2018-10-02T15:31:37.962351Z",
+    "package_name": "phantom_googlevault",
+    "main_module": "googlevault_connector.py",
+    "min_phantom_version": "4.0.1068",
+    "app_wizard_version": "1.0.0",
+    "pip_dependencies": {
+        "wheel": [
+            {
+                "module": "pyasn",
+                "input_file": "wheels/pyasn/pyasn1-0.4.4-py2.py3-none-any.whl"
+            },
+            {
+                "module": "pyasn_modules",
+                "input_file": "wheels/pyasn_modules/pyasn1_modules-0.2.2-py2.py3-none-any.whl"
+            }
+            {
+                "module": "rsa",
+                "input_file": "wheels/rsa_wheel/rsa-4.0-py2.py3-none-any.whl"
+            },
+            {
+                "module": "cachetools",
+                "input_file": "wheels/cachetools/cachetools-2.1.0-py2.py3-none-any.whl"
+            },
+            {
+                "module": "uritemplate",
+                "input_file": "wheels/uritemplate_wheel/uritemplate-3.0.0-py2-none-any.whl"
+            },
+            {
+                "module": "google_api_python_client",
+                "input_file": "wheels/google_api_python_client/google_api_python_client-1.7.4-py2-none-any.whl"
+            },
+            {
+                "module": "google_auth",
+                "input_file": "wheels/google_auth/google_auth-1.5.1-py2.py3-none-any.whl"
+            },
+            {
+                "module": "google_auth_httplib",
+                "input_file": "wheels/google_auth_httplib/google_auth_httplib2-0.0.3-py2.py3-none-any.whl"
+            },
+            {
+                "module": "httplib",
+                "input_file": "wheels/httplib/httplib2-0.11.3-py2-none-any.whl"
+            },
+            {
+                "modules": "oauthclient",
+                "input_file": "wheels/oauthclient/oauth2client-4.1.3-py2.py3-none-any.whl"
+            },
+            {
+                "modules": "six",
+                "input_file": "wheels/six/six-1.11.0-py2.py3-none-any.whl"
+            }
+        ]
+    },
+    "configuration": {
+         "key_json": {
+            "description": "Contents of Service Account JSON file",
+            "data_type": "password",
+            "required": true,
+            "order": 0
+        }
+    },
+    "actions": [
+        {
+            "action": "test connectivity",
+            "identifier": "test_connectivity",
+            "description": "Validate the asset configuration for connectivity using supplied configuration",
+            "verbose": "",
+            "type": "test",
+            "read_only": true,
+            "parameters": {},
+            "output": [],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "delete hold",
+            "identifier": "delete_hold",
+            "description": "Removes a hold by ID. This will release any HeldAccounts on this Hold.",
+            "verbose": "Method: matters.holds.delete\nRemoves a hold by ID. This will release any HeldAccounts on this Hold.\n\nHTTP request\nDELETE https://vault.googleapis.com/v1/matters/{matterId}/holds/{holdId}\n\nThe URL uses Google API HTTP annotation syntax.\n\nPath parameters\nParameters\nmatterId\t\nstring\n\nThe matter ID.\n\nholdId\t\nstring\n\nThe hold ID.\n\nRequest body\nThe request body must be empty.\n\nResponse body\nIf successful, the response body will be empty.",
+            "type": "generic",
+            "read_only": false,
+            "parameters": {
+                "matterid": {
+                    "description": "The matter ID.",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0
+                },
+                "holdid": {
+                    "description": "The hold ID.",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 1
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.matterid",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "matterid",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.parameter.holdid",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "holdid",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "remove HeldAccounts",
+            "identifier": "remove_heldaccounts",
+            "description": "Removes HeldAccounts from a hold. Returns a list of statuses in the same order as the request. If this request leaves the hold with no held accounts, the hold will not apply to any accounts.",
+            "verbose": "Method: matters.holds.removeHeldAccounts\nRemoves HeldAccounts from a hold. Returns a list of statuses in the same order as the request. If this request leaves the hold with no held accounts, the hold will not apply to any accounts.\n\nHTTP request\nPOST https://vault.googleapis.com/v1/matters/{matterId}/holds/{holdId}:removeHeldAccounts\n\nThe URL uses Google API HTTP annotation syntax.\n\nPath parameters\nParameters\nmatterId\t\nstring\n\nThe matter ID.\n\nholdId\t\nstring\n\nThe hold ID.\n\nRequest body\nThe request body contains data with the following structure:\n\nJSON representation\n{\n  \"accountIds\": [\n    string\n  ]\n}\nFields\naccountIds[]\t\nstring\n\nAccount ids to identify HeldAccounts to remove.\n\nResponse body\nIf successful, the response body contains data with the following structure:\n\nResponse for batch delete held accounts.\n\nJSON representation\n{\n  \"statuses\": [\n    {\n      object(Status)\n    }\n  ]\n}\nFields\nstatuses[]\t\nobject(Status)\n\nA list of statuses for deleted accounts. Results have the same order as the request.",
+            "type": "generic",
+            "read_only": false,
+            "parameters": {
+                "matterid": {
+                    "description": "The matter ID.",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0
+                },
+                "holdid": {
+                    "description": "The hold ID.",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 1
+                },
+                "accountids": {
+                    "description": "The account ID.",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 2
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.matterid",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "matterid",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.parameter.holdid",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "holdid",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.parameter.accountids",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "accountids",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "get export",
+            "identifier": "get_export",
+            "description": "Gets an Export.",
+            "verbose": "Method: matters.exports.get\nGets an Export.\n\nHTTP request\nGET https://vault.googleapis.com/v1/matters/{matterId}/exports/{exportId}\n\nThe URL uses Google API HTTP annotation syntax.\n\nPath parameters\nParameters\nmatterId\t\nstring\n\nThe matter ID.\n\nexportId\t\nstring\n\nThe export ID.\n\nRequest body\nThe request body must be empty.\n\nResponse body\nIf successful, the response body contains an instance of Export.",
+            "type": "generic",
+            "read_only": false,
+            "parameters": {
+                "matterid": {
+                    "description": "The matter ID.",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0
+                },
+                "exportid": {
+                    "description": "The export ID.",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 1
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.matterid",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "matterid",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.parameter.exportid",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "exportid",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "create export",
+            "identifier": "create_export",
+            "description": "Creates an Export",
+            "verbose": "Method: matters.exports.create\nCreates an Export.\n\nHTTP request\nPOST https://vault.googleapis.com/v1/matters/{matterId}/exports\n\nThe URL uses Google API HTTP annotation syntax.\n\nPath parameters\nParameters\nmatterId\t\nstring\n\nThe matter ID.\n\nRequest body\nThe request body contains an instance of Export.\n\nResponse body\nIf successful, the response body contains a newly created instance of Export.",
+            "type": "generic",
+            "read_only": false,
+            "parameters": {
+                "matterid": {
+                    "description": "The matter ID.",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.matterid",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "matterid",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "add HeldAccounts",
+            "identifier": "add_heldaccounts",
+            "description": "Adds HeldAccounts to a hold. Returns a list of accounts that have been successfully added. Accounts can only be added to an existing account-based hold.",
+            "verbose": "Method: matters.holds.addHeldAccounts\nAdds HeldAccounts to a hold. Returns a list of accounts that have been successfully added. Accounts can only be added to an existing account-based hold.\n\nHTTP request\nPOST https://vault.googleapis.com/v1/matters/{matterId}/holds/{holdId}:addHeldAccounts\n\nThe URL uses Google API HTTP annotation syntax.\n\nPath parameters\nParameters\nmatterId\t\nstring\n\nThe matter ID.\n\nholdId\t\nstring\n\nThe hold ID.\n\nRequest body\nThe request body contains data with the following structure:\n\nJSON representation\n{\n  \"emails\": [\n    string\n  ],\n  \"accountIds\": [\n    string\n  ]\n}\nFields\nemails[]\t\nstring\n\nEmails to identify which accounts to add. Only emails or only accountIds should be specified, but not both.\n\naccountIds[]\t\nstring\n\nAccount ids to identify which accounts to add. Only accountIds or only emails should be specified, but not both.\n\nResponse body\nIf successful, the response body contains data with the following structure:\n\nResponse for batch create held accounts.\n\nJSON representation\n{\n  \"responses\": [\n    {\n      object(AddHeldAccountResult)\n    }\n  ]\n}\nFields\nresponses[]\t\nobject(AddHeldAccountResult)\n\nThe list of responses, in the same order as the batch request.\n\nAuthorization Scopes\nRequires the following OAuth scope:\n\nhttps://www.googleapis.com/auth/ediscovery\nAddHeldAccountResult\nA status detailing the status of each account creation, and the HeldAccount, if successful.\n\nJSON representation\n{\n  \"account\": {\n    object(HeldAccount)\n  },\n  \"status\": {\n    object(Status)\n  }\n}\nFields\naccount\t\nobject(HeldAccount)\n\nIf present, this account was successfully created.\n\nstatus\t\nobject(Status)\n\nThis represents the success status. If failed, check message.",
+            "type": "generic",
+            "read_only": false,
+            "parameters": {
+                "matterid": {
+                    "description": "The matter ID.",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0
+                },
+                "holdid": {
+                    "description": "The hold ID.",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 1
+                },
+                "emails": {
+                    "description": "Emails to identify which accounts to add.",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": false,
+                    "contains": [
+                        "gmail email id"
+                    ],
+                    "value_list": [],
+                    "default": "",
+                    "order": 2
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.matterid",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "matterid",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.parameter.holdid",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "holdid",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.parameter.emails",
+                    "data_type": "string",
+                    "contains": [
+                        "gmail email id"
+                    ],
+                    "column_name": "emails",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "create hold",
+            "identifier": "create_hold",
+            "description": "Creates a hold in the given matter.",
+            "verbose": "Method: matters.holds.create\nCreates a hold in the given matter.\n\nHTTP request\nPOST https://vault.googleapis.com/v1/matters/{matterId}/holds\n\nThe URL uses Google API HTTP annotation syntax.\n\nPath parameters\nParameters\nmatterId\t\nstring\n\nThe matter ID.\n\nRequest body\nThe request body contains an instance of Hold.\n\nResponse body\nIf successful, the response body contains a newly created instance of Hold.",
+            "type": "generic",
+            "read_only": false,
+            "parameters": {
+                "matterid": {
+                    "description": "The matter ID",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.matterid",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "matterid",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "list matter",
+            "identifier": "list_matter",
+            "description": "Lists matters the user has access to.",
+            "verbose": "Method: matters.list\nLists matters the user has access to.\n\nHTTP request\nGET https://vault.googleapis.com/v1/matters\n\nThe URL uses Google API HTTP annotation syntax.\n\nQuery parameters\nParameters\npageSize\t\nnumber\n\nThe number of matters to return in the response. Default and maximum are 100.\n\npageToken\t\nstring\n\nThe pagination token as returned in the response.\n\nview\t\nenum(MatterView)\n\nSpecifies which parts of the matter to return in response.\n\nstate\t\nenum(State)\n\nIf set, list only matters with that specific state. The default is listing matters of all states.\n\nRequest body\nThe request body must be empty.\n\nResponse body\nIf successful, the response body contains data with the following structure:\n\nProvides the list of matters.\n\nJSON representation\n{\n  \"matters\": [\n    {\n      object(Matter)\n    }\n  ],\n  \"nextPageToken\": string\n}\nFields\nmatters[]\t\nobject(Matter)\n\nList of matters.\n\nnextPageToken\t\nstring\n\nPage token to retrieve the next page of results in the list.",
+            "type": "generic",
+            "read_only": true,
+            "parameters": {},
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "create matter",
+            "identifier": "create_matter",
+            "description": "Creates a new matter with the given name and description. The initial state is open, and the owner is the method caller. Returns the created matter with default view.",
+            "verbose": "Method: matters.create\nCreates a new matter with the given name and description. The initial state is open, and the owner is the method caller. Returns the created matter with default view.\n\nHTTP request\nPOST https://vault.googleapis.com/v1/matters\n\nThe URL uses Google API HTTP annotation syntax.\n\nRequest body\nThe request body contains an instance of Matter.\n\nResponse body\nIf successful, the response body contains a newly created instance of Matter.",
+            "type": "generic",
+            "read_only": false,
+            "parameters": {
+                "name": {
+                    "description": "New matter name.",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0
+                },
+                "description": {
+                    "description": "New matter description.",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 1
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.name",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "name",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.parameter.description",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "description",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        }
+    ]
