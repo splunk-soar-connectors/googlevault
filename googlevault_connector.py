@@ -1,21 +1,32 @@
-# -----------------------------------------
-# Google Vault App
-# -----------------------------------------
+# File: googlevault_connector.py
+# Copyright (c) 2019 Splunk Inc.
+#
+# SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
+# without a valid written license from Splunk Inc. is PROHIBITED.
+
 
 # Phantom App imports
 import phantom.app as phantom
 from phantom.base_connector import BaseConnector
 from phantom.action_result import ActionResult
+import phantom.utils as ph_utils
 
-from googlevault_consts import *
+# from googlevault_consts import *
+import os
+init_path = '{}/dependencies/google/__init__.py'.format(  # noqa
+    os.path.dirname(os.path.abspath(__file__))  # noqa
+)  # noqa
+try:
+    open(init_path, 'a+').close()  # noqa
+except:  # noqa
+    pass  # noqa
+
 
 import requests
 import json
 
-from googleapiclient.discovery import build
-from httplib2 import http
-from oauth2client import file, client tools
-
+from googleapiclient import discovery
+from google.oauth2 import service_account
 
 
 class RetVal(tuple):
@@ -31,258 +42,50 @@ class GoogleVaultConnector(BaseConnector):
         super(GoogleVaultConnector, self).__init__()
 
         self._state = None
+        self._login_email = None
+        self._key_dict = None
 
-        # Variable to hold a base_url in case the app makes REST calls
-        # Do note that the app json defines the asset config, so please
-        # modify this as you deem fit.
-        self._base_url = None
+    def _create_client(self, action_result, scopes):
+        credentials = None
 
-    def _create_client(self):
-        config = self.get_config()
-        SCOPES = 'https://www.googleapis.com/auth/ediscovery'
-        service_account_json = json.loads(config['key_json'])
-        credentials = service_account_json.Credentials.from_service_account_info(service_account_json)
+        try:
+            credentials = service_account.Credentials.from_service_account_info(self._key_dict, scopes=scopes)
+        except Exception as e:
+            return action_result.set_status(phantom.APP_ERROR, "Unable to create load the key json", e)
 
-        if not creds or creds.invalid:
-            flow = client.flow_from_clientsecrets('credentials.json', SCOPES)
-            credentials = tools.run_flow(flow, store)
-        client = build('vault', 'v1', http=creds.authorize(Http()))
+        if (self._login_email):
+            try:
+                credentials = credentials.with_subject(self._login_email)
+            except Exception as e:
+                return RetVal(action_result.set_status(phantom.APP_ERROR, "Failed to create delegated credentials", e), None)
 
-        return client
+        self.debug_print("credentials: {}".format(credentials))
+        client = discovery.build('vault', 'v1', credentials=credentials)
+
+        return RetVal(phantom.APP_SUCCESS, client)
 
     def _handle_test_connectivity(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
+        scopes = ['https://www.googleapis.com/auth/ediscovery']
         self.save_progress("Creating Google Vault client...")
-        try:
-            client = self._create_client()
-        except Exception as e:
+
+        ret_val, client = self._create_client(action_result, scopes)
+        self.debug_print("Services: {}".format(client))
+
+        if phantom.is_fail(ret_val):
             self.save_progress("Test Connectivity Failed")
-            return action_result.set_status(phantom.APP_ERROR, "Error creating client", e)
+            return ret_val
 
         self.save_progress("Making test call to Google Vault...")
         try:
-            results = service.matters().list(pageSize=10).execute()
-            matters = results.get('matters', [])
+            results = client.matters().list(pageSize=10).execute()
+            # matters = results.get('matters', [])
+            self.debug_print("Results: {}".format(results))
         except Exception as e:
             self.save_progress("Test Connectivity Failed")
             return action_result.set_status(phantom.APP_ERROR, "Error listing Matters", e)
 
         self.save_progress("Test Connectivity Passed")
-        return action_result.set_status(phantom.APP_SUCCESS)
-
-    def _handle_delete_hold(self, param):
-
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
-        action_result = self.add_action_result(ActionResult(dict(param)))
-
-        matterid = param['matterid']
-        holdid = param['holdid']
-
-        # make rest call
-        ret_val, response = self._make_rest_call('/v1/matters/{matterId}/holds/{holdId}', action_result, params=None, headers=None)
-
-        if (phantom.is_fail(ret_val)):
-            # the call to the 3rd party device or service failed, action result should contain all the error details
-            # for now the return is commented out, but after implementation, return from here
-            # return action_result.get_status()
-            pass
-
-        action_result.add_data(response)
-
-        summary = action_result.update_summary({})
-        summary['num_data'] = len(action_result['data'])
-
-        return action_result.set_status(phantom.APP_SUCCESS)
-
-    def _handle_remove_heldaccounts(self, param):
-
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
-
-        # Add an action result object to self (BaseConnector) to represent the action for this param
-        action_result = self.add_action_result(ActionResult(dict(param)))
-
-        matterid = param['matterid']
-        holdid = param['holdid']
-        accountids = param['accountids']
-
-        ret_val, response = self._make_rest_call('/v1/matters/{matterId}/holds/{holdId}:removeHeldAccounts', action_result, params=None, headers=None)
-
-        if (phantom.is_fail(ret_val)):
-            # the call to the 3rd party device or service failed, action result should contain all the error details
-            # for now the return is commented out, but after implementation, return from here
-            # return action_result.get_status()
-            pass
-
-        action_result.add_data(response)
-
-        # Add a dictionary that is made up of the most important values from data into the summary
-        # summary = action_result.update_summary({})
-        # summary['num_data'] = len(action_result['data'])
-
-        return action_result.set_status(phantom.APP_SUCCESS)
-
-
-    def _handle_get_export(self, param):
-
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
-
-        # Add an action result object to self (BaseConnector) to represent the action for this param
-        action_result = self.add_action_result(ActionResult(dict(param)))
-
-        # Required values can be accessed directly
-        matterid = param['matterid']
-        exportid = param['exportid']
-
-        ret_val, response = self._make_rest_call('/v1/matters/{matterId}/exports/{exportId}', action_result, params=None, headers=None)
-
-        if (phantom.is_fail(ret_val)):
-            # the call to the 3rd party device or service failed, action result should contain all the error details
-            # for now the return is commented out, but after implementation, return from here
-            # return action_result.get_status()
-            pass
-
-        action_result.add_data(response)
-
-        # Add a dictionary that is made up of the most important values from data into the summary
-        # summary = action_result.update_summary({})
-        # summary['num_data'] = len(action_result['data'])
-
-        return action_result.set_status(phantom.APP_SUCCESS)
-
-    def _handle_create_export(self, param):
-
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
-
-        # Add an action result object to self (BaseConnector) to represent the action for this param
-        action_result = self.add_action_result(ActionResult(dict(param)))
-
-        matterid = param['matterid']
-
-        ret_val, response = self._make_rest_call('/v1/matters/{matterId}/exports', action_result, params=None, headers=None)
-
-        if (phantom.is_fail(ret_val)):
-            # the call to the 3rd party device or service failed, action result should contain all the error details
-            # for now the return is commented out, but after implementation, return from here
-            # return action_result.get_status()
-            pass
-
-        action_result.add_data(response)
-
-        # summary = action_result.update_summary({})
-        # summary['num_data'] = len(action_result['data'])
-
-        return action_result.set_status(phantom.APP_SUCCESS)
-
-    def _handle_add_heldaccounts(self, param):
-
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
-
-        # Add an action result object to self (BaseConnector) to represent the action for this param
-        action_result = self.add_action_result(ActionResult(dict(param)))
-
-        matterid = param['matterid']
-        holdid = param['holdid']
-        emails = param['emails']
-
-        ret_val, response = self._make_rest_call('/v1/matters/{matterId}/holds/{holdId}:addHeldAccounts', action_result, params=None, headers=None)
-
-        if (phantom.is_fail(ret_val)):
-            # the call to the 3rd party device or service failed, action result should contain all the error details
-            # for now the return is commented out, but after implementation, return from here
-            # return action_result.get_status()
-            pass
-
-        action_result.add_data(response)
-
-        # Add a dictionary that is made up of the most important values from data into the summary
-        # summary = action_result.update_summary({})
-        # summary['num_data'] = len(action_result['data'])
-
-        return action_result.set_status(phantom.APP_SUCCESS)
-
-    def _handle_create_hold(self, param):
-
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
-
-        # Add an action result object to self (BaseConnector) to represent the action for this param
-        action_result = self.add_action_result(ActionResult(dict(param)))
-
-        # Required values can be accessed directly
-        matterid = param['matterid']
-
-        ret_val, response = self._make_rest_call('/vi/matters/{matterId}/holds', action_result, params=None, headers=None)
-
-        if (phantom.is_fail(ret_val)):
-            # the call to the 3rd party device or service failed, action result should contain all the error details
-            # for now the return is commented out, but after implementation, return from here
-            # return action_result.get_status()
-            pass
-
-        action_result.add_data(response)
-
-        # Add a dictionary that is made up of the most important values from data into the summary
-        # summary = action_result.update_summary({})
-        # summary['num_data'] = len(action_result['data'])
-
-        return action_result.set_status(phantom.APP_SUCCESS)
-
-    def _handle_list_matter(self, param):
-
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
-
-        # Add an action result object to self (BaseConnector) to represent the action for this param
-        action_result = self.add_action_result(ActionResult(dict(param)))
-
-        # Required values can be accessed directly
-        # required_parameter = param['required_parameter']
-
-        ret_val, response = self._make_rest_call('/vi/matters/list', action_result, params=None, headers=None)
-
-        if (phantom.is_fail(ret_val)):
-            # the call to the 3rd party device or service failed, action result should contain all the error details
-            # for now the return is commented out, but after implementation, return from here
-            # return action_result.get_status()
-            pass
-
-        action_result.add_data(response)
-
-        # summary = action_result.update_summary({})
-        # summary['num_data'] = len(action_result['data'])
-
-        return action_result.set_status(phantom.APP_SUCCESS)
-
-    def _handle_create_matter(self, param):
-
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
-
-        # Add an action result object to self (BaseConnector) to represent the action for this param
-        action_result = self.add_action_result(ActionResult(dict(param)))
-
-        # Required values can be accessed directly
-        name = param['name']
-        description = param['description']
-
-        # Optional values should use the .get() function
-        # optional_parameter = param.get('optional_parameter', 'default_value')
-
-        # make rest call
-        ret_val, response = self._make_rest_call('/v1/matters/create', action_result, params=None, headers=None)
-
-        if (phantom.is_fail(ret_val)):
-            # the call to the 3rd party device or service failed, action result should contain all the error details
-            # for now the return is commented out, but after implementation, return from here
-            # return action_result.get_status()
-            pass
-
-        # Now post process the data,  uncomment code as you deem fit
-
-        # Add the response into the data section
-        action_result.add_data(response)
-
-        # Add a dictionary that is made up of the most important values from data into the summary
-        # summary = action_result.update_summary({})
-        # summary['num_data'] = len(action_result['data'])
-
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def handle_action(self, param):
@@ -297,35 +100,28 @@ class GoogleVaultConnector(BaseConnector):
         if action_id == 'test_connectivity':
             ret_val = self._handle_test_connectivity(param)
 
-        elif action_id == 'delete_hold':
-            ret_val = self._handle_delete_hold(param)
-
-        elif action_id == 'remove_heldaccounts':
-            ret_val = self._handle_remove_heldaccounts(param)
-
-        elif action_id == 'get_export':
-            ret_val = self._handle_get_export(param)
-
-        elif action_id == 'create_export':
-            ret_val = self._handle_create_export(param)
-
-        elif action_id == 'add_heldaccounts':
-            ret_val = self._handle_add_heldaccounts(param)
-
-        elif action_id == 'create_hold':
-            ret_val = self._handle_create_hold(param)
-
-        elif action_id == 'list_matter':
-            ret_val = self._handle_list_matter(param)
-
-        elif action_id == 'create_matter':
-            ret_val = self._handle_create_matter(param)
-
         return ret_val
 
     def initialize(self):
 
+        config = self.get_config()
         self._state = self.load_state()
+        key_json = config['key_json']
+
+        try:
+            key_dict = json.loads(key_json)
+        except Exception as e:
+            return self.set_status(phantom.APP_ERROR, "Unable to load the key json", e)
+
+        self._key_dict = key_dict
+
+        login_email = config['login_email']
+
+        if (not ph_utils.is_email(login_email)):
+            return self.set_status(phantom.APP_ERROR, "Asset config 'login_email' failed validation")
+
+        self._login_email = login_email
+
         return phantom.APP_SUCCESS
 
     def finalize(self):
