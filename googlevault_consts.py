@@ -5,3 +5,4 @@
 # without a valid written license from Splunk Inc. is PROHIBITED.
 
 GOOGLE_SCOPE = 'https://www.googleapis.com/auth/ediscovery'
+GSVAULT_INVALID_LIMIT = "Please provide non-zero positive integer in limit"

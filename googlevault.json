@@ -83,10 +83,118 @@
             "action": "test connectivity",
             "identifier": "test_connectivity",
             "description": "Validate the asset configuration for connectivity using supplied configuration",
-            "verbose": "",
             "type": "test",
             "read_only": true,
             "parameters": {},
+            "output": [],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "list matters",
+            "identifier": "list_matters",
+            "description": "List all open, closed, and deleted matters",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {
+                "view": {
+                    "description": "Defines which type of matters has to be retrieved",
+                    "data_type": "string",
+                    "required": false,
+                    "order": 0,
+                    "example_values": [
+                        "OPEN",
+                        "CLOSED",
+                        "DELETED"
+                    ]
+                },
+                "limit": {
+                    "description": "Maximum number of matters to return",
+                    "data_type": "numeric",
+                    "required": false,
+                    "order": 1,
+                    "default": 500,
+                    "example_values": [
+                        "5"
+                    ]
+                }
+            },
+            "output": [],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "create matter",
+            "identifier": "create_matter",
+            "description": "Creates a matter",
+            "type": "generic",
+            "read_only": true,
+            "parameters": {
+                "name": {
+                    "description": "Matter name",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 0,
+                    "example_values": [
+                        "Matter Name"
+                    ]
+                },
+                "description": {
+                    "description": "Matter Description",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 1,
+                    "example_values": [
+                        "Matter Description"
+                    ]
+                }
+            },
+            "output": [],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "close matter",
+            "identifier": "close_matter",
+            "description": "Close a matter",
+            "type": "generic",
+            "read_only": true,
+            "parameters": {
+                "matter_id": {
+                    "description": "Matter ID",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 0,
+                    "example_values": [
+                        "fdf8e220-dd1b-45c5-8983-3cad5e6f2758"
+                    ],
+                    "primary": true,
+                    "conatins": [
+                        "gsvault matter id"
+                    ]
+                }
+            },
+            "output": [],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "delete matter",
+            "identifier": "delete_matter",
+            "description": "Delete a matter",
+            "type": "generic",
+            "read_only": true,
+            "parameters": {
+                "matter_id": {
+                    "description": "Matter ID",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 0,
+                    "example_values": [
+                        "fdf8e220-dd1b-45c5-8983-3cad5e6f2758"
+                    ],
+                    "primary": true,
+                    "conatins": [
+                        "gsvault matter id"
+                    ]
+                }
+            },
             "output": [],
             "versions": "EQ(*)"
         }
