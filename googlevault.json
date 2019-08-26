@@ -71,7 +71,7 @@
             "required": true,
             "order": 0
         },
-         "key_json": {
+        "key_json": {
             "description": "Contents of Service Account JSON file",
             "data_type": "password",
             "required": true,
@@ -96,7 +96,7 @@
             "type": "investigate",
             "read_only": true,
             "parameters": {
-                "view": {
+                "state": {
                     "description": "Defines which type of matters has to be retrieved",
                     "data_type": "string",
                     "required": false,
@@ -118,15 +118,115 @@
                     ]
                 }
             },
-            "output": [],
-            "versions": "EQ(*)"
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.matterId",
+                    "data_type": "string",
+                    "example_values": [
+                        "0016f2e2-bc61-4119-89fe-6ba600663138"
+                    ],
+                    "column_name": "Matter ID",
+                    "column_order": 0,
+                    "conatins": [
+                        "gsvault matter id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.state",
+                    "data_type": "string",
+                    "example_values": [
+                        "OPEN",
+                        "CLOSED",
+                        "DELETED"
+                    ],
+                    "column_name": "State",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "Matter Name 109"
+                    ],
+                    "column_name": "Matter name",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.description",
+                    "data_type": "string",
+                    "example_values": [
+                        "Matter Description"
+                    ],
+                    "column_name": "Matter description",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully retrieved 113 matters"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.limit",
+                    "data_type": "numeric",
+                    "example_values": [
+                        500
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.state",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "OPEN",
+                        "CLOSED",
+                        "DELETED"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.total_matters_returned",
+                    "data_type": "numeric",
+                    "example_values": [
+                        113
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "versions": "EQ(*)",
+            "render": {
+                "width": 12,
+                "title": "List Matters",
+                "type": "table",
+                "height": 5
+            }
         },
         {
             "action": "create matter",
             "identifier": "create_matter",
-            "description": "Creates a matter",
+            "description": "Creates a matter with OPEN state of matter",
             "type": "generic",
-            "read_only": true,
+            "read_only": false,
             "parameters": {
                 "name": {
                     "description": "Matter name",
@@ -147,15 +247,109 @@
                     ]
                 }
             },
-            "output": [],
-            "versions": "EQ(*)"
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.matterId",
+                    "data_type": "string",
+                    "example_values": [
+                        "9360993f-1cd6-4709-81e3-457ff0a0b4ba"
+                    ],
+                    "column_name": "Matter ID",
+                    "column_order": 0,
+                    "conatins": [
+                        "gsvault matter id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.state",
+                    "data_type": "string",
+                    "example_values": [
+                        "OPEN"
+                    ],
+                    "column_name": "State",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "test phantom 2"
+                    ],
+                    "column_name": "Matter name",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.description",
+                    "data_type": "string",
+                    "example_values": [
+                        "test phantom 2"
+                    ],
+                    "column_name": "Matter description",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully created matter"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "test phantom 2"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.description",
+                    "data_type": "string",
+                    "example_values": [
+                        "test phantom 2"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "versions": "EQ(*)",
+            "render": {
+                "width": 12,
+                "title": "Create Matter",
+                "type": "table",
+                "height": 5
+            }
         },
         {
             "action": "close matter",
             "identifier": "close_matter",
-            "description": "Close a matter",
-            "type": "generic",
-            "read_only": true,
+            "description": "Close a matter and state of matter changes to CLOSED",
+            "type": "contain",
+            "undo": "reopen matter",
+            "read_only": false,
             "parameters": {
                 "matter_id": {
                     "description": "Matter ID",
@@ -171,14 +365,438 @@
                     ]
                 }
             },
-            "output": [],
-            "versions": "EQ(*)"
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.matter.matterId",
+                    "data_type": "string",
+                    "example_values": [
+                        "9360993f-1cd6-4709-81e3-457ff0a0b4ba"
+                    ],
+                    "column_name": "Matter ID",
+                    "column_order": 0,
+                    "conatins": [
+                        "gsvault matter id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.matter.state",
+                    "data_type": "string",
+                    "example_values": [
+                        "CLOSED"
+                    ],
+                    "column_name": "State",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.data.*.matter.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "test phantom 2"
+                    ],
+                    "column_name": "Matter name",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.matter.description",
+                    "data_type": "string",
+                    "example_values": [
+                        "test phantom 2"
+                    ],
+                    "column_name": "Matter description",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully closed matter"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.matter_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "9360993f-1cd6-4709-81e3-457ff0a0b4ba"
+                    ],
+                    "conatins": [
+                        "gsvault matter id"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "versions": "EQ(*)",
+            "render": {
+                "width": 12,
+                "title": "Close Matter",
+                "type": "table",
+                "height": 5
+            }
         },
         {
             "action": "delete matter",
             "identifier": "delete_matter",
-            "description": "Delete a matter",
-            "type": "generic",
+            "description": "Delete a matter and state of matter changes to DELETED",
+            "type": "contain",
+            "undo": "undelte matter",
+            "read_only": false,
+            "parameters": {
+                "matter_id": {
+                    "description": "Matter ID",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 0,
+                    "example_values": [
+                        "fdf8e220-dd1b-45c5-8983-3cad5e6f2758"
+                    ],
+                    "primary": true,
+                    "conatins": [
+                        "gsvault matter id"
+                    ]
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.matterId",
+                    "data_type": "string",
+                    "example_values": [
+                        "9360993f-1cd6-4709-81e3-457ff0a0b4ba"
+                    ],
+                    "column_name": "Matter ID",
+                    "column_order": 0,
+                    "conatins": [
+                        "gsvault matter id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.state",
+                    "data_type": "string",
+                    "example_values": [
+                        "DELETED"
+                    ],
+                    "column_name": "State",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "test phantom 2"
+                    ],
+                    "column_name": "Matter name",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.description",
+                    "data_type": "string",
+                    "example_values": [
+                        "test phantom 2"
+                    ],
+                    "column_name": "Matter description",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully deleted matter"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.matter_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "9360993f-1cd6-4709-81e3-457ff0a0b4ba"
+                    ],
+                    "conatins": [
+                        "gsvault matter id"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "versions": "EQ(*)",
+            "render": {
+                "width": 12,
+                "title": "Delete Matter",
+                "type": "table",
+                "height": 5
+            }
+        },
+        {
+            "action": "reopen matter",
+            "identifier": "reopen_matter",
+            "description": "Reopens a matter and state of matter changes to OPEN",
+            "type": "correct",
+            "undo": "close matter",
+            "read_only": false,
+            "parameters": {
+                "matter_id": {
+                    "description": "Matter ID",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 0,
+                    "example_values": [
+                        "fdf8e220-dd1b-45c5-8983-3cad5e6f2758"
+                    ],
+                    "primary": true,
+                    "conatins": [
+                        "gsvault matter id"
+                    ]
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.matter.matterId",
+                    "data_type": "string",
+                    "example_values": [
+                        "6d546bd6-b7e8-4404-b691-5a30f2bbf336"
+                    ],
+                    "column_name": "Matter ID",
+                    "column_order": 0,
+                    "conatins": [
+                        "gsvault matter id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.matter.state",
+                    "data_type": "string",
+                    "example_values": [
+                        "OPEN"
+                    ],
+                    "column_name": "State",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.data.*.matter.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "Matter Name 26"
+                    ],
+                    "column_name": "Matter name",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.matter.description",
+                    "data_type": "string",
+                    "example_values": [
+                        "Matter Description"
+                    ],
+                    "column_name": "Matter description",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully reopened matter"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.matter_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "6d546bd6-b7e8-4404-b691-5a30f2bbf336"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "versions": "EQ(*)",
+            "render": {
+                "width": 12,
+                "title": "Reopen Matter",
+                "type": "table",
+                "height": 5
+            }
+        },
+        {
+            "action": "undelete matter",
+            "identifier": "undelete_matter",
+            "description": "Undeletes a matter and state of matter changes to CLOSED",
+            "type": "correct",
+            "undo": "delete matter",
+            "read_only": false,
+            "parameters": {
+                "matter_id": {
+                    "description": "Matter ID",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 0,
+                    "example_values": [
+                        "fdf8e220-dd1b-45c5-8983-3cad5e6f2758"
+                    ],
+                    "primary": true,
+                    "conatins": [
+                        "gsvault matter id"
+                    ]
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.matterId",
+                    "data_type": "string",
+                    "example_values": [
+                        "9360993f-1cd6-4709-81e3-457ff0a0b4ba"
+                    ],
+                    "column_name": "Matter ID",
+                    "column_order": 0,
+                    "conatins": [
+                        "gsvault matter id"
+                    ],
+                    "primary": true
+                },
+                {
+                    "data_path": "action_result.data.*.state",
+                    "data_type": "string",
+                    "example_values": [
+                        "CLOSED"
+                    ],
+                    "column_name": "State",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "test phantom 2"
+                    ],
+                    "column_name": "Matter name",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.description",
+                    "data_type": "string",
+                    "example_values": [
+                        "test phantom 2"
+                    ],
+                    "column_name": "Matter description",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully undeleted matter"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.matter_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "9360993f-1cd6-4709-81e3-457ff0a0b4ba"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "versions": "EQ(*)",
+            "render": {
+                "width": 12,
+                "title": "Undelete Matter",
+                "type": "table",
+                "height": 5
+            }
+        },
+        {
+            "action": "list holds",
+            "identifier": "list_holds",
+            "description": "List all holds for given matter id",
+            "type": "investigate",
             "read_only": true,
             "parameters": {
                 "matter_id": {
@@ -193,6 +811,1058 @@
                     "conatins": [
                         "gsvault matter id"
                     ]
+                },
+                "limit": {
+                    "description": "Maximum number of holds to return",
+                    "data_type": "numeric",
+                    "required": false,
+                    "order": 1,
+                    "default": 500,
+                    "example_values": [
+                        "5"
+                    ]
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.updateTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2019-08-23T10:21:52.734Z",
+                        "2019-08-26T15:57:14.108Z",
+                        "2019-08-23T12:51:47.955Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "My First drive Accounts Hold",
+                        "my first hold",
+                        "My First Drive OU Hold"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.accounts.*.lastName",
+                    "data_type": "string",
+                    "example_values": [
+                        "phantom"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.accounts.*.holdTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2019-08-23T10:21:53.693Z",
+                        "2019-08-26T15:56:36.795Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.accounts.*.email",
+                    "data_type": "string",
+                    "example_values": [
+                        "test2@testphantom.com"
+                    ],
+                    "contains": [
+                        "email"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.accounts.*.firstName",
+                    "data_type": "string",
+                    "example_values": [
+                        "test2"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.accounts.*.accountId",
+                    "data_type": "string",
+                    "example_values": [
+                        "117361455879836884540"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.corpus",
+                    "data_type": "string",
+                    "example_values": [
+                        "DRIVE",
+                        "MAIL"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.holdId",
+                    "data_type": "string",
+                    "example_values": [
+                        "3z8qrdt23cpfix",
+                        "3z8qrdt111pgr8",
+                        "3z8qrdt19cbhos"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully retrieved 3 holds",
+                        "Successfully retrieved 1 hold"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.matter_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "ac1c7c68-0b1f-4973-add2-bdf4f472ed6b",
+                        "209366a8-eadc-4687-8d23-190afdfb12ba",
+                        "1db9d451-f68c-4b7c-bbb8-2dec2adc46a1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.limit",
+                    "data_type": "numeric",
+                    "example_values": [
+                        500
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.total_holds_returned",
+                    "data_type": "numeric",
+                    "example_values": [
+                        3,
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.orgUnit.holdTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2019-08-23T12:51:47.955Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.orgUnit.orgUnitId",
+                    "data_type": "string",
+                    "example_values": [
+                        "id:03z8qrdt2kekpq1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.driveQuery.includeSharedDriveFiles",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.driveQuery.includeTeamDriveFiles",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                }
+            ],
+            "versions": "EQ(*)",
+            "render": {
+                "width": 12,
+                "title": "List Holds",
+                "type": "table",
+                "height": 5
+            }
+        },
+        {
+            "action": "remove held account",
+            "identifier": "remove_held_account",
+            "description": "Removes held account from given hold ID",
+            "type": "contain",
+            "undo": "add held account",
+            "read_only": false,
+            "parameters": {
+                "matter_id": {
+                    "description": "Matter ID",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 0,
+                    "example_values": [
+                        "fdf8e220-dd1b-45c5-8983-3cad5e6f2758"
+                    ],
+                    "primary": true,
+                    "conatins": [
+                        "gsvault matter id"
+                    ]
+                },
+                "hold_id": {
+                    "description": "Hold ID",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 1,
+                    "primary": true,
+                    "conatins": [
+                        "gsvault hold id"
+                    ]
+                },
+                "account_id": {
+                    "description": "User's account id",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 2,
+                    "primary": true,
+                    "conatins": [
+                        "gsvault account id"
+                    ]
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully removed held account to 3z8qrdt111pgr8 hold id for 209366a8-eadc-4687-8d23-190afdfb12ba matter id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.matter_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "209366a8-eadc-4687-8d23-190afdfb12ba"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.hold_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "3z8qrdt111pgr8"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.account_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "108620176647363363111"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "versions": "EQ(*)",
+            "render": {
+                "width": 12,
+                "title": "Remove Held Account",
+                "type": "table",
+                "height": 5
+            }
+        },
+        {
+            "action": "add held account",
+            "identifier": "add_held_account",
+            "description": "Adds held account from given hold ID",
+            "type": "correct",
+            "undo": "remove held account",
+            "read_only": false,
+            "parameters": {
+                "matter_id": {
+                    "description": "Matter ID",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 0,
+                    "example_values": [
+                        "fdf8e220-dd1b-45c5-8983-3cad5e6f2758"
+                    ],
+                    "primary": true,
+                    "conatins": [
+                        "gsvault matter id"
+                    ]
+                },
+                "hold_id": {
+                    "description": "Hold ID",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 1,
+                    "primary": true,
+                    "conatins": [
+                        "gsvault hold id"
+                    ]
+                },
+                "account_id": {
+                    "description": "User's account id",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 2,
+                    "primary": true,
+                    "conatins": [
+                        "gsvault account id"
+                    ]
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.lastName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Cresty"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.holdTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2019-08-26T16:04:49.943Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.email",
+                    "data_type": "string",
+                    "example_values": [
+                        "crest@testphantom.com"
+                    ],
+                    "contains": [
+                        "email"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.firstName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Crest"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.accountId",
+                    "data_type": "string",
+                    "example_values": [
+                        "108620176647363363111"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully added held account to 3z8qrdt111pgr8 hold id for 209366a8-eadc-4687-8d23-190afdfb12ba matter id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.matter_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "209366a8-eadc-4687-8d23-190afdfb12ba"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.hold_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "3z8qrdt111pgr8"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.account_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "108620176647363363111"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "versions": "EQ(*)",
+            "render": {
+                "width": 12,
+                "title": "Add Held Account",
+                "type": "table",
+                "height": 5
+            }
+        },
+        {
+            "action": "list exports",
+            "identifier": "list_exports",
+            "description": "List all exports for given matter id",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {
+                "matter_id": {
+                    "description": "Matter ID",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 0,
+                    "example_values": [
+                        "1db9d451-f68c-4b7c-bbb8-2dec2adc46a1"
+                    ],
+                    "primary": true,
+                    "conatins": [
+                        "gsvault matter id"
+                    ]
+                },
+                "limit": {
+                    "description": "Maximum number of holds to return",
+                    "data_type": "numeric",
+                    "required": false,
+                    "order": 1,
+                    "default": 500,
+                    "example_values": [
+                        "5"
+                    ]
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "COMPLETED"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.cloudStorageSink.files.*.md5Hash",
+                    "data_type": "string",
+                    "example_values": [
+                        "373afbad464a2f048cf77ce059b64c59"
+                    ],
+                    "contains": [
+                        "md5"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.cloudStorageSink.files.*.bucketName",
+                    "data_type": "string",
+                    "example_values": [
+                        "a6c13d2c-029f-4df3-9e95-1584897bac98"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.cloudStorageSink.files.*.objectName",
+                    "data_type": "string",
+                    "example_values": [
+                        "1db9d451-f68c-4b7c-bbb8-2dec2adc46a1/exportly-f0624c45-c1f4-4c54-ade5-51f6ac08d134/my_first_export-1.zip"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.cloudStorageSink.files.*.size",
+                    "data_type": "string",
+                    "example_values": [
+                        "3900"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.stats.sizeInBytes",
+                    "data_type": "string",
+                    "example_values": [
+                        "6756"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.stats.exportedArtifactCount",
+                    "data_type": "string",
+                    "example_values": [
+                        "2"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.stats.totalArtifactCount",
+                    "data_type": "string",
+                    "example_values": [
+                        "2"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "my first export"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.matterId",
+                    "data_type": "string",
+                    "example_values": [
+                        "1db9d451-f68c-4b7c-bbb8-2dec2adc46a1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.id",
+                    "data_type": "string",
+                    "example_values": [
+                        "exportly-f0624c45-c1f4-4c54-ade5-51f6ac08d134"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.exportOptions.region",
+                    "data_type": "string",
+                    "example_values": [
+                        "ANY"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.exportOptions.mailOptions.showConfidentialModeContent",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.exportOptions.mailOptions.exportFormat",
+                    "data_type": "string",
+                    "example_values": [
+                        "MBOX"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.requester.displayName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Crest Cresty"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.requester.email",
+                    "data_type": "string",
+                    "example_values": [
+                        "crest@testphantom.com"
+                    ],
+                    "contains": [
+                        "email"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.searchMethod",
+                    "data_type": "string",
+                    "example_values": [
+                        "ACCOUNT"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.method",
+                    "data_type": "string",
+                    "example_values": [
+                        "ACCOUNT"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.accountInfo.emails",
+                    "data_type": "string",
+                    "example_values": [
+                        "crest@testphantom.com"
+                    ],
+                    "contains": [
+                        "email"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.timeZone",
+                    "data_type": "string",
+                    "example_values": [
+                        "Etc/GMT"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.corpus",
+                    "data_type": "string",
+                    "example_values": [
+                        "MAIL"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.dataScope",
+                    "data_type": "string",
+                    "example_values": [
+                        "ALL_DATA"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.createTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2019-08-26T15:19:41.857Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully retrieved 2 exports"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.matter_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "1db9d451-f68c-4b7c-bbb8-2dec2adc46a1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.limit",
+                    "data_type": "numeric",
+                    "example_values": [
+                        500
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.total_exports_returned",
+                    "data_type": "numeric",
+                    "example_values": [
+                        2
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "versions": "EQ(*)",
+            "render": {
+                "width": 12,
+                "title": "List Exports",
+                "type": "table",
+                "height": 5
+            }
+        },
+        {
+            "action": "get export",
+            "identifier": "get_export",
+            "description": "Gets information of export from given matter id",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {
+                "matter_id": {
+                    "description": "Matter ID",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 0,
+                    "example_values": [
+                        "fdf8e220-dd1b-45c5-8983-3cad5e6f2758"
+                    ],
+                    "primary": true,
+                    "conatins": [
+                        "gsvault matter id"
+                    ]
+                },
+                "export_id": {
+                    "description": "Export ID",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 1
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "COMPLETED"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.cloudStorageSink.files.*.md5Hash",
+                    "data_type": "string",
+                    "example_values": [
+                        "ff6eafd106f782eb7e84a777f088ba4e"
+                    ],
+                    "contains": [
+                        "md5"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.cloudStorageSink.files.*.bucketName",
+                    "data_type": "string",
+                    "example_values": [
+                        "a6c13d2c-029f-4df3-9e95-1584897bac98"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.cloudStorageSink.files.*.objectName",
+                    "data_type": "string",
+                    "example_values": [
+                        "1db9d451-f68c-4b7c-bbb8-2dec2adc46a1/exportly-fac2824a-35f7-4429-8f2d-74cbe30983ad/my_second_export-1.zip"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.cloudStorageSink.files.*.size",
+                    "data_type": "string",
+                    "example_values": [
+                        "13775"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.stats.sizeInBytes",
+                    "data_type": "string",
+                    "example_values": [
+                        "24840"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.stats.exportedArtifactCount",
+                    "data_type": "string",
+                    "example_values": [
+                        "8"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.stats.totalArtifactCount",
+                    "data_type": "string",
+                    "example_values": [
+                        "8"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "my second export"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.matterId",
+                    "data_type": "string",
+                    "example_values": [
+                        "1db9d451-f68c-4b7c-bbb8-2dec2adc46a1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.id",
+                    "data_type": "string",
+                    "example_values": [
+                        "exportly-fac2824a-35f7-4429-8f2d-74cbe30983ad"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.exportOptions.region",
+                    "data_type": "string",
+                    "example_values": [
+                        "ANY"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.exportOptions.mailOptions.showConfidentialModeContent",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.exportOptions.mailOptions.exportFormat",
+                    "data_type": "string",
+                    "example_values": [
+                        "MBOX"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.requester.displayName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Crest Cresty"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.requester.email",
+                    "data_type": "string",
+                    "example_values": [
+                        "crest@testphantom.com"
+                    ],
+                    "contains": [
+                        "email"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.searchMethod",
+                    "data_type": "string",
+                    "example_values": [
+                        "ACCOUNT"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.method",
+                    "data_type": "string",
+                    "example_values": [
+                        "ACCOUNT"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.accountInfo.emails",
+                    "data_type": "string",
+                    "example_values": [
+                        "crest@testphantom.com"
+                    ],
+                    "contains": [
+                        "email"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.timeZone",
+                    "data_type": "string",
+                    "example_values": [
+                        "Etc/GMT"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.corpus",
+                    "data_type": "string",
+                    "example_values": [
+                        "MAIL"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.dataScope",
+                    "data_type": "string",
+                    "example_values": [
+                        "ALL_DATA"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.createTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2019-08-26T15:22:05.329Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully fetched export"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.matter_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "1db9d451-f68c-4b7c-bbb8-2dec2adc46a1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.export_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "exportly-fac2824a-35f7-4429-8f2d-74cbe30983ad"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "versions": "EQ(*)",
+            "render": {
+                "width": 12,
+                "title": "Get Export",
+                "type": "table",
+                "height": 5
+            }
+        },
+        {
+            "action": "create hold",
+            "identifier": "create_hold",
+            "description": "Creates a hold",
+            "type": "generic",
+            "read_only": false,
+            "parameters": {
+                "corpus": {
+                    "description": "Choose where to apply your hold",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 0,
+                    "value_list": [
+                        "DRIVE",
+                        "MAIL",
+                        "GROUPS"
+                    ]
+                },
+                "user": {
+                    "description": "Apply your hold to accounts or organizational units",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 0,
+                    "value_list": [
+                        "ACCOUNTS",
+                        "ORGANIZATIONAL UNITS"
+                    ]
+                },
+                "user_email_ids": {
+                    "description": "Comma separated list of user's email id",
+                    "data_type": "string",
+                    "required": false,
+                    "order": 0
+                },
+                "org_unit_ids": {
+                    "description": "Comma separated list of organizational unit id",
+                    "data_type": "string",
+                    "required": false,
+                    "order": 0,
+                    "value_list": [
+                        "ACCOUNTS",
+                        "ORGANIZATIONAL UNITS"
+                    ]
+                }
+            },
+            "output": [],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "create export",
+            "identifier": "create_export",
+            "description": "Send a request to Vault that gathers messages and files that match your criteria",
+            "type": "generic",
+            "read_only": false,
+            "parameters": {
+                "name": {
+                    "description": "Export name",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 0,
+                    "example_values": [
+                        "My first export"
+                    ]
+                },
+                "matter_id": {
+                    "description": "Matter ID",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 1,
+                    "conatins": [
+                        "gsvault matter id"
+                    ]
+                },
+                "corpus": {
+                    "description": "Choose where to apply your export (Type of export)",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 2,
+                    "value_list": [
+                        "DRIVE",
+                        "MAIL"
+                    ]
+                },
+                "data_scope": {
+                    "description": "Defines scope of data which to be exported (Mode)",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 3,
+                    "value_list": [
+                        "HELD_DATA",
+                        "ALL_DATA"
+                    ]
+                },
+                "search_method": {
+                    "description": "Comma separated list of user's email id",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 4,
+                    "value_list": [
+                        "ACCOUNT",
+                        "ORG_UNIT"
+                    ]
+                },
+                "org_unit_id": {
+                    "description": "Organizational unit id",
+                    "data_type": "string",
+                    "required": false,
+                    "order": 5,
+                    "contains": [
+                        "gsvault org unit id"
+                    ]
+                },
+                "user_email_ids": {
+                    "description": "Comma separated list of user's email id",
+                    "data_type": "string",
+                    "required": false,
+                    "order": 6
                 }
             },
             "output": [],

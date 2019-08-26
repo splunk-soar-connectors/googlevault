@@ -97,13 +97,14 @@ class GoogleVaultConnector(BaseConnector):
             self.debug_print("Failed to create Google Vault client")
             return ret_val
 
-        view = param.get("view").upper() if param.get("view") else None
+        view = param.get("state").upper() if param.get("state") else None
 
-        limit = param.get("limit")
+        limit = param.get("limit", 500)
+
         if (limit and not str(limit).isdigit()) or limit == 0:
             return action_result.set_status(phantom.APP_ERROR, GSVAULT_INVALID_LIMIT)
         try:
-            matters = self._paginator(view, limit, client)
+            matters = self._paginator(client, limit, view=view)
         except Exception as e:
             return action_result.set_status(phantom.APP_ERROR, "Error while listing Matters", e)
 
@@ -176,7 +177,160 @@ class GoogleVaultConnector(BaseConnector):
         action_result.add_data(matter)
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully deleted matter")
 
-    def _paginator(self, view, limit, client):
+    def _handle_undelete_matter(self, param):
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        scopes = [GOOGLE_SCOPE]
+
+        ret_val, client = self._create_client(action_result, scopes)
+
+        if phantom.is_fail(ret_val):
+            self.debug_print("Failed to create Google Vault client")
+            return ret_val
+
+        try:
+            matter = client.matters().undelete(matterId=param.get("matter_id")).execute()
+        except Exception as e:
+            return action_result.set_status(phantom.APP_ERROR, "Error while undeleting matter", e)
+
+        action_result.add_data(matter)
+        return action_result.set_status(phantom.APP_SUCCESS, "Successfully undeleted matter")
+
+    def _handle_reopen_matter(self, param):
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        scopes = [GOOGLE_SCOPE]
+
+        ret_val, client = self._create_client(action_result, scopes)
+
+        if phantom.is_fail(ret_val):
+            self.debug_print("Failed to create Google Vault client")
+            return ret_val
+
+        try:
+            matter = client.matters().reopen(matterId=param.get("matter_id")).execute()
+        except Exception as e:
+            return action_result.set_status(phantom.APP_ERROR, "Error while reopening matter", e)
+
+        action_result.add_data(matter)
+        return action_result.set_status(phantom.APP_SUCCESS, "Successfully reopened matter")
+
+    def _handle_create_hold(self, param):
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        scopes = [GOOGLE_SCOPE]
+
+        ret_val, client = self._create_client(action_result, scopes)
+
+        if phantom.is_fail(ret_val):
+            self.debug_print("Failed to create Google Vault client")
+            return ret_val
+
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _handle_add_held_account(self, param):
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        scopes = [GOOGLE_SCOPE]
+
+        ret_val, client = self._create_client(action_result, scopes)
+
+        if phantom.is_fail(ret_val):
+            self.debug_print("Failed to create Google Vault client")
+            return ret_val
+
+        held_account = {'accountId': param["account_id"]}
+
+        try:
+            result = client.matters().holds().accounts().create(matterId=param["matter_id"], holdId=param["hold_id"], body=held_account).execute()
+        except Exception as e:
+            return action_result.set_status(phantom.APP_ERROR, "Error while adding held account to hold for given matter id", e)
+
+        action_result.add_data(result)
+
+        message = "Successfully added held account to {hold_id} hold id for {matter_id} matter id".format(hold_id=param["hold_id"], matter_id=param["matter_id"])
+        return action_result.set_status(phantom.APP_SUCCESS, message)
+
+    def _handle_remove_held_account(self, param):
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        scopes = [GOOGLE_SCOPE]
+
+        ret_val, client = self._create_client(action_result, scopes)
+
+        if phantom.is_fail(ret_val):
+            self.debug_print("Failed to create Google Vault client")
+            return ret_val
+
+        try:
+            result = client.matters().holds().accounts().delete(matterId=param["matter_id"], holdId=param["hold_id"], accountId=param["account_id"]).execute()
+        except Exception as e:
+            return action_result.set_status(phantom.APP_ERROR, "Error while removing held account to hold for given matter id", e)
+
+        action_result.add_data(result)
+        message = "Successfully removed held account to {hold_id} hold id for {matter_id} matter id".format(hold_id=param["hold_id"], matter_id=param["matter_id"])
+        return action_result.set_status(phantom.APP_SUCCESS, message)
+
+    def _handle_list_holds(self, param):
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        scopes = [GOOGLE_SCOPE]
+
+        ret_val, client = self._create_client(action_result, scopes)
+
+        if phantom.is_fail(ret_val):
+            self.debug_print("Failed to create Google Vault client")
+            return ret_val
+
+        matter_id = param["matter_id"]
+
+        limit = param.get("limit", 500)
+
+        if (limit and not str(limit).isdigit()) or limit == 0:
+            return action_result.set_status(phantom.APP_ERROR, GSVAULT_INVALID_LIMIT)
+        try:
+            holds = self._paginator(client, limit, matter_id=matter_id)
+        except Exception as e:
+            return action_result.set_status(phantom.APP_ERROR, "Error while listing Holds", e)
+
+        if not holds:
+            return action_result.set_status(phantom.APP_ERROR, "No data found")
+
+        for hold in holds:
+            action_result.add_data(hold)
+
+        num_holds = len(holds)
+        action_result.update_summary({'total_holds_returned': num_holds})
+
+        return action_result.set_status(phantom.APP_SUCCESS, 'Successfully retrieved {} hold{}'.format(num_holds, '' if num_holds == 1 else 's'))
+
+    def _handle_list_exports(self, param):
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        scopes = [GOOGLE_SCOPE]
+
+        ret_val, client = self._create_client(action_result, scopes)
+
+        if phantom.is_fail(ret_val):
+            self.debug_print("Failed to create Google Vault client")
+            return ret_val
+
+        matter_id = param["matter_id"]
+
+        limit = param.get("limit", 500)
+
+        if (limit and not str(limit).isdigit()) or limit == 0:
+            return action_result.set_status(phantom.APP_ERROR, GSVAULT_INVALID_LIMIT)
+        try:
+            exports = self._paginator(client, limit, matter_id=matter_id)
+        except Exception as e:
+            return action_result.set_status(phantom.APP_ERROR, "Error while listing exports", e)
+
+        if not exports:
+            return action_result.set_status(phantom.APP_ERROR, "No data found")
+
+        for export in exports:
+            action_result.add_data(export)
+
+        num_exports = len(exports)
+        action_result.update_summary({'total_exports_returned': num_exports})
+
+        return action_result.set_status(phantom.APP_SUCCESS, 'Successfully retrieved {} export{}'.format(num_exports, '' if num_exports == 1 else 's'))
+
+    def _paginator(self, client, limit, view=None, matter_id=None):
         """
         This action is used to create an iterator that will paginate through responses from called methods.
 
@@ -187,21 +341,34 @@ class GoogleVaultConnector(BaseConnector):
 
         list_items = list()
         page_token = None
+        action_id = self.get_action_identifier()
 
         kwargs = {}
 
         if view:
             kwargs.update({"state": view})
 
+        if matter_id:
+            kwargs.update({"matterId": matter_id})
+
         while True:
             if page_token:
                 kwargs.update({"pageToken": page_token})
-                response = client.matters().list(**kwargs).execute()
-            else:
-                response = client.matters().list(**kwargs).execute()
 
-            if response.get("matters"):
-                list_items.extend(response.get("matters"))
+            if action_id == "list_matters":
+                response = client.matters().list(**kwargs).execute()
+                if response.get("matters"):
+                    list_items.extend(response.get("matters"))
+
+            if action_id == "list_holds":
+                response = client.matters().holds().list(**kwargs).execute()
+                if response.get("holds"):
+                    list_items.extend(response.get("holds"))
+
+            if action_id == "list_exports":
+                response = client.matters().exports().list(**kwargs).execute()
+                if response.get("exports"):
+                    list_items.extend(response.get("exports"))
 
             if limit and len(list_items) >= limit:
                 return list_items[:limit]
@@ -211,6 +378,62 @@ class GoogleVaultConnector(BaseConnector):
                 break
 
         return list_items
+
+    def _handle_create_export(self, param):
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        scopes = [GOOGLE_SCOPE]
+
+        ret_val, client = self._create_client(action_result, scopes)
+
+        if phantom.is_fail(ret_val):
+            self.debug_print("Failed to create Google Vault client")
+            return ret_val
+
+        # search_method = param['search_method']
+        # data_scope = param['data_scope']
+        # corpus = param['corpus']
+        # matter_id = param['matter_id']
+        # name = param['name']
+
+        # emails_to_search = ['test2@testphantom.com']
+        mail_query = {
+            'corpus': 'MAIL',
+            'dataScope': 'ALL_DATA',
+            'searchMethod': 'ORG_UNIT',
+            'orgUnitInfo': {
+                'org_unit_id': 'id:{}'.format(param.get('org_unit_id'))
+            }
+        }
+        wanted_export = {
+            'name': 'My first mail accounts export for all data with org unit',
+            'query': mail_query
+        }
+        try:
+            matter = client.matters().exports().create(matterId=param.get("matter_id"), body=wanted_export).execute()
+        except Exception as e:
+            return action_result.set_status(phantom.APP_ERROR, "Error while deleting matter", e)
+
+        action_result.add_data(matter)
+        return action_result.set_status(phantom.APP_SUCCESS, "Successfully deleted matter")
+
+    def _handle_get_export(self, param):
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        scopes = [GOOGLE_SCOPE]
+
+        ret_val, client = self._create_client(action_result, scopes)
+
+        if phantom.is_fail(ret_val):
+            self.debug_print("Failed to create Google Vault client")
+            return ret_val
+
+        try:
+            result = client.matters().exports().get(matterId=param["matter_id"], exportId=param["export_id"]).execute()
+        except Exception as e:
+            return action_result.set_status(phantom.APP_ERROR, "Error while fetching export", e)
+
+        action_result.add_data(result)
+
+        return action_result.set_status(phantom.APP_SUCCESS, "Successfully fetched export")
 
     def handle_action(self, param):
 
@@ -229,8 +452,26 @@ class GoogleVaultConnector(BaseConnector):
             ret_val = self._handle_create_matter(param)
         if action_id == 'delete_matter':
             ret_val = self._handle_delete_matter(param)
+        if action_id == 'undelete_matter':
+            ret_val = self._handle_undelete_matter(param)
+        if action_id == 'reopen_matter':
+            ret_val = self._handle_reopen_matter(param)
         if action_id == 'close_matter':
             ret_val = self._handle_close_matter(param)
+        if action_id == 'create_export':
+            ret_val = self._handle_create_export(param)
+        if action_id == 'get_export':
+            ret_val = self._handle_get_export(param)
+        if action_id == 'list_exports':
+            ret_val = self._handle_list_exports(param)
+        if action_id == 'create_hold':
+            ret_val = self._handle_create_hold(param)
+        if action_id == 'list_holds':
+            ret_val = self._handle_list_holds(param)
+        if action_id == 'add_held_account':
+            ret_val = self._handle_add_held_account(param)
+        if action_id == 'remove_held_account':
+            ret_val = self._handle_remove_held_account(param)
 
         return ret_val
 
