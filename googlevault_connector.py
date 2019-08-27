@@ -223,7 +223,66 @@ class GoogleVaultConnector(BaseConnector):
             self.debug_print("Failed to create Google Vault client")
             return ret_val
 
-        return action_result.set_status(phantom.APP_SUCCESS)
+        name = param['name']
+        corpus = param['corpus']
+        search_method = param['search_method']
+
+        org_unit_id = param.get("org_unit_id")
+        emails_to_search = param.get("user_email_ids")
+
+        if emails_to_search:
+            emails = list()
+            emails = [x.strip() for x in emails_to_search.split(",")]
+            emails = list(filter(None, emails))
+
+        if search_method == "ORG_UNIT" and not org_unit_id:
+            return action_result.set_status(phantom.APP_ERROR, "You have to provide valid org_unit_id for search method ORG_UNIT")
+
+        if search_method == "ACCOUNT" and not emails:
+            return action_result.set_status(phantom.APP_ERROR, "You have to provide valid list of user emails for search method ACCOUNT")
+
+        wanted_hold = {
+            'name': name,
+            'corpus': corpus
+        }
+        if search_method == "ORG_UNIT":
+            org_unit = {'orgUnitId': org_unit_id}
+            wanted_hold.update({"orgUnit":org_unit})
+
+        if search_method == "ACCOUNT":
+            accounts = list()
+
+            for email in emails:
+                accounts.append({'email': email})
+
+            wanted_hold.update({"accounts":accounts})
+
+        try:
+            hold = client.matters().holds().create(matterId=param['matter_id'], body=wanted_hold).execute()
+        except Exception as e:
+            return action_result.set_status(phantom.APP_ERROR, "Error while creating hold", e)
+
+        action_result.add_data(hold)
+        return action_result.set_status(phantom.APP_SUCCESS, "Successfully created hold")
+
+    def _handle_delete_hold(self, param):
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        scopes = [GOOGLE_SCOPE]
+
+        ret_val, client = self._create_client(action_result, scopes)
+
+        if phantom.is_fail(ret_val):
+            self.debug_print("Failed to create Google Vault client")
+            return ret_val
+
+        try:
+            result = client.matters().holds().delete(matterId=param["matter_id"], holdId=param["hold_id"]).execute()
+        except Exception as e:
+            return action_result.set_status(phantom.APP_ERROR, "Error while deleting hold", e)
+
+        action_result.add_data(result)
+
+        return action_result.set_status(phantom.APP_SUCCESS, "Successfully deleted hold")
 
     def _handle_add_held_account(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -389,32 +448,58 @@ class GoogleVaultConnector(BaseConnector):
             self.debug_print("Failed to create Google Vault client")
             return ret_val
 
-        # search_method = param['search_method']
-        # data_scope = param['data_scope']
-        # corpus = param['corpus']
-        # matter_id = param['matter_id']
-        # name = param['name']
+        name = param['name']
+        corpus = param['corpus']
+        data_scope = param['data_scope']
+        search_method = param['search_method']
 
-        # emails_to_search = ['test2@testphantom.com']
+        org_unit_id = param.get("org_unit_id")
+        emails_to_search = param.get("user_email_ids")
+
+        if emails_to_search:
+            emails = list()
+            emails = [x.strip() for x in emails_to_search.split(",")]
+            emails = list(filter(None, emails))
+
         mail_query = {
-            'corpus': 'MAIL',
-            'dataScope': 'ALL_DATA',
-            'searchMethod': 'ORG_UNIT',
-            'orgUnitInfo': {
-                'org_unit_id': 'id:{}'.format(param.get('org_unit_id'))
-            }
+            'corpus': corpus,
+            'dataScope': data_scope,
+            'searchMethod': search_method
         }
+
+        if search_method == "ORG_UNIT" and not org_unit_id:
+            return action_result.set_status(phantom.APP_ERROR, "You have to provide valid org_unit_id for search method ORG_UNIT")
+
+        if search_method == "ACCOUNT" and not emails:
+            return action_result.set_status(phantom.APP_ERROR, "You have to provide valid list of user emails for search method ACCOUNT")
+
+        if search_method == "ORG_UNIT":
+            org_dict = {
+                "orgUnitInfo": {
+                    "org_unit_id": org_unit_id
+                }
+            }
+            mail_query.update(org_dict)
+
+        if search_method == "ACCOUNT":
+            org_dict = {
+                "accountInfo": {
+                    "emails": emails
+                }
+            }
+            mail_query.update(org_dict)
+
         wanted_export = {
-            'name': 'My first mail accounts export for all data with org unit',
+            'name': name,
             'query': mail_query
         }
         try:
-            matter = client.matters().exports().create(matterId=param.get("matter_id"), body=wanted_export).execute()
+            export = client.matters().exports().create(matterId=param['matter_id'], body=wanted_export).execute()
         except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, "Error while deleting matter", e)
+            return action_result.set_status(phantom.APP_ERROR, "Error while creating export", e)
 
-        action_result.add_data(matter)
-        return action_result.set_status(phantom.APP_SUCCESS, "Successfully deleted matter")
+        action_result.add_data(export)
+        return action_result.set_status(phantom.APP_SUCCESS, "Successfully created export")
 
     def _handle_get_export(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -468,6 +553,8 @@ class GoogleVaultConnector(BaseConnector):
             ret_val = self._handle_create_hold(param)
         if action_id == 'list_holds':
             ret_val = self._handle_list_holds(param)
+        if action_id == 'delete_hold':
+            ret_val = self._handle_delete_hold(param)
         if action_id == 'add_held_account':
             ret_val = self._handle_add_held_account(param)
         if action_id == 'remove_held_account':

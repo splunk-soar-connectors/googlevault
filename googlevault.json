@@ -992,6 +992,164 @@
             }
         },
         {
+            "action": "create hold",
+            "identifier": "create_hold",
+            "description": "Creates a hold",
+            "verbose": "For search method ACCOUNT you have to provide valid list of user emails and search method ORG_UNIT you have to provide valid org_unit_id. Data scope UNPROCESSED_DATA is not supported for corpus type DRIVE.",
+            "type": "generic",
+            "read_only": false,
+            "parameters": {
+                "name": {
+                    "description": "Export name",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 0,
+                    "example_values": [
+                        "My first export"
+                    ]
+                },
+                "matter_id": {
+                    "description": "Matter ID",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 1,
+                    "conatins": [
+                        "gsvault matter id"
+                    ]
+                },
+                "corpus": {
+                    "description": "Type of export",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 2,
+                    "value_list": [
+                        "DRIVE",
+                        "MAIL",
+                        "GROUPS"
+                    ]
+                },
+                "search_method": {
+                    "description": "Defines search method that for whom you will be doing search",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 3,
+                    "value_list": [
+                        "ACCOUNT",
+                        "ORG_UNIT"
+                    ]
+                },
+                "org_unit_id": {
+                    "description": "Organizational unit id",
+                    "data_type": "string",
+                    "required": false,
+                    "order": 4,
+                    "contains": [
+                        "gsvault org unit id"
+                    ]
+                },
+                "user_email_ids": {
+                    "description": "Comma separated list of user's email id",
+                    "data_type": "string",
+                    "required": false,
+                    "order": 5
+                }
+            },
+            "output": [],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "delete hold",
+            "identifier": "delete_hold",
+            "description": "Deletes a hold",
+            "type": "generic",
+            "read_only": false,
+            "parameters": {
+                "matter_id": {
+                    "description": "Matter ID",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 0,
+                    "example_values": [
+                        "fdf8e220-dd1b-45c5-8983-3cad5e6f2758"
+                    ],
+                    "primary": true,
+                    "conatins": [
+                        "gsvault matter id"
+                    ]
+                },
+                "hold_id": {
+                    "description": "Hold ID",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 1,
+                    "primary": true,
+                    "conatins": [
+                        "gsvault hold id"
+                    ]
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully deleted hold"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.matter_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "72829eb1-2818-4a8b-a8db-cb8139d99fe0"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.hold_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "3z8qrdt0sr3fto"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "versions": "EQ(*)",
+            "render": {
+                "width": 12,
+                "title": "Delete Hold",
+                "type": "table",
+                "height": 5
+            }
+        },
+        {
             "action": "remove held account",
             "identifier": "remove_held_account",
             "description": "Removes held account from given hold ID",
@@ -1069,6 +1227,14 @@
                     "example_values": [
                         "108620176647363363111"
                     ]
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data",
+                    "data_type": "string"
                 },
                 {
                     "data_path": "summary.total_objects",
@@ -1188,6 +1354,10 @@
                     "example_values": [
                         "Successfully added held account to 3z8qrdt111pgr8 hold id for 209366a8-eadc-4687-8d23-190afdfb12ba matter id"
                     ]
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.parameter.matter_id",
@@ -1710,6 +1880,10 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
                     "data_path": "action_result.parameter.matter_id",
                     "data_type": "string",
                     "example_values": [
@@ -1747,57 +1921,10 @@
             }
         },
         {
-            "action": "create hold",
-            "identifier": "create_hold",
-            "description": "Creates a hold",
-            "type": "generic",
-            "read_only": false,
-            "parameters": {
-                "corpus": {
-                    "description": "Choose where to apply your hold",
-                    "data_type": "string",
-                    "required": true,
-                    "order": 0,
-                    "value_list": [
-                        "DRIVE",
-                        "MAIL",
-                        "GROUPS"
-                    ]
-                },
-                "user": {
-                    "description": "Apply your hold to accounts or organizational units",
-                    "data_type": "string",
-                    "required": true,
-                    "order": 0,
-                    "value_list": [
-                        "ACCOUNTS",
-                        "ORGANIZATIONAL UNITS"
-                    ]
-                },
-                "user_email_ids": {
-                    "description": "Comma separated list of user's email id",
-                    "data_type": "string",
-                    "required": false,
-                    "order": 0
-                },
-                "org_unit_ids": {
-                    "description": "Comma separated list of organizational unit id",
-                    "data_type": "string",
-                    "required": false,
-                    "order": 0,
-                    "value_list": [
-                        "ACCOUNTS",
-                        "ORGANIZATIONAL UNITS"
-                    ]
-                }
-            },
-            "output": [],
-            "versions": "EQ(*)"
-        },
-        {
             "action": "create export",
             "identifier": "create_export",
             "description": "Send a request to Vault that gathers messages and files that match your criteria",
+            "verbose": "For search method ACCOUNT you have to provide valid list of user emails and search method ORG_UNIT you have to provide valid org_unit_id. Data scope UNPROCESSED_DATA is not supported for corpus type DRIVE.",
             "type": "generic",
             "read_only": false,
             "parameters": {
@@ -1820,13 +1947,14 @@
                     ]
                 },
                 "corpus": {
-                    "description": "Choose where to apply your export (Type of export)",
+                    "description": "Type of export",
                     "data_type": "string",
                     "required": true,
                     "order": 2,
                     "value_list": [
                         "DRIVE",
-                        "MAIL"
+                        "MAIL",
+                        "GROUPS"
                     ]
                 },
                 "data_scope": {
@@ -1836,11 +1964,12 @@
                     "order": 3,
                     "value_list": [
                         "HELD_DATA",
-                        "ALL_DATA"
+                        "ALL_DATA",
+                        "UNPROCESSED_DATA"
                     ]
                 },
                 "search_method": {
-                    "description": "Comma separated list of user's email id",
+                    "description": "Defines search method that for whom you will be doing search",
                     "data_type": "string",
                     "required": true,
                     "order": 4,
