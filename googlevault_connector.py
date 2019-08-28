@@ -99,7 +99,7 @@ class GoogleVaultConnector(BaseConnector):
 
         view = param.get("state").upper() if param.get("state") else None
 
-        limit = param.get("limit", 500)
+        limit = param.get("limit")
 
         if (limit and not str(limit).isdigit()) or limit == 0:
             return action_result.set_status(phantom.APP_ERROR, GSVAULT_INVALID_LIMIT)
@@ -141,6 +141,33 @@ class GoogleVaultConnector(BaseConnector):
         action_result.add_data(matter)
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully created matter")
 
+    def _handle_get_matter(self, param):
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        scopes = [GOOGLE_SCOPE]
+
+        ret_val, client = self._create_client(action_result, scopes)
+
+        if phantom.is_fail(ret_val):
+            self.debug_print("Failed to create Google Vault client")
+            return ret_val
+
+        ret_val, matter = self._get_single_matter(action_result, client, matter_id=param["matter_id"], view=param.get("view", "BASIC"))
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+
+        action_result.add_data(matter)
+        return action_result.set_status(phantom.APP_SUCCESS, "Successfully fetched matter")
+
+    def _get_single_matter(self, action_result, client, matter_id, view="BASIC"):
+
+        try:
+            response = client.matters().get(matterId=matter_id, view=view).execute()
+        except Exception as e:
+            return action_result.set_status(phantom.APP_ERROR, "Error while fetching matter", e), None
+
+        return phantom.APP_SUCCESS, response
+
     def _handle_close_matter(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
@@ -151,13 +178,76 @@ class GoogleVaultConnector(BaseConnector):
             self.debug_print("Failed to create Google Vault client")
             return ret_val
 
-        try:
-            matter = client.matters().close(matterId=param.get("matter_id")).execute()
-        except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, "Error while closing matter", e)
+        ret_val, flag, state = self._check_matter_state(action_result, client, matter_id=param["matter_id"], state_for_check="OPEN")
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+
+        if not flag:
+            return action_result.set_status(phantom.APP_ERROR, "Matter already exists in {} state".format(state))
+
+        ret_val, matter = self._close_single_matter(action_result, client, matter_id=param["matter_id"])
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         action_result.add_data(matter)
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully closed matter")
+
+    def _close_single_matter(self, action_result, client, matter_id):
+
+        ret_val = self._check_for_hold(action_result, client, matter_id=matter_id)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+
+        try:
+            response = client.matters().close(matterId=matter_id).execute()
+        except Exception as e:
+            return action_result.set_status(phantom.APP_ERROR, "Error while closing matter", e)
+
+        return phantom.APP_SUCCESS, response
+
+    def _check_for_hold(self, action_result, client, matter_id):
+
+        holds = self._paginator(client, matter_id=matter_id, hold_flag=True)
+
+        if not holds:
+            return phantom.APP_SUCCESS
+
+        ret_val = self._delete_all_holds(action_result, client, matter_id, holds)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+
+        return phantom.APP_SUCCESS
+
+    def _delete_all_holds(self, action_result, client, matter_id, holds):
+
+        for hold in holds:
+            if hold.get("holdId"):
+                ret_val, result = self._delete_single_hold(action_result, client, matter_id, hold["holdId"])
+                if phantom.is_fail(ret_val):
+                    return action_result.get_status()
+
+        return phantom.APP_SUCCESS
+
+    def _check_matter_state(self, action_result, client, matter_id, state_for_check=None):
+
+        flag = False
+        state = None
+
+        ret_val, matter = self._get_single_matter(action_result, client, matter_id=matter_id)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status(), flag, state
+
+        if matter.get("state"):
+            state = matter.get("state")
+            if state == state_for_check:
+                flag = True
+
+        return phantom.APP_SUCCESS, flag, state
 
     def _handle_delete_matter(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -168,6 +258,20 @@ class GoogleVaultConnector(BaseConnector):
         if phantom.is_fail(ret_val):
             self.debug_print("Failed to create Google Vault client")
             return ret_val
+
+        ret_val, flag, state = self._check_matter_state(action_result, client, matter_id=param["matter_id"], state_for_check="DELETED")
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+
+        if flag:
+            return action_result.set_status(phantom.APP_ERROR, "Matter already exists in {} state".format(state))
+
+        if state == "OPEN":
+            ret_val, matter = self._close_single_matter(action_result, client, matter_id=param["matter_id"])
+
+            if phantom.is_fail(ret_val):
+                return action_result.get_status()
 
         try:
             matter = client.matters().delete(matterId=param.get("matter_id")).execute()
@@ -247,7 +351,7 @@ class GoogleVaultConnector(BaseConnector):
         }
         if search_method == "ORG_UNIT":
             org_unit = {'orgUnitId': org_unit_id}
-            wanted_hold.update({"orgUnit":org_unit})
+            wanted_hold.update({"orgUnit": org_unit})
 
         if search_method == "ACCOUNT":
             accounts = list()
@@ -255,7 +359,7 @@ class GoogleVaultConnector(BaseConnector):
             for email in emails:
                 accounts.append({'email': email})
 
-            wanted_hold.update({"accounts":accounts})
+            wanted_hold.update({"accounts": accounts})
 
         try:
             hold = client.matters().holds().create(matterId=param['matter_id'], body=wanted_hold).execute()
@@ -275,14 +379,23 @@ class GoogleVaultConnector(BaseConnector):
             self.debug_print("Failed to create Google Vault client")
             return ret_val
 
-        try:
-            result = client.matters().holds().delete(matterId=param["matter_id"], holdId=param["hold_id"]).execute()
-        except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, "Error while deleting hold", e)
+        ret_val, result = self._delete_single_hold(action_result, client, param["matter_id"], param["hold_id"])
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         action_result.add_data(result)
 
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully deleted hold")
+
+    def _delete_single_hold(self, action_result, client, matter_id, hold_id):
+
+        try:
+            response = client.matters().holds().delete(matterId=matter_id, holdId=hold_id).execute()
+        except Exception as e:
+            return action_result.set_status(phantom.APP_ERROR, "Error while deleting hold", e), None
+
+        return phantom.APP_SUCCESS, response
 
     def _handle_add_held_account(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -337,7 +450,7 @@ class GoogleVaultConnector(BaseConnector):
 
         matter_id = param["matter_id"]
 
-        limit = param.get("limit", 500)
+        limit = param.get("limit")
 
         if (limit and not str(limit).isdigit()) or limit == 0:
             return action_result.set_status(phantom.APP_ERROR, GSVAULT_INVALID_LIMIT)
@@ -369,7 +482,7 @@ class GoogleVaultConnector(BaseConnector):
 
         matter_id = param["matter_id"]
 
-        limit = param.get("limit", 500)
+        limit = param.get("limit")
 
         if (limit and not str(limit).isdigit()) or limit == 0:
             return action_result.set_status(phantom.APP_ERROR, GSVAULT_INVALID_LIMIT)
@@ -389,7 +502,7 @@ class GoogleVaultConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS, 'Successfully retrieved {} export{}'.format(num_exports, '' if num_exports == 1 else 's'))
 
-    def _paginator(self, client, limit, view=None, matter_id=None):
+    def _paginator(self, client, limit=None, view=None, matter_id=None, hold_flag=False):
         """
         This action is used to create an iterator that will paginate through responses from called methods.
 
@@ -419,7 +532,7 @@ class GoogleVaultConnector(BaseConnector):
                 if response.get("matters"):
                     list_items.extend(response.get("matters"))
 
-            if action_id == "list_holds":
+            if action_id == "list_holds" or hold_flag:
                 response = client.matters().holds().list(**kwargs).execute()
                 if response.get("holds"):
                     list_items.extend(response.get("holds"))
@@ -535,6 +648,8 @@ class GoogleVaultConnector(BaseConnector):
             ret_val = self._handle_list_matters(param)
         if action_id == 'create_matter':
             ret_val = self._handle_create_matter(param)
+        if action_id == 'get_matter':
+            ret_val = self._handle_get_matter(param)
         if action_id == 'delete_matter':
             ret_val = self._handle_delete_matter(param)
         if action_id == 'undelete_matter':
