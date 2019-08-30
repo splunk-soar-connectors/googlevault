@@ -6,3 +6,5 @@
 
 GOOGLE_SCOPE = 'https://www.googleapis.com/auth/ediscovery'
 GSVAULT_INVALID_LIMIT = "Please provide non-zero positive integer in limit"
+GSVAULT_TIME_FORMAT_ERROR = "Please provide time in '%Y-%m-%dT%H:%M:%SZ' format"
+GSVAULT_TIME_RANGE_ERROR = "The given time range is incorrect"

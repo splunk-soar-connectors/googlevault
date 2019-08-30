@@ -21,9 +21,9 @@ try:
 except:  # noqa
     pass  # noqa
 
-
-import requests
 import json
+import datetime
+import requests
 
 from googleapiclient import discovery
 from google.oauth2 import service_account
@@ -97,7 +97,7 @@ class GoogleVaultConnector(BaseConnector):
             self.debug_print("Failed to create Google Vault client")
             return ret_val
 
-        view = param.get("state").upper() if param.get("state") else None
+        view = param.get("state")
 
         limit = param.get("limit")
 
@@ -178,6 +178,8 @@ class GoogleVaultConnector(BaseConnector):
             self.debug_print("Failed to create Google Vault client")
             return ret_val
 
+        delete_flag = param.get("delete_all_holds", True)
+
         ret_val, flag, state = self._check_matter_state(action_result, client, matter_id=param["matter_id"], state_for_check="OPEN")
 
         if phantom.is_fail(ret_val):
@@ -186,10 +188,16 @@ class GoogleVaultConnector(BaseConnector):
         if not flag:
             return action_result.set_status(phantom.APP_ERROR, "Matter already exists in {} state".format(state))
 
-        ret_val, matter = self._close_single_matter(action_result, client, matter_id=param["matter_id"])
+        if not delete_flag:
+            try:
+                matter = client.matters().close(matterId=param["matter_id"]).execute()
+            except Exception as e:
+                return action_result.set_status(phantom.APP_ERROR, "Error while closing matter", e)
+        else:
+            ret_val, matter = self._close_single_matter(action_result, client, matter_id=param["matter_id"])
 
-        if phantom.is_fail(ret_val):
-            return action_result.get_status()
+            if phantom.is_fail(ret_val):
+                return action_result.get_status()
 
         action_result.add_data(matter)
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully closed matter")
@@ -259,6 +267,8 @@ class GoogleVaultConnector(BaseConnector):
             self.debug_print("Failed to create Google Vault client")
             return ret_val
 
+        delete_flag = param.get("delete_all_holds", True)
+
         ret_val, flag, state = self._check_matter_state(action_result, client, matter_id=param["matter_id"], state_for_check="DELETED")
 
         if phantom.is_fail(ret_val):
@@ -268,10 +278,11 @@ class GoogleVaultConnector(BaseConnector):
             return action_result.set_status(phantom.APP_ERROR, "Matter already exists in {} state".format(state))
 
         if state == "OPEN":
-            ret_val, matter = self._close_single_matter(action_result, client, matter_id=param["matter_id"])
+            if delete_flag:
+                ret_val, matter = self._close_single_matter(action_result, client, matter_id=param["matter_id"])
 
-            if phantom.is_fail(ret_val):
-                return action_result.get_status()
+                if phantom.is_fail(ret_val):
+                    return action_result.get_status()
 
         try:
             matter = client.matters().delete(matterId=param.get("matter_id")).execute()
@@ -281,7 +292,7 @@ class GoogleVaultConnector(BaseConnector):
         action_result.add_data(matter)
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully deleted matter")
 
-    def _handle_undelete_matter(self, param):
+    def _handle_restore_matter(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
 
@@ -292,12 +303,12 @@ class GoogleVaultConnector(BaseConnector):
             return ret_val
 
         try:
-            matter = client.matters().undelete(matterId=param.get("matter_id")).execute()
+            matter = client.matters().undelete(matterId=param["matter_id"]).execute()
         except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, "Error while undeleting matter", e)
+            return action_result.set_status(phantom.APP_ERROR, "Error while restoring matter", e)
 
         action_result.add_data(matter)
-        return action_result.set_status(phantom.APP_SUCCESS, "Successfully undeleted matter")
+        return action_result.set_status(phantom.APP_SUCCESS, "Successfully restored matter")
 
     def _handle_reopen_matter(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -310,7 +321,7 @@ class GoogleVaultConnector(BaseConnector):
             return ret_val
 
         try:
-            matter = client.matters().reopen(matterId=param.get("matter_id")).execute()
+            matter = client.matters().reopen(matterId=param["matter_id"]).execute()
         except Exception as e:
             return action_result.set_status(phantom.APP_ERROR, "Error while reopening matter", e)
 
@@ -328,21 +339,29 @@ class GoogleVaultConnector(BaseConnector):
             return ret_val
 
         name = param['name']
-        corpus = param['corpus']
+        corpus = param['type']
         search_method = param['search_method']
 
+        terms = param.get("terms")
+        end_time = param.get("end_time")
+        start_time = param.get("start_time")
         org_unit_id = param.get("org_unit_id")
         emails_to_search = param.get("user_email_ids")
+
+        include_shared_drive_files = param.get("include_shared_drive_files")
+
+        if search_method == "ORG_UNIT" and not org_unit_id:
+            return action_result.set_status(phantom.APP_ERROR, "You have to provide valid org_unit_id for search method ORG_UNIT")
+
+        if search_method == "ACCOUNT" and not emails_to_search:
+            return action_result.set_status(phantom.APP_ERROR, "You have to provide valid list of user emails for search method ACCOUNT")
 
         if emails_to_search:
             emails = list()
             emails = [x.strip() for x in emails_to_search.split(",")]
             emails = list(filter(None, emails))
 
-        if search_method == "ORG_UNIT" and not org_unit_id:
-            return action_result.set_status(phantom.APP_ERROR, "You have to provide valid org_unit_id for search method ORG_UNIT")
-
-        if search_method == "ACCOUNT" and not emails:
+        if not emails:
             return action_result.set_status(phantom.APP_ERROR, "You have to provide valid list of user emails for search method ACCOUNT")
 
         wanted_hold = {
@@ -361,6 +380,32 @@ class GoogleVaultConnector(BaseConnector):
 
             wanted_hold.update({"accounts": accounts})
 
+        if corpus == "DRIVE":
+            drive_query = dict()
+
+            if include_shared_drive_files:
+                drive_query.update({"includeSharedDriveFiles": include_shared_drive_files})
+
+            if drive_query:
+                wanted_hold.update({"query": {"driveQuery": drive_query}})
+
+        if corpus == "MAIL":
+            mail_query = dict()
+
+            ret_val = self._validate_time_range(action_result, start_time=start_time, end_time=end_time)
+
+            if phantom.is_fail(ret_val):
+                return action_result.get_status()
+
+            if start_time:
+                mail_query.update({"startTime": start_time})
+            if end_time:
+                mail_query.update({"endTime": end_time})
+            if terms:
+                mail_query.update({"terms": terms})
+            if mail_query:
+                wanted_hold.update({"query": {"mailQuery": mail_query}})
+
         try:
             hold = client.matters().holds().create(matterId=param['matter_id'], body=wanted_hold).execute()
         except Exception as e:
@@ -368,6 +413,26 @@ class GoogleVaultConnector(BaseConnector):
 
         action_result.add_data(hold)
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully created hold")
+
+    def _validate_time_range(self, action_result, start_time=None, end_time=None, version_date=None):
+        # validation for start time and end time
+        try:
+            if start_time:
+                start = datetime.datetime.strptime(start_time, "%Y-%m-%dT%H:%M:%SZ")
+            if end_time:
+                end = datetime.datetime.strptime(end_time, "%Y-%m-%dT%H:%M:%SZ")
+            if version_date:
+                version_date = datetime.datetime.strptime(version_date, "%Y-%m-%dT%H:%M:%SZ")
+        except:
+            return action_result.set_status(phantom.APP_ERROR, GSVAULT_TIME_FORMAT_ERROR)
+
+        # validation for incorrect timespan
+        if start_time and end_time:
+            now = datetime.datetime.now()
+            if start >= end or start > now:
+                return action_result.set_status(phantom.APP_ERROR, GSVAULT_TIME_RANGE_ERROR)
+
+        return phantom.APP_SUCCESS
 
     def _handle_delete_hold(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -562,19 +627,25 @@ class GoogleVaultConnector(BaseConnector):
             return ret_val
 
         name = param['name']
-        corpus = param['corpus']
+        corpus = param['type']
         data_scope = param['data_scope']
         search_method = param['search_method']
 
+        terms = param.get("terms")
+        end_time = param.get("end_time")
+        timezone = param.get("time_zone")
+        start_time = param.get("start_time")
+        # data_region = param.get("data_region")
         org_unit_id = param.get("org_unit_id")
         emails_to_search = param.get("user_email_ids")
 
-        if emails_to_search:
-            emails = list()
-            emails = [x.strip() for x in emails_to_search.split(",")]
-            emails = list(filter(None, emails))
+        export_format = param.get("export_format")
+        exclude_drafts = param.get("exclude_drafts")
+        include_access_info = param.get("include_access_info")
+        include_shared_drives = param.get("include_shared_drives")
+        show_confidential_mode_content = param.get("show_confidential_mode_content")
 
-        mail_query = {
+        query = {
             'corpus': corpus,
             'dataScope': data_scope,
             'searchMethod': search_method
@@ -583,8 +654,34 @@ class GoogleVaultConnector(BaseConnector):
         if search_method == "ORG_UNIT" and not org_unit_id:
             return action_result.set_status(phantom.APP_ERROR, "You have to provide valid org_unit_id for search method ORG_UNIT")
 
-        if search_method == "ACCOUNT" and not emails:
+        if search_method == "ACCOUNT" and not emails_to_search:
             return action_result.set_status(phantom.APP_ERROR, "You have to provide valid list of user emails for search method ACCOUNT")
+
+        if emails_to_search:
+            emails = list()
+            emails = [x.strip() for x in emails_to_search.split(",")]
+            emails = list(filter(None, emails))
+
+        if not emails:
+            return action_result.set_status(phantom.APP_ERROR, "You have to provide valid list of user emails for search method ACCOUNT")
+
+        ret_val = self._validate_time_range(action_result, start_time=start_time, end_time=end_time)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+
+        if start_time:
+            query.update({"startTime": start_time})
+        if end_time:
+            query.update({"endTime": end_time})
+
+        if data_scope != "HELD_DATA":
+            if timezone:
+                query.update({"timeZone": timezone})
+
+        if data_scope != "UNPROCESSED_DATA":
+            if terms:
+                query.update({"terms": timezone})
 
         if search_method == "ORG_UNIT":
             org_dict = {
@@ -592,7 +689,7 @@ class GoogleVaultConnector(BaseConnector):
                     "org_unit_id": org_unit_id
                 }
             }
-            mail_query.update(org_dict)
+            query.update(org_dict)
 
         if search_method == "ACCOUNT":
             org_dict = {
@@ -600,12 +697,37 @@ class GoogleVaultConnector(BaseConnector):
                     "emails": emails
                 }
             }
-            mail_query.update(org_dict)
+            query.update(org_dict)
 
         wanted_export = {
-            'name': name,
-            'query': mail_query
+            'name': name
         }
+
+        if corpus == "MAIL":
+            mail_export_options = dict()
+
+            if export_format:
+                mail_export_options.update({"exportFormat": export_format})
+            if show_confidential_mode_content:
+                mail_export_options.update({"showConfidentialModeContent": show_confidential_mode_content})
+            # if data_region:
+            #     mail_export_options.update({"dataRegion": end_time})
+
+            wanted_export.update({"exportOptions": {"mailOptions": mail_export_options}})
+
+            if exclude_drafts:
+                query.update({"mailOptions": {"excludeDrafts": exclude_drafts}})
+
+        if corpus == "DRIVE":
+
+            if include_access_info:
+                wanted_export.update({"exportOptions": {"driveOptions": {'includeAccessInfo': include_access_info}}})
+
+            if include_shared_drives:
+                query.update({"driveOptions": {'includeSharedDrives': include_shared_drives}})
+
+        wanted_export.update({"query": query})
+
         try:
             export = client.matters().exports().create(matterId=param['matter_id'], body=wanted_export).execute()
         except Exception as e:
@@ -652,8 +774,8 @@ class GoogleVaultConnector(BaseConnector):
             ret_val = self._handle_get_matter(param)
         if action_id == 'delete_matter':
             ret_val = self._handle_delete_matter(param)
-        if action_id == 'undelete_matter':
-            ret_val = self._handle_undelete_matter(param)
+        if action_id == 'restore_matter':
+            ret_val = self._handle_restore_matter(param)
         if action_id == 'reopen_matter':
             ret_val = self._handle_reopen_matter(param)
         if action_id == 'close_matter':

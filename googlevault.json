@@ -105,6 +105,11 @@
                         "OPEN",
                         "CLOSED",
                         "DELETED"
+                    ],
+                    "value_list": [
+                        "OPEN",
+                        "CLOSED",
+                        "DELETED"
                     ]
                 },
                 "limit": {
@@ -496,6 +501,7 @@
             "action": "close matter",
             "identifier": "close_matter",
             "description": "Close a matter and state of matter changes to CLOSED",
+            "verbose": "You can close matter if and only if matter is in an OPEN state. If the matter in an OPEN state and contains any holds then to close matter all holds must be deleted. For this, you have to select the 'Delete all holds' parameter to true. If you set this parameter to false then you have to delete all holds manually after that you can close the matter.",
             "type": "contain",
             "undo": "reopen matter",
             "read_only": false,
@@ -512,6 +518,14 @@
                     "conatins": [
                         "gsvault matter id"
                     ]
+                },
+                "delete_all_holds": {
+                    "description": "Delete all holds",
+                    "verbose": "This parameter defines whether you want to delete all holds(if any) of given matter_id if this matter is in an OPEN state.",
+                    "data_type": "boolean",
+                    "required": false,
+                    "order": 9,
+                    "default": true
                 }
             },
             "output": [
@@ -584,6 +598,13 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.parameter.delete_all_holds",
+                    "data_type": "string",
+                    "example_values": [
+                        true
+                    ]
+                },
+                {
                     "data_path": "summary.total_objects",
                     "data_type": "numeric",
                     "example_values": [
@@ -610,8 +631,9 @@
             "action": "delete matter",
             "identifier": "delete_matter",
             "description": "Delete a matter and state of matter changes to DELETED",
+            "verbose": "You can delete matter if and only if matter is in a CLOSED state. If the matter is in an OPEN state and contains any holds then to close matter all holds must be deleted. For this, you have to select the 'Delete all holds' parameter to true. By doing that action will delete all the holds(if any) of the specified matter if the given matter is in an OPEN state after this it will close matter and then delete matter. If you set this parameter to false then you have to delete all the holds manually after that you have to close the matter.",
             "type": "contain",
-            "undo": "undelete matter",
+            "undo": "restore matter",
             "read_only": false,
             "parameters": {
                 "matter_id": {
@@ -626,6 +648,14 @@
                     "conatins": [
                         "gsvault matter id"
                     ]
+                },
+                "delete_all_holds": {
+                    "description": "Delete all holds",
+                    "verbose": "This parameter defines whether you want to delete all holds(if any) of given matter_id if this matter is in an OPEN state.",
+                    "data_type": "boolean",
+                    "required": false,
+                    "order": 9,
+                    "default": true
                 }
             },
             "output": [
@@ -695,6 +725,13 @@
                     ],
                     "conatins": [
                         "gsvault matter id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.delete_all_holds",
+                    "data_type": "string",
+                    "example_values": [
+                        true
                     ]
                 },
                 {
@@ -831,9 +868,9 @@
             }
         },
         {
-            "action": "undelete matter",
-            "identifier": "undelete_matter",
-            "description": "Undeletes a matter and state of matter changes to CLOSED",
+            "action": "restore matter",
+            "identifier": "restore_matter",
+            "description": "Restores a matter and state of matter changes to CLOSED",
             "type": "correct",
             "undo": "delete matter",
             "read_only": false,
@@ -908,7 +945,7 @@
                     "data_path": "action_result.message",
                     "data_type": "string",
                     "example_values": [
-                        "Successfully undeleted matter"
+                        "Successfully restored matter"
                     ]
                 },
                 {
@@ -936,7 +973,7 @@
             "versions": "EQ(*)",
             "render": {
                 "width": 12,
-                "title": "Undelete Matter",
+                "title": "Restore Matter",
                 "type": "table",
                 "height": 5
             }
@@ -1165,15 +1202,14 @@
                         "gsvault matter id"
                     ]
                 },
-                "corpus": {
+                "type": {
                     "description": "Choose where to apply your hold",
                     "data_type": "string",
                     "required": true,
                     "order": 2,
                     "value_list": [
                         "DRIVE",
-                        "MAIL",
-                        "GROUPS"
+                        "MAIL"
                     ]
                 },
                 "search_method": {
@@ -1193,6 +1229,9 @@
                     "order": 4,
                     "contains": [
                         "gsvault org unit id"
+                    ],
+                    "example_values": [
+                        "id:03z8qrdt2kekpq1"
                     ]
                 },
                 "user_email_ids": {
@@ -1208,26 +1247,271 @@
                     "order": 6
                 },
                 "start_time": {
-                    "description": "Comma separated list of user's email id",
+                    "description": "Start time (%Y-%m-%dT%H:%M:%SZ)",
                     "data_type": "string",
                     "required": false,
                     "order": 7
                 },
                 "end_time": {
-                    "description": "Comma separated list of user's email id",
+                    "description": "End time (%Y-%m-%dT%H:%M:%SZ)",
                     "data_type": "string",
                     "required": false,
                     "order": 8
                 },
                 "include_shared_drive_files": {
-                    "description": "Comma separated list of user's email id",
+                    "description": "Include files from associated shared drives",
+                    "verbose": "This parameter is only for corpus type DRIVE.",
                     "data_type": "boolean",
                     "required": false,
-                    "order": 9
+                    "order": 9,
+                    "default": false
                 }
             },
-            "output": [],
-            "versions": "EQ(*)"
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.updateTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2019-08-30T12:20:43.644Z",
+                        "2019-08-30T12:20:16.451Z",
+                        "2019-08-30T12:19:20.973Z",
+                        "2019-08-30T12:14:10.972Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "test 4",
+                        "test 3",
+                        "test 2",
+                        "test 1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.accounts.*.lastName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Tichenor"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.accounts.*.holdTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2019-08-30T12:20:43Z",
+                        "2019-08-30T12:14:10Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.accounts.*.email",
+                    "data_type": "string",
+                    "example_values": [
+                        "matt@testphantom.com"
+                    ],
+                    "contains": [
+                        "email"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.accounts.*.firstName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Matthew"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.accounts.*.accountId",
+                    "data_type": "string",
+                    "example_values": [
+                        "100113397046722686289"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.driveQuery.includeSharedDriveFiles",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.driveQuery.includeTeamDriveFiles",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.corpus",
+                    "data_type": "string",
+                    "example_values": [
+                        "DRIVE",
+                        "MAIL"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.holdId",
+                    "data_type": "string",
+                    "example_values": [
+                        "3z8qrdt3jtsioc",
+                        "3z8qrdt0zu500j",
+                        "3z8qrdt2koupsq",
+                        "3z8qrdt45jkfkx"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully created hold"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.terms",
+                    "data_type": "string",
+                    "example_values": [
+                        "conditions"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "test 4",
+                        "test 3",
+                        "test 2",
+                        "test 1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.start_time",
+                    "data_type": "string",
+                    "example_values": [
+                        "2017-03-16T00:00:00Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.org_unit_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "id:03z8qrdt2kekpq1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.user_email_ids",
+                    "data_type": "string",
+                    "example_values": [
+                        "matt@testphantom.com"
+                    ],
+                    "contains": [
+                        "email"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.end_time",
+                    "data_type": "string",
+                    "example_values": [
+                        "2017-09-23T00:00:00Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.matter_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "9236e87e-631a-49fc-a8c2-dfb8a34e4d24"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.search_method",
+                    "data_type": "string",
+                    "example_values": [
+                        "ACCOUNT",
+                        "ORG_UNIT"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.type",
+                    "data_type": "string",
+                    "example_values": [
+                        "DRIVE",
+                        "MAIL"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.include_shared_drive_files",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.orgUnit.holdTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2019-08-30T12:20:16.451Z",
+                        "2019-08-30T12:19:20.973Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.orgUnit.orgUnitId",
+                    "data_type": "string",
+                    "example_values": [
+                        "id:03z8qrdt2kekpq1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.mailQuery.endTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2017-09-23T00:00:00Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.mailQuery.terms",
+                    "data_type": "string",
+                    "example_values": [
+                        "conditions"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.mailQuery.startTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2017-03-16T00:00:00Z"
+                    ]
+                }
+            ],
+            "versions": "EQ(*)",
+            "render": {
+                "width": 12,
+                "title": "Create Hold",
+                "type": "table",
+                "height": 5
+            }
         },
         {
             "action": "delete hold",
@@ -2143,7 +2427,7 @@
             "action": "create export",
             "identifier": "create_export",
             "description": "Send a request to Vault that gathers messages and files that match your criteria",
-            "verbose": "For search method ACCOUNT you have to provide valid list of user emails and search method ORG_UNIT you have to provide valid org_unit_id. Data scope UNPROCESSED_DATA is not supported for corpus type DRIVE.",
+            "verbose": "For search method ACCOUNT you have to provide valid list of user emails and search method ORG_UNIT you have to provide valid org_unit_id. Data scope UNPROCESSED_DATA is not supported for corpus type DRIVE.Exports are deleted 15 days from when they are started. To avoid losing your exports, download them as soon as they're available.",
             "type": "generic",
             "read_only": false,
             "parameters": {
@@ -2161,11 +2445,12 @@
                     "data_type": "string",
                     "required": true,
                     "order": 1,
+                    "primary": true,
                     "conatins": [
                         "gsvault matter id"
                     ]
                 },
-                "corpus": {
+                "type": {
                     "description": "Type of export",
                     "data_type": "string",
                     "required": true,
@@ -2204,6 +2489,9 @@
                     "order": 5,
                     "contains": [
                         "gsvault org unit id"
+                    ],
+                    "example_values": [
+                        "id:03z8qrdt2kekpq1"
                     ]
                 },
                 "user_email_ids": {
@@ -2211,6 +2499,109 @@
                     "data_type": "string",
                     "required": false,
                     "order": 6
+                },
+                "start_time": {
+                    "description": "Start time (%Y-%m-%dT%H:%M:%SZ)",
+                    "data_type": "string",
+                    "required": false,
+                    "order": 7
+                },
+                "end_time": {
+                    "description": "End time (%Y-%m-%dT%H:%M:%SZ)",
+                    "data_type": "string",
+                    "required": false,
+                    "order": 8
+                },
+                "time_zone": {
+                    "description": "Time zone for this export",
+                    "verbose": "Time zone is not applicable for data scope HELD_DATA.",
+                    "data_type": "string",
+                    "required": false,
+                    "order": 9,
+                    "value_list": [
+                        "Etc/GMT-14",
+                        "Etc/GMT-13",
+                        "Etc/GMT-12",
+                        "Etc/GMT-11",
+                        "Etc/GMT-10",
+                        "Etc/GMT-9",
+                        "Etc/GMT-8",
+                        "Etc/GMT-7",
+                        "Etc/GMT-6",
+                        "Etc/GMT-5",
+                        "Etc/GMT-4",
+                        "Etc/GMT-3",
+                        "Etc/GMT-2",
+                        "Etc/GMT-1",
+                        "Etc/GMT",
+                        "Etc/GMT+1",
+                        "Etc/GMT+2",
+                        "Etc/GMT+3",
+                        "Etc/GMT+4",
+                        "Etc/GMT+5",
+                        "Etc/GMT+6",
+                        "Etc/GMT+7",
+                        "Etc/GMT+8",
+                        "Etc/GMT+9",
+                        "Etc/GMT+10",
+                        "Etc/GMT+11",
+                        "Etc/GMT+12"
+                    ]
+                },
+                "terms": {
+                    "description": "Terms",
+                    "data_type": "string",
+                    "required": false,
+                    "order": 10
+                },
+                "exclude_drafts": {
+                    "description": "Exclude drafts",
+                    "data_type": "boolean",
+                    "required": false,
+                    "order": 11,
+                    "default": false
+                },
+                "export_format": {
+                    "description": "Terms",
+                    "data_type": "string",
+                    "required": false,
+                    "order": 12,
+                    "value_list": [
+                        "PST",
+                        "MBOX"
+                    ]
+                },
+                "show_confidential_mode_content": {
+                    "description": "Terms",
+                    "data_type": "boolean",
+                    "required": false,
+                    "order": 13,
+                    "default": false
+                },
+                "data_region": {
+                    "description": "Data region",
+                    "verbose": "When you begin an export, Vault preselects the data region based on the region assigned to the owner of the matter. You can select one of the following options: United States, Europe",
+                    "data_type": "string",
+                    "required": false,
+                    "order": 14,
+                    "value_list": [
+                        "United States",
+                        "Europe"
+                    ]
+                },
+                "include_shared_drives": {
+                    "description": "Include results from shared drives",
+                    "data_type": "boolean",
+                    "required": false,
+                    "order": 15,
+                    "default": false
+                },
+                "include_access_info": {
+                    "description": "Include access level information for users with indirect access to files (This may increase export duration)",
+                    "data_type": "boolean",
+                    "required": false,
+                    "order": 16,
+                    "default": false
                 }
             },
             "output": [],
