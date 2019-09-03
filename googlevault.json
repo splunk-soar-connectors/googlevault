@@ -2339,8 +2339,9 @@
             "render": {
                 "width": 12,
                 "title": "List Exports",
-                "type": "table",
-                "height": 5
+                "type": "custom",
+                "height": 5,
+                "view": "gsvault_view.display_view"
             }
         },
         {
@@ -2612,8 +2613,9 @@
             "render": {
                 "width": 12,
                 "title": "Get Export",
-                "type": "table",
-                "height": 5
+                "type": "custom",
+                "height": 5,
+                "view": "gsvault_view.display_view"
             }
         },
         {
@@ -2828,7 +2830,14 @@
                 }
             },
             "output": [],
-            "versions": "EQ(*)"
+            "versions": "EQ(*)",
+            "render": {
+                "width": 12,
+                "title": "Create Export",
+                "type": "custom",
+                "height": 5,
+                "view": "gsvault_view.display_view"
+            }
         }
     ]
 }

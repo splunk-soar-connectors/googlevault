@@ -1,0 +1,301 @@
+{% extends 'widgets/widget_template.html' %}
+{% load custom_template %}
+
+{% block custom_title_prop %}{% if title_logo %}style="background-size: auto 60%; background-position: 50%; background-repeat: no-repeat; background-image: url('/app_resource/{{ title_logo }}');"{% endif %}{% endblock %}
+{% block title1 %}{{ title1 }}{% endblock %}
+{% block title2 %}{{ title2 }}{% endblock %}
+{% block custom_tools %}
+{% endblock %}
+
+{% block widget_content %} <!-- Main Start Block -->
+
+<!-- File: gsvault_create_export.html
+  Copyright (c) 2019 Splunk Inc.
+
+  SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
+  without a valid written license from Splunk Inc. is PROHIBITED.
+-->
+<style>
+
+    .gsvault a:hover {
+        text-decoration:underline;
+    }
+
+    .gsvault .wf-h4-style {
+        font-size : 20px;
+    }
+
+    .gsvault .wf-table-vertical {
+        width: initial;
+        font-size: 12px;
+    }
+
+    .gsvault .wf-table-vertical td{
+        padding: 5px;
+        border: 1px solid !important;
+        overflow-x: auto;
+    }
+
+    .gsvault .wf-table-vertical tr td:first-child {
+        font-weight: bold;
+    }
+
+    .gsvault .wf-table-events {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .gsvault .dataTable th.widget-th {
+        border-top: 1px solid !important;
+        border-bottom: 1px solid !important;
+    }
+
+    .gsvault .dataTable td {
+        vertical-align: top;
+    }
+
+    .gsvault .dataTable td.widget-td a{
+        font-size: 12px;
+    }
+
+    .gsvault .dataTable {
+        font-size: 12px;
+    }
+
+    .gsvault .dataTable .glyphicon.glyphicon-dot:before {
+       content: "\25cf"; font-size: 10px;
+   }
+</style>
+
+<div class="gsvault" style="overflow: auto; width: 100% height: 100%; padding-left:10px; padding-right:10px">
+    <!-- Main Div -->
+
+    {% for result in results %} <!-- loop for each result -->
+        {% if not result.data %}
+            <h4 class="wf-h4-style">No data found</h4>
+        {% else %}
+            <div class="info">
+                <h4 class="wf-h4-style">Info</h4>
+                <table class="wf-table-vertical">
+                    <tr>
+                        <td>Export name</td>
+                        <td>{{ result.param.name }}</td>
+                    </tr>
+                    <tr>
+                        <td>Matter ID</td>
+                        <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['gsvault matter id'],
+                            'value': '{{ result.param.matter_id }}' }], 0, {{ container.id }}, null, false);">
+                        {{ result.param.matter_id }}
+                        &nbsp;
+                        <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                        </a></td>
+                    </tr>
+                    <tr>
+                        <td>Corpus Type</td>
+                        <td>{{ result.param.type }}</td>
+                    </tr>
+                    <tr>
+                        <td>Data Scope</td>
+                        <td>{{ result.param.data_scope }}</td>
+                    </tr>
+                    <tr>
+                        <td>Search Method</td>
+                        <td>{{ result.param.search_method }}</td>
+                    </tr>
+                    {% if result.param.org_unit_id %}
+                        <tr>
+                            <td>Organization Unit ID</td>
+                            <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['gsvault org unit id'],
+                                'value': '{{ result.param.org_unit_id }}' }], 0, {{ container.id }}, null, false);">
+                            {{ result.param.org_unit_id }}
+                            &nbsp;
+                            <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                            </a></td>
+                        </tr>
+                    {% endif %}
+                    {% if result.param.email_ids %}
+                        <tr>
+                            <td>User email IDs</td>
+                            <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['gsvault email ids'],
+                                'value': '{{ result.param.email_ids }}' }], 0, {{ container.id }}, null, false);">
+                            {{ result.param.email_ids }}
+                            &nbsp;
+                            <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                            </a></td>
+                        </tr>
+                    {% endif %}
+                    {% if result.param.shared_drive_ids %}
+                        <tr>
+                            <td>Shared Drive IDs</td>
+                            <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['gsvault shared drive ids'],
+                                'value': '{{ result.param.shared_drive_ids }}' }], 0, {{ container.id }}, null, false);">
+                            {{ result.param.shared_drive_ids }}
+                            &nbsp;
+                            <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                            </a></td>
+                        </tr>
+                    {% endif %}
+                    {% if result.param.time_zone %}
+                        <tr>
+                            <td>Time Zone</td>
+                            <td>{{ result.param.time_zone }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if result.param.terms %}
+                        <tr>
+                            <td>Terms</td>
+                            <td>{{ result.param.terms }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if result.param.start_time %}
+                        <tr>
+                            <td>Start time</td>
+                            <td>{{ result.param.start_time }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if result.param.end_time %}
+                        <tr>
+                            <td>End time</td>
+                            <td>{{ result.param.end_time }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if result.param.version_date %}
+                        <tr>
+                            <td>Version Date</td>
+                            <td>{{ result.param.version_date }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if result.param.data_region %}
+                        <tr>
+                            <td>Data Region</td>
+                            <td>{{ result.param.data_region }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if result.param.exclude_drafts %}
+                        <tr>
+                            <td>Exclude Drafts</td>
+                            <td>{{ result.param.exclude_drafts }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if result.param.export_format %}
+                        <tr>
+                            <td>Export Format</td>
+                            <td>{{ result.param.export_format }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if result.param.show_confidential_mode_content %}
+                        <tr>
+                            <td>Show Confidential Mode Content</td>
+                            <td>{{ result.param.show_confidential_mode_content }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if result.param.include_shared_drives %}
+                        <tr>
+                            <td>Include Shared Drive</td>
+                            <td>{{ result.param.include_shared_drives }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if result.param.include_access_info %}
+                        <tr>
+                            <td>Include Access Info</td>
+                            <td>{{ result.param.include_access_info }}</td>
+                        </tr>
+                    {% endif %}
+                </table>
+            </div>
+
+            <div class="data">
+                <h4 class="wf-h4-style">Data</h4>
+                <table class="phantom-table dataTable">
+                    <thead>
+                        <th class="widget-th">Export ID</th>
+                        <th class="widget-th">Export Name</th>
+                        <th class="widget-th">Matter ID</th>
+                        <th class="widget-th">Corpus Type</th>
+                        <th class="widget-th">Search Method</th>
+                        <th class="widget-th">Data Scope</th>
+                        <th class="widget-th">Method</th>
+                        <th class="widget-th">Requester</th>
+                        <th class="widget-th">Query</th>
+                        <th class="widget-th">Create Time</th>
+                    </thead>
+                    {% for finding_data in result.data %}
+                        <tr>
+                            <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['gsvault export id'],
+                                'value': '{{ finding_data.id }}' }], 0, {{ container.id }}, null, false);">
+                            {{ finding_data.id }}
+                            &nbsp;
+                            <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                            </a></td>
+                            <td>{{ finding_data.name }}</td>
+                            <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['gsvault matter id'],
+                                'value': '{{ finding_data.matterId }}' }], 0, {{ container.id }}, null, false);">
+                            {{ finding_data.matterId }}
+                            &nbsp;
+                            <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                            </a></td>
+                            <td>{{ finding_data.query.corpus }}</td>
+                            <td>{{ finding_data.query.searchMethod }}</td>
+                            <td>{{ finding_data.query.dataScope }}</td>
+                            <td>{{ finding_data.query.method }}</td>
+                            <td>
+                                <table class="phantom-table dataTable">
+                                    <thead>
+                                        <th class="widget-th">Display Name</th>
+                                        <th class="widget-th">Email</th>
+                                    </thead>
+                                    <tr>
+                                        <td>{{ finding_data.requester.displayName }}</td>
+                                        <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['gsvault email ids', 'email'],
+                                            'value': '{{ finding_data.requester.email }}' }], 0, {{ container.id }}, null, false);">
+                                        {{ finding_data.requester.email }}
+                                        &nbsp;
+                                        <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                                        </a></td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td>
+                                <table class="phantom-table dataTable">
+                                    <thead>
+                                        <th class="widget-th">Start Time</th>
+                                        <th class="widget-th">End Time</th>
+                                        <th class="widget-th">Terms</th>
+                                    </thead>
+                                    <tr>
+                                        <td>{{ finding_data.query.startTime }}</td>
+                                        <td>{{ finding_data.query.endTime }}</td>
+                                        <td>{{ finding_data.query.terms }}</td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td>{{ finding_data.createTime }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
+<script>
+$.extend(true, $.fn.dataTable.defaults, {
+    "searching": true,
+    "bLengthChange": false,
+    "language": {
+      "paginate": {
+        "previous": "<i class='fa fa-angle-left fa-lg'></i>",
+        "next": "<i class='fa fa-angle-right fa-lg'></i>"
+      },
+      "emptyTable": "No data available"
+    },
+    "dom": '<"top">rt<"bottom"p><"clear">',
+    drawCallback: function(settings) {
+      var pagination = $(this).closest('.dataTables_wrapper').find('.dataTables_paginate');
+      pagination.toggle(this.api().page.info().pages > 1);
+    }
+  });
+  $('.dataTable').DataTable();
+
+</script>
+
+{% endblock %}

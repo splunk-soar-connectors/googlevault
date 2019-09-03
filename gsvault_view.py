@@ -55,5 +55,11 @@ def display_view(provides, all_app_runs, context):
        return_page = "gsvault_create_hold.html"
     if provides == "list holds":
        return_page = "gsvault_list_holds.html"
+    if provides == "list exports":
+       return_page = "gsvault_list_exports.html"
+    if provides == "create export":
+       return_page = "gsvault_create_export.html"
+    if provides == "get export":
+       return_page = "gsvault_get_export.html"
 
     return return_page
