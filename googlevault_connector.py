@@ -346,37 +346,73 @@ class GoogleVaultConnector(BaseConnector):
         end_time = param.get("end_time")
         start_time = param.get("start_time")
         org_unit_id = param.get("org_unit_id")
+        group_account_ids = param.get("group_account_ids")
         emails_to_search = param.get("user_email_ids")
 
         include_shared_drive_files = param.get("include_shared_drive_files")
 
+        if corpus == "GROUPS" and search_method not in ["GROUP_ACCOUNT", "ALL_GROUPS"]:
+            return action_result.set_status(phantom.APP_ERROR, GSVAULT_CORPUS_GROUPS_ERROR)
+
+        if corpus in ["MAIL", "DRIVE"]:
+            if search_method not in ["ORG_UNIT", "USER_ACCOUNT"]:
+                return action_result.set_status(phantom.APP_ERROR, GSVAULT_CORPUS_MAIL_DRIVE_HOLD_ERROR)
+
         if search_method == "ORG_UNIT" and not org_unit_id:
             return action_result.set_status(phantom.APP_ERROR, "You have to provide valid org_unit_id for search method ORG_UNIT")
 
-        if search_method == "ACCOUNT" and not emails_to_search:
-            return action_result.set_status(phantom.APP_ERROR, "You have to provide valid list of user emails for search method ACCOUNT")
+        if search_method == "USER_ACCOUNT" and not emails_to_search:
+            return action_result.set_status(phantom.APP_ERROR, "You have to provide valid list of user email for search method USER_ACCOUNT")
 
-        if emails_to_search:
-            emails = list()
-            emails = [x.strip() for x in emails_to_search.split(",")]
-            emails = list(filter(None, emails))
+        if search_method == "ALL_GROUPS" and not org_unit_id:
+            return action_result.set_status(phantom.APP_ERROR, "You have to provide valid org_unit_id for search method ORG_UNIT")
 
-        if not emails:
-            return action_result.set_status(phantom.APP_ERROR, "You have to provide valid list of user emails for search method ACCOUNT")
+        if search_method == "GROUP_ACCOUNT" and not group_account_ids:
+            return action_result.set_status(phantom.APP_ERROR, "You have to provide valid list of group account id for search method GROUP_ACCOUNT")
+
+        if search_method == "USER_ACCOUNT":
+            if emails_to_search:
+                emails = list()
+                emails = [x.strip() for x in emails_to_search.split(",")]
+                emails = list(filter(None, emails))
+
+                if not emails:
+                    return action_result.set_status(phantom.APP_ERROR, "You have to provide valid list of user emails for search method USER_ACCOUNT")
+
+        if search_method == "GROUP_ACCOUNT":
+            if group_account_ids:
+                ids = list()
+                ids = [x.strip() for x in group_account_ids.split(",")]
+                ids = list(filter(None, ids))
+
+                if not ids:
+                    return action_result.set_status(phantom.APP_ERROR, GSVAULT_CORPUS_GROUPS_ERROR)
 
         wanted_hold = {
             'name': name,
             'corpus': corpus
         }
+
         if search_method == "ORG_UNIT":
             org_unit = {'orgUnitId': org_unit_id}
             wanted_hold.update({"orgUnit": org_unit})
 
-        if search_method == "ACCOUNT":
+        if search_method == "USER_ACCOUNT":
             accounts = list()
 
             for email in emails:
                 accounts.append({'email': email})
+
+            wanted_hold.update({"accounts": accounts})
+
+        if search_method == "ALL_GROUPS":
+            org_unit = {'orgUnitId': org_unit_id}
+            wanted_hold.update({"orgUnit": org_unit})
+
+        if search_method == "GROUP_ACCOUNT":
+            accounts = list()
+            for id in ids:
+                accounts.append({'accountId': id})
 
             wanted_hold.update({"accounts": accounts})
 
@@ -389,8 +425,8 @@ class GoogleVaultConnector(BaseConnector):
             if drive_query:
                 wanted_hold.update({"query": {"driveQuery": drive_query}})
 
-        if corpus == "MAIL":
-            mail_query = dict()
+        if corpus == "MAIL" or corpus == "GROUPS":
+            query = dict()
 
             ret_val = self._validate_time_range(action_result, start_time=start_time, end_time=end_time)
 
@@ -398,13 +434,19 @@ class GoogleVaultConnector(BaseConnector):
                 return action_result.get_status()
 
             if start_time:
-                mail_query.update({"startTime": start_time})
+                query.update({"startTime": start_time})
             if end_time:
-                mail_query.update({"endTime": end_time})
+                query.update({"endTime": end_time})
             if terms:
-                mail_query.update({"terms": terms})
-            if mail_query:
-                wanted_hold.update({"query": {"mailQuery": mail_query}})
+                query.update({"terms": terms})
+
+        if corpus == "MAIL":
+            if query:
+                wanted_hold.update({"query": {"mailQuery": query}})
+
+        if corpus == "GROUPS":
+            if query:
+                wanted_hold.update({"query": {"groupsQuery": query}})
 
         try:
             hold = client.matters().holds().create(matterId=param['matter_id'], body=wanted_hold).execute()
@@ -635,9 +677,11 @@ class GoogleVaultConnector(BaseConnector):
         end_time = param.get("end_time")
         timezone = param.get("time_zone")
         start_time = param.get("start_time")
-        # data_region = param.get("data_region")
+        data_region = param.get("data_region")
         org_unit_id = param.get("org_unit_id")
-        emails_to_search = param.get("user_email_ids")
+        version_date = param.get("version_date")
+        emails_to_search = param.get("email_ids")
+        shared_drive_ids = param.get("shared_drive_ids")
 
         export_format = param.get("export_format")
         exclude_drafts = param.get("exclude_drafts")
@@ -645,11 +689,9 @@ class GoogleVaultConnector(BaseConnector):
         include_shared_drives = param.get("include_shared_drives")
         show_confidential_mode_content = param.get("show_confidential_mode_content")
 
-        query = {
-            'corpus': corpus,
-            'dataScope': data_scope,
-            'searchMethod': search_method
-        }
+        if corpus in ["MAIL", "GROUPS"]:
+            if search_method not in ["ORG_UNIT", "ACCOUNT"]:
+                return action_result.set_status(phantom.APP_ERROR, GSVAULT_CORPUS_MAIL_DRIVE_EXPORT_ERROR)
 
         if search_method == "ORG_UNIT" and not org_unit_id:
             return action_result.set_status(phantom.APP_ERROR, "You have to provide valid org_unit_id for search method ORG_UNIT")
@@ -657,13 +699,36 @@ class GoogleVaultConnector(BaseConnector):
         if search_method == "ACCOUNT" and not emails_to_search:
             return action_result.set_status(phantom.APP_ERROR, "You have to provide valid list of user emails for search method ACCOUNT")
 
-        if emails_to_search:
-            emails = list()
-            emails = [x.strip() for x in emails_to_search.split(",")]
-            emails = list(filter(None, emails))
+        if search_method == "TEAM_DRIVE" and not shared_drive_ids:
+            return action_result.set_status(phantom.APP_ERROR, "You have to provide valid list of shared drive ids for search method TEAM_DRIVE")
 
-        if not emails:
-            return action_result.set_status(phantom.APP_ERROR, "You have to provide valid list of user emails for search method ACCOUNT")
+        if corpus == "GROUPS" and search_method != "ACCOUNT":
+            return action_result.set_status(phantom.APP_ERROR, "You have to select ACCOUNT search method for corpus type GROUPS")
+
+        if corpus == "DRIVE" and data_scope == "UNPROCESSED_DATA":
+            return action_result.set_status(phantom.APP_ERROR, "You can't give UNPROCESSED_DATA data scope for corpus type DRIVE")
+
+        query = {
+            'corpus': corpus,
+            'dataScope': data_scope,
+            'searchMethod': search_method
+        }
+
+        if search_method == "ACCOUNT":
+            if emails_to_search:
+                emails = [x.strip() for x in emails_to_search.split(",")]
+                emails = list(filter(None, emails))
+
+                if not emails:
+                    return action_result.set_status(phantom.APP_ERROR, "You have to provide valid list of user emails for search method ACCOUNT")
+
+        if search_method == "TEAM_DRIVE":
+            if shared_drive_ids:
+                ids = [x.strip() for x in shared_drive_ids.split(",")]
+                ids = list(filter(None, ids))
+
+                if not ids:
+                    return action_result.set_status(phantom.APP_ERROR, "You have to provide valid list of shared drive ids for search method TEAM_DRIVE")
 
         ret_val = self._validate_time_range(action_result, start_time=start_time, end_time=end_time)
 
@@ -681,7 +746,7 @@ class GoogleVaultConnector(BaseConnector):
 
         if data_scope != "UNPROCESSED_DATA":
             if terms:
-                query.update({"terms": timezone})
+                query.update({"terms": terms})
 
         if search_method == "ORG_UNIT":
             org_dict = {
@@ -692,16 +757,26 @@ class GoogleVaultConnector(BaseConnector):
             query.update(org_dict)
 
         if search_method == "ACCOUNT":
-            org_dict = {
+            account_dict = {
                 "accountInfo": {
                     "emails": emails
                 }
             }
-            query.update(org_dict)
+            query.update(account_dict)
+
+        if search_method == "TEAM_DRIVE":
+            drive_dict ={
+                "sharedDriveInfo": {
+                    "sharedDriveIds": ids
+                }
+            }
+            query.update(drive_dict)
 
         wanted_export = {
             'name': name
         }
+
+        export_options = dict()
 
         if corpus == "MAIL":
             mail_export_options = dict()
@@ -710,23 +785,45 @@ class GoogleVaultConnector(BaseConnector):
                 mail_export_options.update({"exportFormat": export_format})
             if show_confidential_mode_content:
                 mail_export_options.update({"showConfidentialModeContent": show_confidential_mode_content})
-            # if data_region:
-            #     mail_export_options.update({"dataRegion": end_time})
 
-            wanted_export.update({"exportOptions": {"mailOptions": mail_export_options}})
+            if mail_export_options:
+                export_options.update({"mailOptions": mail_export_options})
 
             if exclude_drafts:
                 query.update({"mailOptions": {"excludeDrafts": exclude_drafts}})
 
         if corpus == "DRIVE":
+            drive_options = dict()
 
             if include_access_info:
-                wanted_export.update({"exportOptions": {"driveOptions": {'includeAccessInfo': include_access_info}}})
+                export_options.update({"driveOptions": {'includeAccessInfo': include_access_info}})
+
+            if version_date:
+                ret_val = self._validate_time_range(action_result, version_date=version_date)
+
+                if phantom.is_fail(ret_val):
+                    return action_result.get_status()
+
+                drive_options.update({"versionDate": version_date})
 
             if include_shared_drives:
-                query.update({"driveOptions": {'includeSharedDrives': include_shared_drives}})
+                drive_options.update({'includeSharedDrives': include_shared_drives})
+
+            if drive_options:
+                query.update({"driveOptions": drive_options})
+
+        if corpus == "GROUPS":
+            if export_format:
+                export_options.update({"groupsOptions": {"exportFormat": export_format}})
+
+        if data_region:
+            if corpus in ["MAIL", "DRIVE"]:
+                export_options.update({"region": data_region})
 
         wanted_export.update({"query": query})
+
+        if export_options:
+            wanted_export.update({"exportOptions": export_options})
 
         try:
             export = client.matters().exports().create(matterId=param['matter_id'], body=wanted_export).execute()
