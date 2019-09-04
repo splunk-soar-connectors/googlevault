@@ -59,7 +59,6 @@ class GoogleVaultConnector(BaseConnector):
             except Exception as e:
                 return action_result.set_status(phantom.APP_ERROR, "Failed to create delegated credentials", e), None
 
-        self.debug_print("credentials: {}".format(credentials))
         client = discovery.build('vault', 'v1', credentials=credentials)
 
         return phantom.APP_SUCCESS, client
@@ -70,16 +69,14 @@ class GoogleVaultConnector(BaseConnector):
         self.save_progress("Creating Google Vault client...")
 
         ret_val, client = self._create_client(action_result, scopes)
-        self.debug_print("Services: {}".format(client))
 
         if phantom.is_fail(ret_val):
             self.save_progress("Test Connectivity Failed")
             return ret_val
 
-        self.save_progress("Making test call to Google Vault...")
+        self.save_progress("Making test call to Google Vault for fetching list of matters...")
         try:
-            results = client.matters().list(pageSize=10).execute()
-            self.debug_print("Results: {}".format(results))
+            client.matters().list(pageSize=10).execute()
         except Exception as e:
             self.save_progress("Test Connectivity Failed")
             return action_result.set_status(phantom.APP_ERROR, "Error listing Matters", e)
@@ -104,7 +101,7 @@ class GoogleVaultConnector(BaseConnector):
         if (limit and not str(limit).isdigit()) or limit == 0:
             return action_result.set_status(phantom.APP_ERROR, GSVAULT_INVALID_LIMIT)
         try:
-            matters = self._paginator(client, limit, view=view)
+            matters = self._paginator(client, limit=limit, view=view)
         except Exception as e:
             return action_result.set_status(phantom.APP_ERROR, "Error while listing Matters", e)
 
@@ -562,7 +559,7 @@ class GoogleVaultConnector(BaseConnector):
         if (limit and not str(limit).isdigit()) or limit == 0:
             return action_result.set_status(phantom.APP_ERROR, GSVAULT_INVALID_LIMIT)
         try:
-            holds = self._paginator(client, limit, matter_id=matter_id)
+            holds = self._paginator(client, limit=limit, matter_id=matter_id)
         except Exception as e:
             return action_result.set_status(phantom.APP_ERROR, "Error while listing Holds", e)
 
@@ -594,7 +591,7 @@ class GoogleVaultConnector(BaseConnector):
         if (limit and not str(limit).isdigit()) or limit == 0:
             return action_result.set_status(phantom.APP_ERROR, GSVAULT_INVALID_LIMIT)
         try:
-            exports = self._paginator(client, limit, matter_id=matter_id)
+            exports = self._paginator(client, limit=limit, matter_id=matter_id)
         except Exception as e:
             return action_result.set_status(phantom.APP_ERROR, "Error while listing exports", e)
 
@@ -689,7 +686,7 @@ class GoogleVaultConnector(BaseConnector):
         include_shared_drives = param.get("include_shared_drives")
         show_confidential_mode_content = param.get("show_confidential_mode_content")
 
-        if corpus in ["MAIL", "GROUPS"]:
+        if corpus == "MAIL":
             if search_method not in ["ORG_UNIT", "ACCOUNT"]:
                 return action_result.set_status(phantom.APP_ERROR, GSVAULT_CORPUS_MAIL_DRIVE_EXPORT_ERROR)
 
@@ -765,7 +762,7 @@ class GoogleVaultConnector(BaseConnector):
             query.update(account_dict)
 
         if search_method == "TEAM_DRIVE":
-            drive_dict ={
+            drive_dict = {
                 "sharedDriveInfo": {
                     "sharedDriveIds": ids
                 }
@@ -949,9 +946,10 @@ if __name__ == '__main__':
         password = getpass.getpass("Password: ")
 
     if (username and password):
+        login_url = BaseConnector._get_phantom_base_url() + "login"
         try:
             print ("Accessing the Login page")
-            r = requests.get("https://127.0.0.1/login", verify=False)
+            r = requests.get(login_url, verify=False)
             csrftoken = r.cookies['csrftoken']
 
             data = dict()
@@ -961,10 +959,10 @@ if __name__ == '__main__':
 
             headers = dict()
             headers['Cookie'] = 'csrftoken=' + csrftoken
-            headers['Referer'] = 'https://127.0.0.1/login'
+            headers['Referer'] = login_url
 
             print ("Logging into Platform to get the session id")
-            r2 = requests.post("https://127.0.0.1/login", verify=False, data=data, headers=headers)
+            r2 = requests.post(login_url, verify=False, data=data, headers=headers)
             session_id = r2.cookies['sessionid']
         except Exception as e:
             print ("Unable to get session id from the platfrom. Error: " + str(e))

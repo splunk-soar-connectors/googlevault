@@ -16,4 +16,4 @@ GSVAULT_CORPUS_MAIL_DRIVE_HOLD_ERROR = "You have to provide either email_ids or 
 GSVAULT_CORPUS_MAIL_DRIVE_HOLD_ERROR += "(If you want to create hold for search method USER_ACCOUNT you have to provide email_ids of that users" 
 GSVAULT_CORPUS_MAIL_DRIVE_HOLD_ERROR += "and for search method ORG_UNIT you have to provide org_unit_id)"
 
-GSVAULT_CORPUS_MAIL_DRIVE_EXPORT_ERROR = "You have to provide either ORG_UNIT or ACCOUNT for corpus type MAIL or DRIVE"
+GSVAULT_CORPUS_MAIL_DRIVE_EXPORT_ERROR = "You have to provide either ORG_UNIT or ACCOUNT for corpus type MAIL"
