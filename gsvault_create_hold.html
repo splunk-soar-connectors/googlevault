@@ -154,7 +154,7 @@
                         <th class="widget-th">Hold ID</th>
                         <th class="widget-th">Hold Name</th>
                         <th class="widget-th">Corpus Type</th>
-                        <th class="widget-th">Accounts / Oragnization</th>
+                        <th class="widget-th">Accounts(User/Group) / Oragnization</th>
                         <th class="widget-th">Query</th>
                         <th class="widget-th">Update Time</th>
                     </thead>
@@ -186,7 +186,7 @@
                                     </tr>
                                 </table>
                             </td>
-                            {% elif finding_data.accounts %}
+                            {% elif finding_data.accounts and result.param.search_method == "USER_ACCOUNT" %}
                             <td>
                                 <table class="phantom-table dataTable">
                                     <thead>
@@ -212,6 +212,33 @@
                                         </a></td>
                                         <td>{{ account.firstName }}</td>
                                         <td>{{ account.lastName }}</td>
+                                        <td>{{ account.holdTime }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                            </td>
+                            {% elif finding_data.accounts and result.param.search_method == "GROUP_ACCOUNT" %}
+                            <td>
+                                <table class="phantom-table dataTable">
+                                    <thead>
+                                        <th class="widget-th">Group Account ID</th>
+                                        <th class="widget-th">Email</th>
+                                        <th class="widget-th">Hold Time</th>
+                                    </thead>
+                                    {% for account in finding_data.accounts %}
+                                    <tr>
+                                        <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['gsvault group id'],
+                                            'value': '{{ account.accountId }}' }], 0, {{ container.id }}, null, false);">
+                                        {{ account.accountId }}
+                                        &nbsp;
+                                        <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                                        </a></td>
+                                        <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['gsvault email ids', 'email'],
+                                            'value': '{{ account.email }}' }], 0, {{ container.id }}, null, false);">
+                                        {{ account.email }}
+                                        &nbsp;
+                                        <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                                        </a></td>
                                         <td>{{ account.holdTime }}</td>
                                     </tr>
                                     {% endfor %}

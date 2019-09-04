@@ -817,8 +817,7 @@ class GoogleVaultConnector(BaseConnector):
                 export_options.update({"groupsOptions": {"exportFormat": export_format}})
 
         if data_region:
-            if corpus in ["MAIL", "DRIVE"]:
-                export_options.update({"region": data_region})
+            export_options.update({"region": data_region})
 
         wanted_export.update({"query": query})
 
