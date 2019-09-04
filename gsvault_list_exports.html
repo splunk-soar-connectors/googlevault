@@ -110,6 +110,7 @@
                         <th class="widget-th">Requester</th>
                         <th class="widget-th">Query</th>
                         <th class="widget-th">Export Options</th>
+                        <th class="widget-th">Timezone</th>
                         <th class="widget-th">Create Time</th>
                     </thead>
                     {% for finding_data in result.data %}
@@ -253,6 +254,7 @@
                                 </table>
                             </td>
                             <td>
+                                {% if finding_data.query.startTime or finding_data.query.endTime or finding_data.query.terms %}
                                 <table class="phantom-table dataTable">
                                     <thead>
                                         <th class="widget-th">Start Time</th>
@@ -265,6 +267,9 @@
                                         <td>{{ finding_data.query.terms }}</td>
                                     </tr>
                                 </table>
+                                {% else %}
+                                    None
+                                {% endif %}
                             </td>
                             <td>
                                 {% if finding_data.exportOptions %}
@@ -341,6 +346,7 @@
                                 </table>
                                 {% endif %}
                             </td>
+                            <td>{{ finding_data.query.timeZone }}</td>
                             <td>{{ finding_data.createTime }}</td>
                         </tr>
                     {% endfor %}
