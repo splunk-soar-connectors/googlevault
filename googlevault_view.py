@@ -1,4 +1,4 @@
-# File: gsvault_view.py
+# File: googlevault_view.py
 # Copyright (c) 2019 Splunk Inc.
 #
 # SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part

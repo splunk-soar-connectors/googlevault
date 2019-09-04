@@ -1223,7 +1223,7 @@
                 "title": "List Holds",
                 "type": "custom",
                 "height": 5,
-                "view": "gsvault_view.display_view"
+                "view": "googlevault_view.display_view"
             }
         },
         {
@@ -1625,7 +1625,7 @@
                 "title": "Create Hold",
                 "type": "custom",
                 "height": 5,
-                "view": "gsvault_view.display_view"
+                "view": "googlevault_view.display_view"
             }
         },
         {
@@ -2296,7 +2296,7 @@
                 "title": "List Exports",
                 "type": "custom",
                 "height": 5,
-                "view": "gsvault_view.display_view"
+                "view": "googlevault_view.display_view"
             }
         },
         {
@@ -2570,7 +2570,7 @@
                 "title": "Get Export",
                 "type": "custom",
                 "height": 5,
-                "view": "gsvault_view.display_view"
+                "view": "googlevault_view.display_view"
             }
         },
         {
@@ -3166,7 +3166,7 @@
                 "title": "Create Export",
                 "type": "custom",
                 "height": 5,
-                "view": "gsvault_view.display_view"
+                "view": "googlevault_view.display_view"
             }
         }
     ]
