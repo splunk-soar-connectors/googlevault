@@ -104,6 +104,7 @@
                     <thead>
                         <th class="widget-th">Export ID</th>
                         <th class="widget-th">Export Name</th>
+                        <th class="widget-th">Export Status</th>
                         <th class="widget-th">Matter ID</th>
                         <th class="widget-th">Corpus Type</th>
                         <th class="widget-th">Search Method</th>
@@ -125,6 +126,7 @@
                             <span class="fa fa-caret-down" style="font-size: smaller;"></span>
                             </a></td>
                             <td>{{ finding_data.name }}</td>
+                            <td>{{ finding_data.status }}</td>
                             <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['gsvault matter id'],
                                 'value': '{{ finding_data.matterId }}' }], 0, {{ container.id }}, null, false);">
                             {{ finding_data.matterId }}
