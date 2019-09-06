@@ -101,9 +101,6 @@
                     "data_type": "string",
                     "required": false,
                     "order": 0,
-                    "example_values": [
-                        "OPEN"
-                    ],
                     "value_list": [
                         "OPEN",
                         "CLOSED",
@@ -114,10 +111,7 @@
                     "description": "Maximum number of matters to return",
                     "data_type": "numeric",
                     "required": false,
-                    "order": 1,
-                    "example_values": [
-                        5
-                    ]
+                    "order": 1
                 }
             },
             "output": [
@@ -230,19 +224,13 @@
                     "description": "Matter name",
                     "data_type": "string",
                     "required": true,
-                    "order": 0,
-                    "example_values": [
-                        "Matter Name"
-                    ]
+                    "order": 0
                 },
                 "description": {
                     "description": "Matter description",
                     "data_type": "string",
                     "required": true,
-                    "order": 1,
-                    "example_values": [
-                        "Matter Description"
-                    ]
+                    "order": 1
                 }
             },
             "output": [
@@ -354,9 +342,6 @@
                     "data_type": "string",
                     "required": true,
                     "order": 0,
-                    "example_values": [
-                        "fdf8e220-dd1b-45c5-8983-3cad5e6f2758"
-                    ],
                     "primary": true,
                     "contains": [
                         "gsvault matter id"
@@ -370,9 +355,6 @@
                     "default": "BASIC",
                     "value_list": [
                         "BASIC",
-                        "FULL"
-                    ],
-                    "example_values": [
                         "FULL"
                     ]
                 }
@@ -433,7 +415,7 @@
                     "column_name": "Account ID",
                     "column_order": 4,
                     "contains": [
-                        "gsvault account id"
+                        "gsvault user account id"
                     ]
                 },
                 {
@@ -511,9 +493,6 @@
                     "data_type": "string",
                     "required": true,
                     "order": 0,
-                    "example_values": [
-                        "fdf8e220-dd1b-45c5-8983-3cad5e6f2758"
-                    ],
                     "primary": true,
                     "contains": [
                         "gsvault matter id"
@@ -524,11 +503,7 @@
                     "data_type": "boolean",
                     "required": false,
                     "order": 1,
-                    "default": true,
-                    "example_values": [
-                        true,
-                        false
-                    ]
+                    "default": true
                 }
             },
             "output": [
@@ -645,9 +620,6 @@
                     "data_type": "string",
                     "required": true,
                     "order": 0,
-                    "example_values": [
-                        "fdf8e220-dd1b-45c5-8983-3cad5e6f2758"
-                    ],
                     "primary": true,
                     "contains": [
                         "gsvault matter id"
@@ -658,11 +630,7 @@
                     "data_type": "boolean",
                     "required": false,
                     "order": 1,
-                    "default": true,
-                    "example_values": [
-                        true,
-                        false
-                    ]
+                    "default": true
                 }
             },
             "output": [
@@ -778,9 +746,6 @@
                     "data_type": "string",
                     "required": true,
                     "order": 0,
-                    "example_values": [
-                        "fdf8e220-dd1b-45c5-8983-3cad5e6f2758"
-                    ],
                     "primary": true,
                     "contains": [
                         "gsvault matter id"
@@ -891,9 +856,6 @@
                     "data_type": "string",
                     "required": true,
                     "order": 0,
-                    "example_values": [
-                        "fdf8e220-dd1b-45c5-8983-3cad5e6f2758"
-                    ],
                     "primary": true,
                     "contains": [
                         "gsvault matter id"
@@ -1004,9 +966,6 @@
                     "data_type": "string",
                     "required": true,
                     "order": 0,
-                    "example_values": [
-                        "fdf8e220-dd1b-45c5-8983-3cad5e6f2758"
-                    ],
                     "primary": true,
                     "contains": [
                         "gsvault matter id"
@@ -1016,10 +975,7 @@
                     "description": "Maximum number of holds to return",
                     "data_type": "numeric",
                     "required": false,
-                    "order": 1,
-                    "example_values": [
-                        5
-                    ]
+                    "order": 1
                 }
             },
             "output": [
@@ -1055,7 +1011,8 @@
                         "117361455879836884540"
                     ],
                     "contains": [
-                        "gsvault account id"
+                        "gsvault user account id",
+                        "gsvault group account id"
                     ]
                 },
                 {
@@ -1065,7 +1022,8 @@
                         "test2@testvalue.com"
                     ],
                     "contains": [
-                        "gsvault email ids",
+                        "gsvault user email ids",
+                        "gsvault group email ids",
                         "email"
                     ]
                 },
@@ -1245,10 +1203,7 @@
                     "description": "Hold name",
                     "data_type": "string",
                     "required": true,
-                    "order": 0,
-                    "example_values": [
-                        "My first export"
-                    ]
+                    "order": 0
                 },
                 "matter_id": {
                     "description": "Matter ID",
@@ -1258,9 +1213,6 @@
                     "primary": true,
                     "contains": [
                         "gsvault matter id"
-                    ],
-                    "example_values": [
-                        "d2545a66-36ca-48dd-8fe1-44f790b72d05"
                     ]
                 },
                 "type": {
@@ -1294,9 +1246,6 @@
                     "primary": true,
                     "contains": [
                         "gsvault org unit id"
-                    ],
-                    "example_values": [
-                        "id:03z8qrdt2kekpq1"
                     ]
                 },
                 "user_email_ids": {
@@ -1306,34 +1255,25 @@
                     "order": 5,
                     "primary": true,
                     "contains": [
-                        "gsvault email ids",
+                        "gsvault user email ids",
                         "email"
-                    ],
-                    "example_values": [
-                        "test@testvalue.com"
                     ]
                 },
                 "group_account_ids": {
-                    "description": "Comma-separated list of group emails",
+                    "description": "Comma-separated list of group IDs",
                     "data_type": "string",
                     "required": false,
                     "order": 6,
                     "primary": true,
                     "contains": [
-                        "gsvault group ids"
-                    ],
-                    "example_values": [
-                        "0AN4HRsxrp9juUk9PVA"
+                        "gsvault group account id"
                     ]
                 },
                 "terms": {
                     "description": "Conditions to be met for a message to be covered by this hold",
                     "data_type": "string",
                     "required": false,
-                    "order": 7,
-                    "example_values": [
-                        "has:attachment is:sent -label:drafts"
-                    ]
+                    "order": 7
                 },
                 "start_time": {
                     "description": "Start time (%Y-%m-%dT%H:%M:%SZ)",
@@ -1375,10 +1315,10 @@
                     "data_path": "action_result.parameter.group_account_ids",
                     "data_type": "string",
                     "contains": [
-                        "gsvault group ids"
+                        "gsvault group account id"
                     ],
                     "example_values": [
-                        "testgroup@testvalue.com"
+                        "01302m9240iv47j"
                     ]
                 },
                 {
@@ -1451,7 +1391,7 @@
                         "test@testvalue.com"
                     ],
                     "contains": [
-                        "gsvault email ids",
+                        "gsvault user email ids",
                         "email"
                     ]
                 },
@@ -1462,7 +1402,8 @@
                         "100113397046722686289"
                     ],
                     "contains": [
-                        "gsvault account id"
+                        "gsvault user account id",
+                        "gsvault group account id"
                     ]
                 },
                 {
@@ -1472,7 +1413,8 @@
                         "test@testvalue.com"
                     ],
                     "contains": [
-                        "gsvault email ids",
+                        "gsvault user email ids",
+                        "gsvault group email ids",
                         "email"
                     ]
                 },
@@ -1650,9 +1592,6 @@
                     "data_type": "string",
                     "required": true,
                     "order": 0,
-                    "example_values": [
-                        "fdf8e220-dd1b-45c5-8983-3cad5e6f2758"
-                    ],
                     "primary": true,
                     "contains": [
                         "gsvault matter id"
@@ -1666,9 +1605,6 @@
                     "primary": true,
                     "contains": [
                         "gsvault hold id"
-                    ],
-                    "example_values": [
-                        "3z8qrdt0sr3fto"
                     ]
                 }
             },
@@ -1747,7 +1683,7 @@
             "action": "remove held account",
             "identifier": "remove_held_account",
             "description": "Remove held account from the given hold ID",
-            "verbose": "You can only remove held account from given hold_id if the search_method of hold is ACCOUNT.",
+            "verbose": "Held account can only be removed from given hold_id if the search_method of the hold is either USER_ACCOUNT or GROUP_ACCOUNT.",
             "type": "generic",
             "undo": "add held account",
             "read_only": false,
@@ -1757,9 +1693,6 @@
                     "data_type": "string",
                     "required": true,
                     "order": 0,
-                    "example_values": [
-                        "fdf8e220-dd1b-45c5-8983-3cad5e6f2758"
-                    ],
                     "primary": true,
                     "contains": [
                         "gsvault matter id"
@@ -1773,22 +1706,17 @@
                     "primary": true,
                     "contains": [
                         "gsvault hold id"
-                    ],
-                    "example_values": [
-                        "3z8qrdt111pgr8"
                     ]
                 },
                 "account_id": {
-                    "description": "User account ID",
+                    "description": "User or group account ID",
                     "data_type": "string",
                     "required": true,
                     "order": 2,
                     "primary": true,
                     "contains": [
-                        "gsvault account id"
-                    ],
-                    "example_values": [
-                        "108620176647363363111"
+                        "gsvault user account id",
+                        "gsvault group account id"
                     ]
                 }
             },
@@ -1810,7 +1738,8 @@
                     "column_name": "Account ID",
                     "column_order": 2,
                     "contains": [
-                        "gsvault account id"
+                        "gsvault user account id",
+                        "gsvault group account id"
                     ]
                 },
                 {
@@ -1879,7 +1808,7 @@
             "action": "add held account",
             "identifier": "add_held_account",
             "description": "Add held account to the given hold ID",
-            "verbose": "You can only add held account to given hold_id if search_method of hold is ACCOUNT.",
+            "verbose": "Held account can only be added to given hold_id if search_method of the hold is either USER_ACCOUNT or GROUP_ACCOUNT.",
             "type": "generic",
             "undo": "remove held account",
             "read_only": false,
@@ -1889,9 +1818,6 @@
                     "data_type": "string",
                     "required": true,
                     "order": 0,
-                    "example_values": [
-                        "fdf8e220-dd1b-45c5-8983-3cad5e6f2758"
-                    ],
                     "primary": true,
                     "contains": [
                         "gsvault matter id"
@@ -1908,13 +1834,14 @@
                     ]
                 },
                 "account_id": {
-                    "description": "User account ID",
+                    "description": "User or group account ID",
                     "data_type": "string",
                     "required": true,
                     "order": 2,
                     "primary": true,
                     "contains": [
-                        "gsvault account id"
+                        "gsvault user account id",
+                        "gsvault group account id"
                     ]
                 }
             },
@@ -1934,7 +1861,8 @@
                         "108620176647363363111"
                     ],
                     "contains": [
-                        "gsvault account id"
+                        "gsvault user account id",
+                        "gsvault group account id"
                     ]
                 },
                 {
@@ -1970,7 +1898,8 @@
                     "column_name": "Account ID",
                     "column_order": 2,
                     "contains": [
-                        "gsvault account id"
+                        "gsvault user account id",
+                        "gsvault group account id"
                     ]
                 },
                 {
@@ -1980,7 +1909,8 @@
                         "test@testvalue.com"
                     ],
                     "contains": [
-                        "gsvault email ids",
+                        "gsvault user email ids",
+                        "gsvault group email ids",
                         "email"
                     ],
                     "column_name": "Email",
@@ -2059,9 +1989,6 @@
                     "data_type": "string",
                     "required": true,
                     "order": 0,
-                    "example_values": [
-                        "1db9d451-f68c-4b7c-bbb8-2dec2adc46a1"
-                    ],
                     "primary": true,
                     "contains": [
                         "gsvault matter id"
@@ -2071,10 +1998,7 @@
                     "description": "Maximum number of exports to return",
                     "data_type": "numeric",
                     "required": false,
-                    "order": 1,
-                    "example_values": [
-                        5
-                    ]
+                    "order": 1
                 }
             },
             "output": [
@@ -2142,6 +2066,21 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.exportOptions.driveOptions.includeAccessInfo",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.exportOptions.groupsOptions.exportFormat",
+                    "data_type": "string",
+                    "example_values": [
+                        "PST"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.exportOptions.mailOptions.exportFormat",
                     "data_type": "string",
                     "example_values": [
@@ -2191,57 +2130,29 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.query.startTime",
+                    "data_path": "action_result.data.*.query.accountInfo.emails",
                     "data_type": "string",
                     "example_values": [
-                        "2018-08-01T00:00:00Z"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.query.endTime",
-                    "data_type": "string",
-                    "example_values": [
-                        "2018-08-29T00:00:00Z"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.query.mailOptions.excludeDrafts",
-                    "data_type": "boolean",
-                    "example_values": [
-                        true,
-                        false
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.query.terms",
-                    "data_type": "string",
-                    "example_values": [
-                        "has:attachment is:sent -label:drafts"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.exportOptions.driveOptions.includeAccessInfo",
-                    "data_type": "boolean",
-                    "example_values": [
-                        true,
-                        false
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.query.orgUnitInfo.orgUnitId",
-                    "data_type": "string",
-                    "example_values": [
-                        "id:03ph8a2z1mtle0f"
+                        "test@testvalue.com"
                     ],
                     "contains": [
-                        "gsvault org unit id"
+                        "gsvault user email ids",
+                        "gsvault group email ids",
+                        "email"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.query.driveOptions.versionDate",
+                    "data_path": "action_result.data.*.query.corpus",
                     "data_type": "string",
                     "example_values": [
-                        "2019-08-08T00:00:00Z"
+                        "MAIL"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.dataScope",
+                    "data_type": "string",
+                    "example_values": [
+                        "ALL_DATA"
                     ]
                 },
                 {
@@ -2261,35 +2172,25 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.exportOptions.groupsOptions.exportFormat",
+                    "data_path": "action_result.data.*.query.driveOptions.versionDate",
                     "data_type": "string",
                     "example_values": [
-                        "PST"
+                        "2019-08-08T00:00:00Z"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.query.accountInfo.emails",
+                    "data_path": "action_result.data.*.query.endTime",
                     "data_type": "string",
                     "example_values": [
-                        "test@testvalue.com"
-                    ],
-                    "contains": [
-                        "gsvault email ids",
-                        "email"
+                        "2018-08-29T00:00:00Z"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.query.corpus",
-                    "data_type": "string",
+                    "data_path": "action_result.data.*.query.mailOptions.excludeDrafts",
+                    "data_type": "boolean",
                     "example_values": [
-                        "MAIL"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.query.dataScope",
-                    "data_type": "string",
-                    "example_values": [
-                        "ALL_DATA"
+                        true,
+                        false
                     ]
                 },
                 {
@@ -2300,10 +2201,34 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.query.orgUnitInfo.orgUnitId",
+                    "data_type": "string",
+                    "example_values": [
+                        "id:03ph8a2z1mtle0f"
+                    ],
+                    "contains": [
+                        "gsvault org unit id"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.query.searchMethod",
                     "data_type": "string",
                     "example_values": [
                         "ACCOUNT"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.startTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2018-08-01T00:00:00Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.terms",
+                    "data_type": "string",
+                    "example_values": [
+                        "has:attachment is:sent -label:drafts"
                     ]
                 },
                 {
@@ -2327,7 +2252,7 @@
                         "test@testvalue.com"
                     ],
                     "contains": [
-                        "gsvault email ids",
+                        "gsvault user email ids",
                         "email"
                     ]
                 },
@@ -2409,9 +2334,6 @@
                     "data_type": "string",
                     "required": true,
                     "order": 0,
-                    "example_values": [
-                        "fdf8e220-dd1b-45c5-8983-3cad5e6f2758"
-                    ],
                     "primary": true,
                     "contains": [
                         "gsvault matter id"
@@ -2425,9 +2347,6 @@
                     "primary": true,
                     "contains": [
                         "gsvault export id"
-                    ],
-                    "example_values": [
-                        "exportly-fac2824a-35f7-4429-8f2d-74cbe30983ad"
                     ]
                 }
             },
@@ -2499,6 +2418,14 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.exportOptions.driveOptions.includeAccessInfo",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.exportOptions.mailOptions.exportFormat",
                     "data_type": "string",
                     "example_values": [
@@ -2511,42 +2438,6 @@
                     "example_values": [
                         true,
                         false
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.exportOptions.driveOptions.includeAccessInfo",
-                    "data_type": "boolean",
-                    "example_values": [
-                        true,
-                        false
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.query.startTime",
-                    "data_type": "string",
-                    "example_values": [
-                        "2018-08-01T00:00:00Z"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.query.endTime",
-                    "data_type": "string",
-                    "example_values": [
-                        "2018-08-29T00:00:00Z"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.query.terms",
-                    "data_type": "string",
-                    "example_values": [
-                        "has:attachment is:sent -label:drafts"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.query.driveOptions.versionDate",
-                    "data_type": "string",
-                    "example_values": [
-                        "2019-08-08T00:00:00Z"
                     ]
                 },
                 {
@@ -2590,7 +2481,8 @@
                         "test@testvalue.com"
                     ],
                     "contains": [
-                        "gsvault email ids",
+                        "gsvault user email ids",
+                        "gsvault group email ids",
                         "email"
                     ]
                 },
@@ -2609,6 +2501,20 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.query.driveOptions.versionDate",
+                    "data_type": "string",
+                    "example_values": [
+                        "2019-08-08T00:00:00Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.endTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2018-08-29T00:00:00Z"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.query.method",
                     "data_type": "string",
                     "example_values": [
@@ -2620,6 +2526,20 @@
                     "data_type": "string",
                     "example_values": [
                         "ACCOUNT"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.startTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2018-08-01T00:00:00Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.terms",
+                    "data_type": "string",
+                    "example_values": [
+                        "has:attachment is:sent -label:drafts"
                     ]
                 },
                 {
@@ -2643,7 +2563,7 @@
                         "test@testvalue.com"
                     ],
                     "contains": [
-                        "gsvault email ids",
+                        "gsvault user email ids",
                         "email"
                     ]
                 },
@@ -2714,7 +2634,7 @@
             "action": "create export",
             "identifier": "create_export",
             "description": "Perform a search based on the provided criteria and create an export for the search results",
-            "verbose": "For ACCOUNT type search_method, you have to provide valid list of email_ids. For ORG_UNIT type search_method, provide valid org_unit_id. For corpus type GROUPS, you have to select ACCOUNT search method and provide valid list of group email_ids. The parameter export_format is supported only for the corpus type MAIL and GROUPS. The parameter exclude_drafts is supported only for the corpus type MAIL. The show_confidential_mode_content parameter is supported only for the corpus type MAIL. The parameters include_access_info and include_shared_drives are applicable only for the corpus type DRIVE. UNPROCESSED_DATA data_scope is not supported for corpus type DRIVE. The parameter version_date is only applicable for the corpus type DRIVE. Time zone is not applicable for the HELD_DATA data_scope. Terms is not applicable for the UNPROCESSED_DATA data_scope. Google Vault selects the default data_region based on the region assigned to the owner of the matter. You can select one of the values from United States(US) and Europe(EUROPE) to change the data_region of the created export. Exports are automatically deleted within 15 days of their creation.",
+            "verbose": "For ACCOUNT type search_method, you have to provide valid list of email_ids. For ORG_UNIT type search_method, provide valid org_unit_id. For corpus type GROUPS, you have to select ACCOUNT search method and provide valid list of group email_ids. The parameter export_format is supported only for the corpus type MAIL and GROUPS. The parameter exclude_drafts is supported only for the corpus type MAIL. The show_confidential_mode_content parameter is supported only for the corpus type MAIL. The parameters include_access_info and include_shared_drives are applicable only for the corpus type DRIVE. UNPROCESSED_DATA data_scope is not supported for corpus type DRIVE. The parameter version_date is only applicable for the corpus type DRIVE. If the corpus type is DRIVE and data scope is HELD_DATA, search_method TEAM_DRIVE is not allowed. Time zone is not applicable for the HELD_DATA data_scope. Terms is not applicable for the UNPROCESSED_DATA data_scope. Google Vault selects the default data_region based on the region assigned to the owner of the matter. You can select one of the values from United States(US) and Europe(EUROPE) to change the data_region of the created export. Exports are automatically deleted within 15 days of their creation.",
             "type": "generic",
             "read_only": false,
             "parameters": {
@@ -2722,10 +2642,7 @@
                     "description": "Export name",
                     "data_type": "string",
                     "required": true,
-                    "order": 0,
-                    "example_values": [
-                        "My first export"
-                    ]
+                    "order": 0
                 },
                 "matter_id": {
                     "description": "Matter ID",
@@ -2778,9 +2695,6 @@
                     "primary": true,
                     "contains": [
                         "gsvault org unit id"
-                    ],
-                    "example_values": [
-                        "id:03z8qrdt2kekpq1"
                     ]
                 },
                 "email_ids": {
@@ -2790,11 +2704,9 @@
                     "order": 6,
                     "primary": true,
                     "contains": [
-                        "gsvault email ids",
+                        "gsvault user email ids",
+                        "gsvault group email ids",
                         "email"
-                    ],
-                    "example_values": [
-                        "test@testvalue.com"
                     ]
                 },
                 "shared_drive_ids": {
@@ -2805,9 +2717,6 @@
                     "primary": true,
                     "contains": [
                         "gsvault shared drive ids"
-                    ],
-                    "example_values": [
-                        "0AN4HRsxrp9juUk9PVA"
                     ]
                 },
                 "start_time": {
@@ -2823,10 +2732,7 @@
                     "description": "End time (%Y-%m-%dT%H:%M:%SZ)",
                     "data_type": "string",
                     "required": false,
-                    "order": 9,
-                    "example_values": [
-                        "2019-07-01T00:00:00Z"
-                    ]
+                    "order": 9
                 },
                 "time_zone": {
                     "description": "Time zone for the export",
@@ -2873,19 +2779,13 @@
                     "description": "Terms",
                     "data_type": "string",
                     "required": false,
-                    "order": 11,
-                    "example_values": [
-                        "has:attachment is:sent -label:drafts"
-                    ]
+                    "order": 11
                 },
                 "version_date": {
                     "description": "Version date (%Y-%m-%dT%H:%M:%SZ)",
                     "data_type": "string",
                     "required": false,
-                    "order": 12,
-                    "example_values": [
-                        "2019-07-01T00:00:00Z"
-                    ]
+                    "order": 12
                 },
                 "data_region": {
                     "description": "Data region",
@@ -2963,7 +2863,8 @@
                     "data_path": "action_result.parameter.email_ids",
                     "data_type": "string",
                     "contains": [
-                        "gsvault email ids",
+                        "gsvault user email ids",
+                        "gsvault group email ids",
                         "email"
                     ],
                     "example_values": [
@@ -3097,48 +2998,18 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.summary",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.status",
+                    "data_path": "action_result.data.*.createTime",
                     "data_type": "string",
                     "example_values": [
-                        "IN_PROGRESS"
+                        "2019-09-04T16:11:36.252Z"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.name",
-                    "data_type": "string",
+                    "data_path": "action_result.data.*.exportOptions.driveOptions.includeAccessInfo",
+                    "data_type": "boolean",
                     "example_values": [
-                        "test_export_group"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.matterId",
-                    "data_type": "string",
-                    "example_values": [
-                        "d2545a66-36ca-48dd-8fe1-44f790b72d05"
-                    ],
-                    "contains": [
-                        "gsvault matter id"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.id",
-                    "data_type": "string",
-                    "example_values": [
-                        "exportly-781551ad-c2cb-4efc-8d53-4f5f6146ffdf"
-                    ],
-                    "contains": [
-                        "gsvault export id"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.exportOptions.region",
-                    "data_type": "string",
-                    "example_values": [
-                        "US"
+                        true,
+                        false
                     ]
                 },
                 {
@@ -3164,11 +3035,156 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.exportOptions.region",
+                    "data_type": "string",
+                    "example_values": [
+                        "US"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.id",
+                    "data_type": "string",
+                    "example_values": [
+                        "exportly-781551ad-c2cb-4efc-8d53-4f5f6146ffdf"
+                    ],
+                    "contains": [
+                        "gsvault export id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.matterId",
+                    "data_type": "string",
+                    "example_values": [
+                        "d2545a66-36ca-48dd-8fe1-44f790b72d05"
+                    ],
+                    "contains": [
+                        "gsvault matter id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "test_export_group"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.accountInfo.emails",
+                    "data_type": "string",
+                    "example_values": [
+                        "testgroup@testvalue.com"
+                    ],
+                    "contains": [
+                        "gsvault user email ids",
+                        "gsvault group email ids",
+                        "email"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.corpus",
+                    "data_type": "string",
+                    "example_values": [
+                        "GROUPS"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.dataScope",
+                    "data_type": "string",
+                    "example_values": [
+                        "ALL_DATA"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.driveOptions.includeSharedDrives",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.driveOptions.includeTeamDrives",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.endTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2019-08-01T00:00:00Z"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.query.mailOptions.excludeDrafts",
                     "data_type": "boolean",
                     "example_values": [
                         true,
                         false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.method",
+                    "data_type": "string",
+                    "example_values": [
+                        "ORG_UNIT"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.orgUnitInfo.orgUnitId",
+                    "data_type": "string",
+                    "example_values": [
+                        "id:03ph8a2z1mtle0f"
+                    ],
+                    "contains": [
+                        "gsvault org unit id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.searchMethod",
+                    "data_type": "string",
+                    "example_values": [
+                        "ACCOUNT"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.sharedDriveInfo.sharedDriveIds",
+                    "data_type": "string",
+                    "example_values": [
+                        "0AN4HRsxrp9juUk9PVA"
+                    ],
+                    "contains": [
+                        "gsvault shared drive ids"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.startTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2019-07-01T00:00:00Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.teamDriveInfo.teamDriveIds",
+                    "data_type": "string",
+                    "example_values": [
+                        "0AN4HRsxrp9juUk9PVA"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.terms",
+                    "data_type": "string",
+                    "example_values": [
+                        "has:attachment is:sent -label:drafts"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.query.timeZone",
+                    "data_type": "string",
+                    "example_values": [
+                        "Etc/GMT-13"
                     ]
                 },
                 {
@@ -3185,83 +3201,20 @@
                         "test@testvalue.com"
                     ],
                     "contains": [
-                        "gsvault email ids",
+                        "gsvault user email ids",
                         "email"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.query.terms",
+                    "data_path": "action_result.data.*.status",
                     "data_type": "string",
                     "example_values": [
-                        "has:attachment is:sent -label:drafts"
+                        "IN_PROGRESS"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.query.searchMethod",
-                    "data_type": "string",
-                    "example_values": [
-                        "ACCOUNT"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.query.method",
-                    "data_type": "string",
-                    "example_values": [
-                        "ORG_UNIT"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.query.accountInfo.emails",
-                    "data_type": "string",
-                    "example_values": [
-                        "testgroup@testvalue.com"
-                    ],
-                    "contains": [
-                        "gsvault email ids",
-                        "email"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.query.startTime",
-                    "data_type": "string",
-                    "example_values": [
-                        "2019-07-01T00:00:00Z"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.query.timeZone",
-                    "data_type": "string",
-                    "example_values": [
-                        "Etc/GMT-13"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.query.corpus",
-                    "data_type": "string",
-                    "example_values": [
-                        "GROUPS"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.query.endTime",
-                    "data_type": "string",
-                    "example_values": [
-                        "2019-08-01T00:00:00Z"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.query.dataScope",
-                    "data_type": "string",
-                    "example_values": [
-                        "ALL_DATA"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.createTime",
-                    "data_type": "string",
-                    "example_values": [
-                        "2019-09-04T16:11:36.252Z"
-                    ]
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.message",
@@ -3283,57 +3236,6 @@
                     "example_values": [
                         1
                     ]
-                },
-                {
-                    "data_path": "action_result.data.*.exportOptions.driveOptions.includeAccessInfo",
-                    "data_type": "boolean",
-                    "example_values": [
-                        true,
-                        false
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.query.driveOptions.includeSharedDrives",
-                    "data_type": "boolean",
-                    "example_values": [
-                        true,
-                        false
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.query.driveOptions.includeTeamDrives",
-                    "data_type": "boolean",
-                    "example_values": [
-                        true,
-                        false
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.query.orgUnitInfo.orgUnitId",
-                    "data_type": "string",
-                    "example_values": [
-                        "id:03ph8a2z1mtle0f"
-                    ],
-                    "contains": [
-                        "gsvault org unit id"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.query.sharedDriveInfo.sharedDriveIds",
-                    "data_type": "string",
-                    "example_values": [
-                        "0AN4HRsxrp9juUk9PVA"
-                    ],
-                    "contains": [
-                        "gsvault shared drive ids"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.query.teamDriveInfo.teamDriveIds",
-                    "data_type": "string",
-                    "example_values": [
-                        "0AN4HRsxrp9juUk9PVA"
-                    ]
                 }
             ],
             "versions": "EQ(*)",
@@ -3343,6 +3245,312 @@
                 "type": "custom",
                 "height": 5,
                 "view": "googlevault_view.display_view"
+            }
+        },
+        {
+            "action": "list organizations",
+            "identifier": "list_organizations",
+            "description": "List all organizations",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {
+                "limit": {
+                    "description": "Maximum number of organizations to return",
+                    "data_type": "numeric",
+                    "required": false,
+                    "order": 0
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.limit",
+                    "data_type": "numeric",
+                    "example_values": [
+                        100
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.description",
+                    "data_type": "string",
+                    "example_values": [
+                        "test.com"
+                    ],
+                    "column_name": "Description",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.data.*.etag",
+                    "data_type": "string",
+                    "example_values": [
+                        "\"f-A4wQx02aM-7Cegj6o2Lk8/RjBTZYgkNFkXC95y28MFhk3MTRQ\""
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.kind",
+                    "data_type": "string",
+                    "example_values": [
+                        "admin#directory#orgUnit"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "test.com"
+                    ],
+                    "column_name": "Name",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data.*.orgUnitId",
+                    "data_type": "string",
+                    "contains": [
+                        "gsvault org unit id"
+                    ],
+                    "example_values": [
+                        "id:03ph8a2z1mtle0f"
+                    ],
+                    "column_name": "Organization unit ID",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.orgUnitPath",
+                    "data_type": "string",
+                    "example_values": [
+                        "/test.com"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.parentOrgUnitId",
+                    "data_type": "string",
+                    "contains": [
+                        "gsvault org unit id"
+                    ],
+                    "example_values": [
+                        "id:03z8qrdt2kekpq1"
+                    ],
+                    "column_name": "Parent organization unit ID",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.data.*.parentOrgUnitPath",
+                    "data_type": "string",
+                    "example_values": [
+                        "/"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.total_organization_units_returned",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully retrieved 1 organization unit"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "versions": "EQ(*)",
+            "render": {
+                "width": 12,
+                "title": "List Organizations",
+                "type": "table",
+                "height": 5
+            }
+        },
+        {
+            "action": "list groups",
+            "identifier": "list_groups",
+            "description": "List all groups of a domain",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {
+                "domain": {
+                    "description": "Domain name",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [
+                        "domain"
+                    ],
+                    "order": 0
+                },
+                "limit": {
+                    "description": "Maximum number of groups to return",
+                    "data_type": "numeric",
+                    "required": false,
+                    "order": 0
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.domain",
+                    "data_type": "string",
+                    "example_values": [
+                        "test.com"
+                    ],
+                    "contains": [
+                        "domain"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.limit",
+                    "data_type": "numeric",
+                    "example_values": [
+                        100
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.adminCreated",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.description",
+                    "data_type": "string",
+                    "example_values": [
+                        "This is for testing Purpose"
+                    ],
+                    "column_name": "Description",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.data.*.directMembersCount",
+                    "data_type": "string",
+                    "example_values": [
+                        "0"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.email",
+                    "data_type": "string",
+                    "example_values": [
+                        "testgroup@testdomain.com"
+                    ],
+                    "contains": [
+                        "gsvault group email ids",
+                        "email"
+                    ],
+                    "column_name": "Group email ID",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.etag",
+                    "data_type": "string",
+                    "example_values": [
+                        "\"f-A4wQx02aM-7Cegj6o2Lk8/khBiJGjhnDQr0c_dCHzV0wULDBY\""
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.id",
+                    "data_type": "string",
+                    "contains": [
+                        "gsvault group account id"
+                    ],
+                    "example_values": [
+                        "01302m9240iv47j"
+                    ],
+                    "column_name": "Group account ID",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.data.*.kind",
+                    "data_type": "string",
+                    "example_values": [
+                        "admin#directory#group"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "testgroup"
+                    ],
+                    "column_name": "Name",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data.*.nonEditableAliases",
+                    "data_type": "string",
+                    "example_values": [
+                        "testing_group@testdomain.com.test-google-a.com"
+                    ],
+                    "contains": [
+                        "email"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.total_groups_returned",
+                    "data_type": "numeric",
+                    "example_values": [
+                        5
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully retrieved 5 groups for the domain 'testphantom.com'"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "versions": "EQ(*)",
+            "render": {
+                "width": 12,
+                "title": "List Groups",
+                "type": "table",
+                "height": 5
             }
         }
     ]

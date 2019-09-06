@@ -24,7 +24,11 @@
       <li>Select <b>Show more</b> and then <b>Advanced settings</b> from the list of options.</li>
       <li>Select <b>Manage API client access</b> in the <b>Authentication</b> section.</li>
       <li>In the <b>Client Name</b> field enter the service account's <b>Client ID</b>. You can find your service account's client ID in the <a href="https://console.developers.google.com/apis/credentials" target="_blank">Service accounts credentials page</a> or in the service account JSON file (key named <b>client_id</b>).</li>
-      <li>In the <b>One or More API Scopes</b> field enter the list of scopes that you wish to grant access to the App. For example, to enable all the scopes required by this app enter: https://www.googleapis.com/auth/ediscovery, https://www.googleapis.com/auth/ediscovery.readonly</li>
+      <li>In the <b>One or More API Scopes</b> field enter the list of scopes that you wish to grant access to the App. For example, to enable all the scopes required by this app enter: https://www.googleapis.com/auth/ediscovery, https://www.googleapis.com/auth/ediscovery.readonly, https://www.googleapis.com/auth/admin.directory.orgunit, https://www.googleapis.com/auth/admin.directory.orgunit.readonly, https://www.googleapis.com/auth/admin.directory.group, https://www.googleapis.com/auth/admin.directory.group.readonly, https://www.googleapis.com/auth/admin.directory.group.member.readonly, https://www.googleapis.com/auth/admin.directory.group.member</li>
       <li>Click <b>Authorize</b>.</li>
     </ul>
   </p>
+<h3>Notes</h3>
+  <ul>
+      <li>If the user provides Organization ID of the root level organization instead of the child organizations (in which export is to be created) in the action <b>create export</b>, API might throw an error <b>'Domain wide search is disabled'</b> or <b>'Select an organizational unit other than the root'</b> based on the configurations of the Google Vault.</li>
+  </ul>

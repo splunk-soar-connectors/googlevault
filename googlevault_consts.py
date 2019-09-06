@@ -5,6 +5,9 @@
 # without a valid written license from Splunk Inc. is PROHIBITED.
 
 GOOGLE_SCOPE = 'https://www.googleapis.com/auth/ediscovery'
+GOOGLE_ORGANIZATIONS_SCOPE = ['https://www.googleapis.com/auth/admin.directory.orgunit', 'https://www.googleapis.com/auth/admin.directory.orgunit.readonly']
+GOOGLE_GROUPS_SCOPE = ['https://www.googleapis.com/auth/admin.directory.group', 'https://www.googleapis.com/auth/admin.directory.group.readonly']
+GOOGLE_GROUPS_SCOPE.extend(['https://www.googleapis.com/auth/admin.directory.group.member.readonly', 'https://www.googleapis.com/auth/admin.directory.group.member'])
 GSVAULT_INVALID_LIMIT = "Please provide non-zero positive integer in limit"
 GSVAULT_TIME_FORMAT_ERROR = "Please provide date/time in '%Y-%m-%dT%H:%M:%SZ' format"
 GSVAULT_TIME_RANGE_ERROR = "The given time range is incorrect"

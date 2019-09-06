@@ -59,7 +59,10 @@ class GoogleVaultConnector(BaseConnector):
             except Exception as e:
                 return action_result.set_status(phantom.APP_ERROR, "Failed to create delegated credentials", e), None
 
-        client = discovery.build('vault', 'v1', credentials=credentials)
+        if self.get_action_identifier() in ['list_organizations', 'list_groups']:
+            client = discovery.build('admin', 'directory_v1', credentials=credentials)
+        else:
+            client = discovery.build('vault', 'v1', credentials=credentials)
 
         return phantom.APP_SUCCESS, client
 
@@ -115,6 +118,67 @@ class GoogleVaultConnector(BaseConnector):
         action_result.update_summary({'total_matters_returned': num_matters})
 
         return action_result.set_status(phantom.APP_SUCCESS, 'Successfully retrieved {} matter{}'.format(num_matters, '' if num_matters == 1 else 's'))
+
+    def _handle_list_organizations(self, param):
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        scopes = GOOGLE_ORGANIZATIONS_SCOPE
+
+        ret_val, client = self._create_client(action_result, scopes)
+
+        if phantom.is_fail(ret_val):
+            self.debug_print("Failed to create Google Vault client")
+            return ret_val
+
+        limit = param.get("limit")
+
+        if (limit and not str(limit).isdigit()) or limit == 0:
+            return action_result.set_status(phantom.APP_ERROR, GSVAULT_INVALID_LIMIT)
+        try:
+            org_units = self._paginator(client, limit=limit)
+        except Exception as e:
+            return action_result.set_status(phantom.APP_ERROR, "Error while listing organization units", e)
+
+        if not org_units:
+            return action_result.set_status(phantom.APP_ERROR, "No data found")
+
+        for org_unit in org_units:
+            action_result.add_data(org_unit)
+
+        num_org_units = len(org_units)
+        action_result.update_summary({'total_organization_units_returned': num_org_units})
+
+        return action_result.set_status(phantom.APP_SUCCESS, 'Successfully retrieved {} organization unit{}'.format(num_org_units, '' if num_org_units == 1 else 's'))
+
+    def _handle_list_groups(self, param):
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        scopes = GOOGLE_GROUPS_SCOPE
+
+        ret_val, client = self._create_client(action_result, scopes)
+
+        if phantom.is_fail(ret_val):
+            self.debug_print("Failed to create Google Vault client")
+            return ret_val
+
+        domain = param.get("domain")
+        limit = param.get("limit")
+
+        if (limit and not str(limit).isdigit()) or limit == 0:
+            return action_result.set_status(phantom.APP_ERROR, GSVAULT_INVALID_LIMIT)
+        try:
+            groups = self._paginator(client, limit=limit, domain=domain)
+        except Exception as e:
+            return action_result.set_status(phantom.APP_ERROR, "Error while listing groups for the given domain '{}'".format(domain), e)
+
+        if not groups:
+            return action_result.set_status(phantom.APP_ERROR, "No data found")
+
+        for group in groups:
+            action_result.add_data(group)
+
+        num_groups = len(groups)
+        action_result.update_summary({'total_groups_returned': num_groups})
+
+        return action_result.set_status(phantom.APP_SUCCESS, "Successfully retrieved {} group{} for the domain '{}'".format(num_groups, '' if num_groups == 1 else 's', domain))
 
     def _handle_create_matter(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -606,7 +670,7 @@ class GoogleVaultConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS, 'Successfully retrieved {} export{}'.format(num_exports, '' if num_exports == 1 else 's'))
 
-    def _paginator(self, client, limit=None, view=None, matter_id=None, hold_flag=False):
+    def _paginator(self, client, limit=None, view=None, matter_id=None, hold_flag=False, domain=None):
         """
         This action is used to create an iterator that will paginate through responses from called methods.
 
@@ -620,6 +684,11 @@ class GoogleVaultConnector(BaseConnector):
         action_id = self.get_action_identifier()
 
         kwargs = {}
+        
+        if action_id == "list_organizations":
+            kwargs['customerId'] = 'my_customer'
+        elif action_id == "list_groups":
+            kwargs['domain'] = domain
 
         if view:
             kwargs.update({"state": view})
@@ -635,6 +704,16 @@ class GoogleVaultConnector(BaseConnector):
                 response = client.matters().list(**kwargs).execute()
                 if response.get("matters"):
                     list_items.extend(response.get("matters"))
+
+            if action_id == "list_organizations":
+                response = client.orgunits().list(**kwargs).execute()
+                if response.get("organizationUnits"):
+                    list_items.extend(response.get("organizationUnits"))
+
+            if action_id == "list_groups":
+                response = client.groups().list(**kwargs).execute()
+                if response.get("groups"):
+                    list_items.extend(response.get("groups"))
 
             if action_id == "list_holds" or hold_flag:
                 response = client.matters().holds().list(**kwargs).execute()
@@ -889,6 +968,10 @@ class GoogleVaultConnector(BaseConnector):
             ret_val = self._handle_add_held_account(param)
         if action_id == 'remove_held_account':
             ret_val = self._handle_remove_held_account(param)
+        if action_id == 'list_organizations':
+            ret_val = self._handle_list_organizations(param)
+        if action_id == 'list_groups':
+            ret_val = self._handle_list_groups(param)
 
         return ret_val
 
