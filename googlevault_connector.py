@@ -77,12 +77,12 @@ class GoogleVaultConnector(BaseConnector):
             self.save_progress("Test Connectivity Failed")
             return ret_val
 
-        self.save_progress("Making test call to Google Vault for fetching list of matters...")
+        self.save_progress("Making test call to Google Vault for fetching the list of matters...")
         try:
             client.matters().list(pageSize=10).execute()
         except Exception as e:
             self.save_progress("Test Connectivity Failed")
-            return action_result.set_status(phantom.APP_ERROR, "Error listing Matters", e)
+            return action_result.set_status(phantom.APP_ERROR, "Error while listing matters", e)
 
         self.save_progress("Test Connectivity Passed")
         return action_result.set_status(phantom.APP_SUCCESS)
@@ -94,7 +94,7 @@ class GoogleVaultConnector(BaseConnector):
         ret_val, client = self._create_client(action_result, scopes)
 
         if phantom.is_fail(ret_val):
-            self.debug_print("Failed to create Google Vault client")
+            self.debug_print("Failed to create the Google Vault client")
             return ret_val
 
         view = param.get("state")
@@ -106,7 +106,7 @@ class GoogleVaultConnector(BaseConnector):
         try:
             matters = self._paginator(client, limit=limit, view=view)
         except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, "Error while listing Matters", e)
+            return action_result.set_status(phantom.APP_ERROR, "Error while listing matters", e)
 
         if not matters:
             return action_result.set_status(phantom.APP_ERROR, "No data found")
@@ -126,7 +126,7 @@ class GoogleVaultConnector(BaseConnector):
         ret_val, client = self._create_client(action_result, scopes)
 
         if phantom.is_fail(ret_val):
-            self.debug_print("Failed to create Google Vault client")
+            self.debug_print("Failed to create the Google Vault client")
             return ret_val
 
         limit = param.get("limit")
@@ -156,7 +156,7 @@ class GoogleVaultConnector(BaseConnector):
         ret_val, client = self._create_client(action_result, scopes)
 
         if phantom.is_fail(ret_val):
-            self.debug_print("Failed to create Google Vault client")
+            self.debug_print("Failed to create the Google Vault client")
             return ret_val
 
         domain = param.get("domain")
@@ -187,7 +187,7 @@ class GoogleVaultConnector(BaseConnector):
         ret_val, client = self._create_client(action_result, scopes)
 
         if phantom.is_fail(ret_val):
-            self.debug_print("Failed to create Google Vault client")
+            self.debug_print("Failed to create the Google Vault client")
             return ret_val
 
         matter_content = {
@@ -209,7 +209,7 @@ class GoogleVaultConnector(BaseConnector):
         ret_val, client = self._create_client(action_result, scopes)
 
         if phantom.is_fail(ret_val):
-            self.debug_print("Failed to create Google Vault client")
+            self.debug_print("Failed to create the Google Vault client")
             return ret_val
 
         ret_val, matter = self._get_single_matter(action_result, client, matter_id=param["matter_id"], view=param.get("view", "BASIC"))
@@ -236,7 +236,7 @@ class GoogleVaultConnector(BaseConnector):
         ret_val, client = self._create_client(action_result, scopes)
 
         if phantom.is_fail(ret_val):
-            self.debug_print("Failed to create Google Vault client")
+            self.debug_print("Failed to create the Google Vault client")
             return ret_val
 
         delete_flag = param.get("delete_all_holds", True)
@@ -325,7 +325,7 @@ class GoogleVaultConnector(BaseConnector):
         ret_val, client = self._create_client(action_result, scopes)
 
         if phantom.is_fail(ret_val):
-            self.debug_print("Failed to create Google Vault client")
+            self.debug_print("Failed to create the Google Vault client")
             return ret_val
 
         delete_flag = param.get("delete_all_holds", True)
@@ -360,7 +360,7 @@ class GoogleVaultConnector(BaseConnector):
         ret_val, client = self._create_client(action_result, scopes)
 
         if phantom.is_fail(ret_val):
-            self.debug_print("Failed to create Google Vault client")
+            self.debug_print("Failed to create the Google Vault client")
             return ret_val
 
         try:
@@ -378,7 +378,7 @@ class GoogleVaultConnector(BaseConnector):
         ret_val, client = self._create_client(action_result, scopes)
 
         if phantom.is_fail(ret_val):
-            self.debug_print("Failed to create Google Vault client")
+            self.debug_print("Failed to create the Google Vault client")
             return ret_val
 
         try:
@@ -396,7 +396,7 @@ class GoogleVaultConnector(BaseConnector):
         ret_val, client = self._create_client(action_result, scopes)
 
         if phantom.is_fail(ret_val):
-            self.debug_print("Failed to create Google Vault client")
+            self.debug_print("Failed to create the Google Vault client")
             return ret_val
 
         name = param['name']
@@ -420,16 +420,16 @@ class GoogleVaultConnector(BaseConnector):
                 return action_result.set_status(phantom.APP_ERROR, GSVAULT_CORPUS_MAIL_DRIVE_HOLD_ERROR)
 
         if search_method == "ORG_UNIT" and not org_unit_id:
-            return action_result.set_status(phantom.APP_ERROR, "You have to provide valid org_unit_id for search method ORG_UNIT")
+            return action_result.set_status(phantom.APP_ERROR, "Plese provide valid org_unit_id for search method ORG_UNIT")
 
         if search_method == "USER_ACCOUNT" and not emails_to_search:
-            return action_result.set_status(phantom.APP_ERROR, "You have to provide valid list of user email for search method USER_ACCOUNT")
+            return action_result.set_status(phantom.APP_ERROR, "Plese provide valid list of user email for search method USER_ACCOUNT")
 
         if search_method == "ALL_GROUPS" and not org_unit_id:
-            return action_result.set_status(phantom.APP_ERROR, "You have to provide valid org_unit_id for search method ORG_UNIT")
+            return action_result.set_status(phantom.APP_ERROR, "Plese provide valid org_unit_id for search method ORG_UNIT")
 
         if search_method == "GROUP_ACCOUNT" and not group_account_ids:
-            return action_result.set_status(phantom.APP_ERROR, "You have to provide valid list of group account id for search method GROUP_ACCOUNT")
+            return action_result.set_status(phantom.APP_ERROR, "Plese provide valid list of group account ID for search method GROUP_ACCOUNT")
 
         if search_method == "USER_ACCOUNT":
             if emails_to_search:
@@ -438,7 +438,7 @@ class GoogleVaultConnector(BaseConnector):
                 emails = list(filter(None, emails))
 
                 if not emails:
-                    return action_result.set_status(phantom.APP_ERROR, "You have to provide valid list of user emails for search method USER_ACCOUNT")
+                    return action_result.set_status(phantom.APP_ERROR, "Plese provide valid list of user emails for search method USER_ACCOUNT")
 
         if search_method == "GROUP_ACCOUNT":
             if group_account_ids:
@@ -544,7 +544,7 @@ class GoogleVaultConnector(BaseConnector):
         ret_val, client = self._create_client(action_result, scopes)
 
         if phantom.is_fail(ret_val):
-            self.debug_print("Failed to create Google Vault client")
+            self.debug_print("Failed to create the Google Vault client")
             return ret_val
 
         ret_val, result = self._delete_single_hold(action_result, client, param["matter_id"], param["hold_id"])
@@ -572,7 +572,7 @@ class GoogleVaultConnector(BaseConnector):
         ret_val, client = self._create_client(action_result, scopes)
 
         if phantom.is_fail(ret_val):
-            self.debug_print("Failed to create Google Vault client")
+            self.debug_print("Failed to create the Google Vault client")
             return ret_val
 
         held_account = {'accountId': param["account_id"]}
@@ -580,7 +580,7 @@ class GoogleVaultConnector(BaseConnector):
         try:
             result = client.matters().holds().accounts().create(matterId=param["matter_id"], holdId=param["hold_id"], body=held_account).execute()
         except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, "Error while adding held account to hold for given matter id", e)
+            return action_result.set_status(phantom.APP_ERROR, "Error while adding held account to hold for given matter ID", e)
 
         action_result.add_data(result)
 
@@ -594,16 +594,16 @@ class GoogleVaultConnector(BaseConnector):
         ret_val, client = self._create_client(action_result, scopes)
 
         if phantom.is_fail(ret_val):
-            self.debug_print("Failed to create Google Vault client")
+            self.debug_print("Failed to create the Google Vault client")
             return ret_val
 
         try:
             result = client.matters().holds().accounts().delete(matterId=param["matter_id"], holdId=param["hold_id"], accountId=param["account_id"]).execute()
         except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, "Error while removing held account to hold for given matter id", e)
+            return action_result.set_status(phantom.APP_ERROR, "Error while removing held account to hold for given matter ID", e)
 
         action_result.add_data(result)
-        message = "Successfully removed held account to {hold_id} hold id for {matter_id} matter id".format(hold_id=param["hold_id"], matter_id=param["matter_id"])
+        message = "Successfully removed held account to {hold_id} hold ID for {matter_id} matter ID".format(hold_id=param["hold_id"], matter_id=param["matter_id"])
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
     def _handle_list_holds(self, param):
@@ -613,7 +613,7 @@ class GoogleVaultConnector(BaseConnector):
         ret_val, client = self._create_client(action_result, scopes)
 
         if phantom.is_fail(ret_val):
-            self.debug_print("Failed to create Google Vault client")
+            self.debug_print("Failed to create the Google Vault client")
             return ret_val
 
         matter_id = param["matter_id"]
@@ -625,7 +625,7 @@ class GoogleVaultConnector(BaseConnector):
         try:
             holds = self._paginator(client, limit=limit, matter_id=matter_id)
         except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, "Error while listing Holds", e)
+            return action_result.set_status(phantom.APP_ERROR, "Error while listing holds", e)
 
         if not holds:
             return action_result.set_status(phantom.APP_ERROR, "No data found")
@@ -645,7 +645,7 @@ class GoogleVaultConnector(BaseConnector):
         ret_val, client = self._create_client(action_result, scopes)
 
         if phantom.is_fail(ret_val):
-            self.debug_print("Failed to create Google Vault client")
+            self.debug_print("Failed to create the Google Vault client")
             return ret_val
 
         matter_id = param["matter_id"]
@@ -741,7 +741,7 @@ class GoogleVaultConnector(BaseConnector):
         ret_val, client = self._create_client(action_result, scopes)
 
         if phantom.is_fail(ret_val):
-            self.debug_print("Failed to create Google Vault client")
+            self.debug_print("Failed to create the Google Vault client")
             return ret_val
 
         name = param['name']
@@ -770,19 +770,19 @@ class GoogleVaultConnector(BaseConnector):
                 return action_result.set_status(phantom.APP_ERROR, GSVAULT_CORPUS_MAIL_DRIVE_EXPORT_ERROR)
 
         if search_method == "ORG_UNIT" and not org_unit_id:
-            return action_result.set_status(phantom.APP_ERROR, "You have to provide valid org_unit_id for search method ORG_UNIT")
+            return action_result.set_status(phantom.APP_ERROR, "Plese provide valid org_unit_id for search method ORG_UNIT")
 
         if search_method == "ACCOUNT" and not emails_to_search:
-            return action_result.set_status(phantom.APP_ERROR, "You have to provide valid list of user emails for search method ACCOUNT")
+            return action_result.set_status(phantom.APP_ERROR, "Plese provide valid list of user emails for search method ACCOUNT")
 
         if search_method == "TEAM_DRIVE" and not shared_drive_ids:
-            return action_result.set_status(phantom.APP_ERROR, "You have to provide valid list of shared drive ids for search method TEAM_DRIVE")
+            return action_result.set_status(phantom.APP_ERROR, "Plese provide valid list of shared drive ids for search method TEAM_DRIVE")
 
         if corpus == "GROUPS" and search_method != "ACCOUNT":
-            return action_result.set_status(phantom.APP_ERROR, "You have to select ACCOUNT search method for corpus type GROUPS")
+            return action_result.set_status(phantom.APP_ERROR, "Plese select ACCOUNT search method for corpus type GROUPS")
 
         if corpus == "DRIVE" and data_scope == "UNPROCESSED_DATA":
-            return action_result.set_status(phantom.APP_ERROR, "You can't give UNPROCESSED_DATA data scope for corpus type DRIVE")
+            return action_result.set_status(phantom.APP_ERROR, "UNPROCESSED_DATA data scope is not allowed for corpus type DRIVE")
 
         query = {
             'corpus': corpus,
@@ -796,7 +796,7 @@ class GoogleVaultConnector(BaseConnector):
                 emails = list(filter(None, emails))
 
                 if not emails:
-                    return action_result.set_status(phantom.APP_ERROR, "You have to provide valid list of user emails for search method ACCOUNT")
+                    return action_result.set_status(phantom.APP_ERROR, "Plese provide valid list of user emails for search method ACCOUNT")
 
         if search_method == "TEAM_DRIVE":
             if shared_drive_ids:
@@ -804,7 +804,7 @@ class GoogleVaultConnector(BaseConnector):
                 ids = list(filter(None, ids))
 
                 if not ids:
-                    return action_result.set_status(phantom.APP_ERROR, "You have to provide valid list of shared drive ids for search method TEAM_DRIVE")
+                    return action_result.set_status(phantom.APP_ERROR, "Plese provide valid list of shared drive IDs for search method TEAM_DRIVE")
 
         ret_val = self._validate_time_range(action_result, start_time=start_time, end_time=end_time)
 
@@ -915,7 +915,7 @@ class GoogleVaultConnector(BaseConnector):
         ret_val, client = self._create_client(action_result, scopes)
 
         if phantom.is_fail(ret_val):
-            self.debug_print("Failed to create Google Vault client")
+            self.debug_print("Failed to create the Google Vault client")
             return ret_val
 
         try:
