@@ -6,8 +6,11 @@
 
 GOOGLE_SCOPE = 'https://www.googleapis.com/auth/ediscovery'
 GOOGLE_ORGANIZATIONS_SCOPE = ['https://www.googleapis.com/auth/admin.directory.orgunit', 'https://www.googleapis.com/auth/admin.directory.orgunit.readonly']
-GOOGLE_GROUPS_SCOPE = ['https://www.googleapis.com/auth/admin.directory.group', 'https://www.googleapis.com/auth/admin.directory.group.readonly']
-GOOGLE_GROUPS_SCOPE.extend(['https://www.googleapis.com/auth/admin.directory.group.member.readonly', 'https://www.googleapis.com/auth/admin.directory.group.member'])
+GOOGLE_SCOPE_GROUP = 'https://www.googleapis.com/auth/admin.directory.group'
+GOOGLE_SCOPE_GROUP_READONLY = 'https://www.googleapis.com/auth/admin.directory.group.readonly'
+GOOGLE_SCOPE_MEMBER_READONLY = 'https://www.googleapis.com/auth/admin.directory.group.member.readonly'
+GOOGLE_SCOPE_MEMBER = 'https://www.googleapis.com/auth/admin.directory.group.member'
+GOOGLE_GROUPS_SCOPE = [GOOGLE_SCOPE_GROUP, GOOGLE_SCOPE_GROUP_READONLY, GOOGLE_SCOPE_MEMBER_READONLY, GOOGLE_SCOPE_MEMBER]
 GSVAULT_INVALID_LIMIT = "Please provide non-zero positive integer in limit"
 GSVAULT_TIME_FORMAT_ERROR = "Please provide date/time in '%Y-%m-%dT%H:%M:%SZ' format"
 GSVAULT_TIME_RANGE_ERROR = "The given time range is incorrect"
