@@ -785,7 +785,7 @@ class GoogleVaultConnector(BaseConnector):
             return action_result.set_status(phantom.APP_ERROR, "UNPROCESSED_DATA data scope is not allowed for corpus type DRIVE")
 
         if corpus == "DRIVE" and data_scope == "HELD_DATA" and search_method == "TEAM_DRIVE":
-            return action_result.set_status(phantom.APP_ERROR, "You can't select TEAM_DRIVE search method for corpus type DRIVE and data scope HELD_DATA")
+            return action_result.set_status(phantom.APP_ERROR, "TEAM_DRIVE search method is not allowed for corpus type DRIVE and data scope HELD_DATA")
 
         query = {
             'corpus': corpus,
