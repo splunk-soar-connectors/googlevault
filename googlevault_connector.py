@@ -159,7 +159,7 @@ class GoogleVaultConnector(BaseConnector):
             self.debug_print("Failed to create the Google Vault client")
             return ret_val
 
-        domain = param.get("domain")
+        domain = param["domain"]
         limit = param.get("limit")
 
         if (limit and not str(limit).isdigit()) or limit == 0:
@@ -191,8 +191,8 @@ class GoogleVaultConnector(BaseConnector):
             return ret_val
 
         matter_content = {
-            'name': param.get("name"),
-            'description': param.get("description"),
+            'name': param["name"],
+            'description': param["description"],
         }
         try:
             matter = client.matters().create(body=matter_content).execute()
@@ -407,8 +407,8 @@ class GoogleVaultConnector(BaseConnector):
         end_time = param.get("end_time")
         start_time = param.get("start_time")
         org_unit_id = param.get("org_unit_id")
-        group_account_ids = param.get("group_account_ids")
         emails_to_search = param.get("user_email_ids")
+        group_account_ids = param.get("group_account_ids")
 
         include_shared_drive_files = param.get("include_shared_drive_files")
 
@@ -783,6 +783,9 @@ class GoogleVaultConnector(BaseConnector):
 
         if corpus == "DRIVE" and data_scope == "UNPROCESSED_DATA":
             return action_result.set_status(phantom.APP_ERROR, "UNPROCESSED_DATA data scope is not allowed for corpus type DRIVE")
+
+        if corpus == "DRIVE" and data_scope == "HELD_DATA" and search_method == "TEAM_DRIVE":
+            return action_result.set_status(phantom.APP_ERROR, "You can't select TEAM_DRIVE search method for corpus type DRIVE and data scope HELD_DATA")
 
         query = {
             'corpus': corpus,
