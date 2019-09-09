@@ -59,10 +59,13 @@ class GoogleVaultConnector(BaseConnector):
             except Exception as e:
                 return action_result.set_status(phantom.APP_ERROR, "Failed to create delegated credentials", e), None
 
-        if self.get_action_identifier() in ['list_organizations', 'list_groups']:
-            client = discovery.build('admin', 'directory_v1', credentials=credentials)
-        else:
-            client = discovery.build('vault', 'v1', credentials=credentials)
+        try:
+            if self.get_action_identifier() in ['list_organizations', 'list_groups']:
+                client = discovery.build('admin', 'directory_v1', credentials=credentials)
+            else:
+                client = discovery.build('vault', 'v1', credentials=credentials)
+        except Exception as e:
+            return action_result.set_status(phantom.APP_ERROR, "Unable to create client", e), None
 
         return phantom.APP_SUCCESS, client
 
