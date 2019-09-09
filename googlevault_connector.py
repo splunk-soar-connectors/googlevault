@@ -684,7 +684,7 @@ class GoogleVaultConnector(BaseConnector):
         action_id = self.get_action_identifier()
 
         kwargs = {}
-        
+
         if action_id == "list_organizations":
             kwargs['customerId'] = 'my_customer'
         elif action_id == "list_groups":
