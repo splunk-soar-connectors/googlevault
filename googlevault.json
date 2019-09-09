@@ -1,7 +1,7 @@
 {
     "appid": "0fade63a-8961-4f6e-be02-d82a393fa4c4",
     "name": "Google Vault",
-    "description": "This app supports the actions to perform eDiscovery and provide compliance solution for G Suite, allowing customers to retain, hold, search, and export their data",
+    "description": "This app supports the actions to perform eDiscovery and provide a compliance solution for G Suite, allowing customers to retain, hold, search, and export their data",
     "type": "ticketing",
     "product_vendor": "Google",
     "logo": "logo_googlevault.svg",
