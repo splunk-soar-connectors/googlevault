@@ -1,0 +1,4 @@
+[submodule "wheels"]
+	ignore = dirty
+	path = wheels
+	url = git@cd.splunkdev.com:phantom-external/googlevault_wheel.git
