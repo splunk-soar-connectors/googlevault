@@ -1,1 +1,86 @@
-<html><head></head><body>Replace this text in the app's <b>readme.html</b> to contain more detailed information</body></html>
+<!-- File: readme.html
+  Copyright (c) 2019 Splunk Inc.
+
+  SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
+  without a valid written license from Splunk Inc. is PROHIBITED.
+-->
+
+<h3>Service Account</h3>
+  <p>
+    This app requires a pre-configured service account to operate. Please follow the procedure outlined at <a href="https://support.google.com/a/answer/7378726?hl=en" target="_blank">this link</a> to create a service account.<br>
+    The following APIs will need to be enabled:
+    <ul>
+      <li>AdminSDK</li>
+      <li>G Suite Vault API</li>
+    </ul> 
+    At the end of the creation process, the admin console should ask you to save the config as a JSON file. Copy the contents of the JSON file in the clipboard and paste it as the value of the "Contents of Service Account JSON file" asset configuration parameter.
+  </p>
+<h3>Scopes</h3>
+  <p>
+    Once the service account has been created and APIs enabled, the next step is to configure scopes on these APIs to allow the App to access them. Every action requires different scopes to operate, these are listed in the action documentation.<br>To enable scopes please complete the following steps:
+    <ul>
+      <li>Go to your G Suite domain's <a href="http://admin.google.com/" target="_blank">Admin console.</a></li>
+      <li>Select <b>Security</b> from the list of controls. If you don't see <b>Security</b> listed, select <b>More controls</b> from the gray bar at the bottom of the page, then select <b>Security</b> from the list of controls. If you can't see the controls, make sure you're signed in as an administrator for the domain.</li>
+      <li>Select <b>Show more</b> and then <b>Advanced settings</b> from the list of options.</li>
+      <li>Select <b>Manage API client access</b> in the <b>Authentication</b> section.</li>
+      <li>In the <b>Client Name</b> field enter the service account's <b>Client ID</b>. You can find your service account's client ID in the <a href="https://console.developers.google.com/apis/credentials" target="_blank">Service accounts credentials page</a> or the service account JSON file (key named <b>client_id</b>).</li>
+      <li>In the <b>One or More API Scopes</b> field enter the list of scopes that you wish to grant access to the App. For example, to enable all the scopes required by this app enter: https://www.googleapis.com/auth/ediscovery, https://www.googleapis.com/auth/ediscovery.readonly, https://www.googleapis.com/auth/admin.directory.orgunit, https://www.googleapis.com/auth/admin.directory.orgunit.readonly, https://www.googleapis.com/auth/admin.directory.group, https://www.googleapis.com/auth/admin.directory.group.readonly, https://www.googleapis.com/auth/admin.directory.group.member.readonly, https://www.googleapis.com/auth/admin.directory.group.member</li>
+      <li>Click <b>Authorize</b>.</li>
+    </ul>
+  </p>
+<h3>Notes</h3>
+  <ul>
+      <li>If the user provides Organization ID of the root level organization instead of the child organizations (in which export is to be created) in the action <b>create export</b>, API might throw an error <b>'Domain wide search is disabled'</b> or <b>'Select an organizational unit other than the root'</b> based on the configurations of the Google Vault.</li>
+  </ul>
+<p>
+    <h3>pyasn1</h3>
+    Copyright (c) 2005-2019, Ilya Etingof <etingof@gmail.com>
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+  * Redistributions of source code must retain the above copyright notice, 
+    this list of conditions and the following disclaimer.
+
+  * Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the following disclaimer in the documentation
+    and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+</p>
+<p>
+  <h3>google-auth</h3>
+  This library simplifies using Google's various server-to-server authentication mechanisms to access Google APIs.
+  Apache License Version 2.0, January 2004. http://www.apache.org/licenses/
+</p>
+<p>
+  <h3>google-api-python-client</h3>
+  This is the Python client library for Google's discovery based APIs. These client libraries are officially supported by Google. However, the libraries are considered complete and are in maintenance mode. This means that we will address critical bugs and security issues but will not add any new features.
+  
+  Copyright 2014 Google Inc. All Rights Reserved.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at: http://www.apache.org/licenses/LICENSE-2.0
+</p>
+<p>
+  <h3>oauth2client</h3>
+  This is a client library for accessing resources protected by OAuth 2.0.
+  Apache License Version 2.0, January 2004. http://www.apache.org/licenses/
+</p>
+<p>
+  <h3>google-auth-oauthlib</h3>
+  This library provides oauthlib integration with google-auth.
+  Apache License Version 2.0, January 2004. http://www.apache.org/licenses/
+</p>
