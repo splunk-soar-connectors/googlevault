@@ -1283,7 +1283,7 @@
                     "order": 6,
                     "primary": true,
                     "contains": [
-                        "gsvault group account id"
+                        "gsvault group account ids"
                     ]
                 },
                 "terms": {
@@ -1328,7 +1328,7 @@
                     "data_path": "action_result.parameter.group_account_ids",
                     "data_type": "string",
                     "contains": [
-                        "gsvault group account id"
+                        "gsvault group account ids"
                     ],
                     "example_values": [
                         "01302m9240iv47j"

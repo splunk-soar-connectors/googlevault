@@ -25,7 +25,7 @@ init_path = '{}/dependencies/google/__init__.py'.format(  # noqa
 )  # noqa
 try:
     open(init_path, 'a+').close()  # noqa
-except Exception as e:  # noqa
+except Exception:  # noqa
     pass  # noqa
 
 
@@ -1006,7 +1006,7 @@ class GoogleVaultConnector(BaseConnector):
 
         try:
             run_action = supported_actions[action_id]
-        except Exception as e:
+        except Exception:
             raise ValueError('action %r is not supported' % action_id)
 
         return run_action(param)
