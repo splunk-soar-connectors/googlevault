@@ -4,7 +4,6 @@
 # SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
 # without a valid written license from Splunk Inc. is PROHIBITED.
 
-
 # Phantom App imports
 import phantom.app as phantom
 from phantom.base_connector import BaseConnector
@@ -12,14 +11,6 @@ from phantom.action_result import ActionResult
 import phantom.utils as ph_utils
 
 from googlevault_consts import *
-import os
-init_path = '{}/dependencies/google/__init__.py'.format(  # noqa
-    os.path.dirname(os.path.abspath(__file__))  # noqa
-)  # noqa
-try:
-    open(init_path, 'a+').close()  # noqa
-except Exception as e:  # noqa
-    pass  # noqa
 
 import json
 import datetime
@@ -27,6 +18,15 @@ import requests
 
 from googleapiclient import discovery
 from google.oauth2 import service_account
+import os
+
+init_path = '{}/dependencies/google/__init__.py'.format(  # noqa
+    os.path.dirname(os.path.abspath(__file__))  # noqa
+)  # noqa
+try:
+    open(init_path, 'a+').close()  # noqa
+except Exception as e:  # noqa
+    pass  # noqa
 
 
 class RetVal(tuple):
@@ -553,7 +553,7 @@ class GoogleVaultConnector(BaseConnector):
                 end = datetime.datetime.strptime(end_time, "%Y-%m-%dT%H:%M:%SZ")
             if version_date:
                 datetime.datetime.strptime(version_date, "%Y-%m-%dT%H:%M:%SZ")
-        except Exception as e:
+        except Exception:
             return action_result.set_status(phantom.APP_ERROR, GSVAULT_TIME_FORMAT_ERROR)
 
         # validation for incorrect time span
@@ -963,7 +963,6 @@ class GoogleVaultConnector(BaseConnector):
         matter_id = param.get("matter_id")
         export_id = param.get("export_id")
 
-
         if phantom.is_fail(ret_val):
             self.debug_print(FAILED_CREATE_GVAULT)
             return ret_val
@@ -1060,9 +1059,9 @@ if __name__ == '__main__':
     password = args.password
 
     if (username is not None and password is None):
-
         # User specified a username but not a password, so ask
         import getpass
+
         password = getpass.getpass("Password: ")
 
     if (username and password):
