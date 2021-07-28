@@ -426,7 +426,7 @@ class GoogleVaultConnector(BaseConnector):
         action_result.update_summary({'matter_id': matter_id})
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully reopened matter")
 
-    def _handle_create_hold(self, param):
+    def _handle_create_hold(self, param):  # noqa: C901
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
 
@@ -774,38 +774,7 @@ class GoogleVaultConnector(BaseConnector):
 
         return list_items
 
-    def _handle_create_export(self, param):
-        action_result = self.add_action_result(ActionResult(dict(param)))
-        scopes = [GOOGLE_SCOPE]
-
-        ret_val, client = self._create_client(action_result, scopes)
-
-        if phantom.is_fail(ret_val):
-            self.debug_print(FAILED_CREATE_GVAULT)
-            return ret_val
-
-        name = param.get('name')
-        corpus = param.get('type')
-        data_scope = param.get('data_scope')
-        search_method = param.get('search_method')
-
-        terms = param.get("terms")
-        end_time = param.get("end_time")
-        timezone = param.get("time_zone")
-        start_time = param.get("start_time")
-        data_region = param.get("data_region")
-        org_unit_id = param.get("org_unit_id")
-        version_date = param.get("version_date")
-        emails_to_search = param.get("email_ids")
-        shared_drive_ids = param.get("shared_drive_ids")
-
-        export_format = param.get("export_format")
-        exclude_drafts = param.get("exclude_drafts")
-        include_access_info = param.get("include_access_info")
-        include_shared_drives = param.get("include_shared_drives")
-        show_confidential_mode_content = param.get("show_confidential_mode_content")
-        matter_id = param.get("matter_id")
-
+    def _vaidate_search_corpus(self, action_result, search_method, corpus, org_unit_id, emails_to_search, shared_drive_ids, data_scope):
         if corpus == "MAIL":
             if search_method not in ["ORG_UNIT", "ACCOUNT"]:
                 return action_result.set_status(phantom.APP_ERROR, GSVAULT_CORPUS_MAIL_DRIVE_EXPORT_ERROR)
@@ -828,34 +797,9 @@ class GoogleVaultConnector(BaseConnector):
         if corpus == "DRIVE" and data_scope == "HELD_DATA" and search_method == "TEAM_DRIVE":
             return action_result.set_status(phantom.APP_ERROR, INVALID_HELD_DATA)
 
-        query = {
-            'corpus': corpus,
-            'dataScope': data_scope,
-            'searchMethod': search_method
-        }
+        return phantom.APP_SUCCESS
 
-        emails = ids = list()
-        if search_method == "ACCOUNT":
-            if emails_to_search:
-                emails = [x.strip() for x in emails_to_search.split(",")]
-                emails = list(filter(None, emails))
-
-                if not emails:
-                    return action_result.set_status(phantom.APP_ERROR, INVALID_USER_EMAILS)
-
-        if search_method == "TEAM_DRIVE":
-            if shared_drive_ids:
-                ids = [x.strip() for x in shared_drive_ids.split(",")]
-                ids = list(filter(None, ids))
-
-                if not ids:
-                    return action_result.set_status(phantom.APP_ERROR, INVALID_USER_ID)
-
-        ret_val = self._validate_time_range(action_result, start_time=start_time, end_time=end_time)
-
-        if phantom.is_fail(ret_val):
-            return action_result.get_status()
-
+    def _update_query(self, query, search_method, data_scope, timezone, ids, emails, terms, start_time, end_time, org_unit_id):
         if start_time:
             query.update({"startTime": start_time})
         if end_time:
@@ -892,6 +836,72 @@ class GoogleVaultConnector(BaseConnector):
                 }
             }
             query.update(drive_dict)
+
+    def _handle_create_export(self, param):
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        scopes = [GOOGLE_SCOPE]
+
+        ret_val, client = self._create_client(action_result, scopes)
+
+        if phantom.is_fail(ret_val):
+            self.debug_print(FAILED_CREATE_GVAULT)
+            return ret_val
+
+        name = param.get('name')
+        corpus = param.get('type')
+        data_scope = param.get('data_scope')
+        search_method = param.get('search_method')
+
+        terms = param.get("terms")
+        end_time = param.get("end_time")
+        timezone = param.get("time_zone")
+        start_time = param.get("start_time")
+        data_region = param.get("data_region")
+        org_unit_id = param.get("org_unit_id")
+        version_date = param.get("version_date")
+        emails_to_search = param.get("email_ids")
+        shared_drive_ids = param.get("shared_drive_ids")
+
+        export_format = param.get("export_format")
+        exclude_drafts = param.get("exclude_drafts")
+        include_access_info = param.get("include_access_info")
+        include_shared_drives = param.get("include_shared_drives")
+        show_confidential_mode_content = param.get("show_confidential_mode_content")
+        matter_id = param.get("matter_id")
+
+        is_valid = self._vaidate_search_corpus(action_result, search_method, corpus, org_unit_id, emails_to_search, shared_drive_ids, data_scope)
+        if phantom.is_fail(is_valid):
+            return action_result.get_status()
+
+        query = {
+            'corpus': corpus,
+            'dataScope': data_scope,
+            'searchMethod': search_method
+        }
+
+        emails = ids = list()
+        if search_method == "ACCOUNT":
+            if emails_to_search:
+                emails = [x.strip() for x in emails_to_search.split(",")]
+                emails = list(filter(None, emails))
+
+                if not emails:
+                    return action_result.set_status(phantom.APP_ERROR, INVALID_USER_EMAILS)
+
+        if search_method == "TEAM_DRIVE":
+            if shared_drive_ids:
+                ids = [x.strip() for x in shared_drive_ids.split(",")]
+                ids = list(filter(None, ids))
+
+                if not ids:
+                    return action_result.set_status(phantom.APP_ERROR, INVALID_USER_ID)
+
+        ret_val = self._validate_time_range(action_result, start_time=start_time, end_time=end_time)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+
+        self._update_query(query, search_method, data_scope, timezone, ids, emails, terms, start_time, end_time, org_unit_id)
 
         wanted_export = {
             'name': name
