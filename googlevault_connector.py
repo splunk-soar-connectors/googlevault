@@ -426,7 +426,48 @@ class GoogleVaultConnector(BaseConnector):
         action_result.update_summary({'matter_id': matter_id})
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully reopened matter")
 
-    def _handle_create_hold(self, param):  # noqa: C901
+    def _update_wanted_hold(self, wanted_hold, search_method, emails, ids, org_unit_id):
+
+        def update_hold(key, value):
+            wanted_hold.update({key: value})
+
+        org_unit = {'orgUnitId': org_unit_id}
+        if search_method == "ORG_UNIT":
+            update_hold("orgUnit", org_unit)
+
+        elif search_method == "USER_ACCOUNT":
+            accounts = [{"email": email} for email in emails]
+            update_hold("accounts", accounts)
+
+        elif search_method == "ALL_GROUPS":
+            update_hold("orgUnit", org_unit)
+
+        elif search_method == "GROUP_ACCOUNT":
+            accounts = [{"accountId": ac_id} for ac_id in ids]
+            update_hold("accounts", accounts)
+
+    def _validate_search_corpus_hold(self, action_result, search_method, corpus, emails_to_search, org_unit_id, group_account_ids):
+        if corpus == "GROUPS" and search_method not in ["GROUP_ACCOUNT", "ALL_GROUPS"]:
+            return action_result.set_status(phantom.APP_ERROR, GSVAULT_CORPUS_GROUPS_ERROR)
+
+        if corpus in ["MAIL", "DRIVE"] and search_method not in ["ORG_UNIT", "USER_ACCOUNT"]:
+            return action_result.set_status(phantom.APP_ERROR, GSVAULT_CORPUS_MAIL_DRIVE_HOLD_ERROR)
+
+        if search_method == "ORG_UNIT" and not org_unit_id:
+            return action_result.set_status(phantom.APP_ERROR, INVALID_ORI_UNI_ID)
+
+        if search_method == "USER_ACCOUNT" and not emails_to_search:
+            return action_result.set_status(phantom.APP_ERROR, INVALID_USER_ACCOUNT)
+
+        if search_method == "ALL_GROUPS" and not org_unit_id:
+            return action_result.set_status(phantom.APP_ERROR, INVALID_ORI_UNI_ID)
+
+        if search_method == "GROUP_ACCOUNT" and not group_account_ids:
+            return action_result.set_status(phantom.APP_ERROR, INVALID_GROUP_ACC)
+
+        return phantom.APP_SUCCESS
+
+    def _handle_create_hold(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
 
@@ -448,23 +489,10 @@ class GoogleVaultConnector(BaseConnector):
         include_shared_drive_files = param.get("include_shared_drive_files")
         matter_id = param.get("matter_id")
 
-        if corpus == "GROUPS" and search_method not in ["GROUP_ACCOUNT", "ALL_GROUPS"]:
-            return action_result.set_status(phantom.APP_ERROR, GSVAULT_CORPUS_GROUPS_ERROR)
-        if corpus in ["MAIL", "DRIVE"]:
-            if search_method not in ["ORG_UNIT", "USER_ACCOUNT"]:
-                return action_result.set_status(phantom.APP_ERROR, GSVAULT_CORPUS_MAIL_DRIVE_HOLD_ERROR)
+        is_valid = self._validate_search_corpus_hold(action_result, search_method, corpus, emails_to_search, org_unit_id, group_account_ids)
+        if phantom.is_fail(is_valid):
+            return action_result.get_status()
 
-        if search_method == "ORG_UNIT" and not org_unit_id:
-            return action_result.set_status(phantom.APP_ERROR, INVALID_ORI_UNI_ID)
-
-        if search_method == "USER_ACCOUNT" and not emails_to_search:
-            return action_result.set_status(phantom.APP_ERROR, INVALID_USER_ACCOUNT)
-
-        if search_method == "ALL_GROUPS" and not org_unit_id:
-            return action_result.set_status(phantom.APP_ERROR, INVALID_ORI_UNI_ID)
-
-        if search_method == "GROUP_ACCOUNT" and not group_account_ids:
-            return action_result.set_status(phantom.APP_ERROR, INVALID_GROUP_ACC)
         emails = ids = list()
         if search_method == "USER_ACCOUNT":
             if emails_to_search:
@@ -487,23 +515,7 @@ class GoogleVaultConnector(BaseConnector):
             'corpus': corpus
         }
 
-        def update_wanted_hold(key, value):
-            wanted_hold.update({key: value})
-
-        org_unit = {'orgUnitId': org_unit_id}
-        if search_method == "ORG_UNIT":
-            update_wanted_hold("orgUnit", org_unit)
-
-        elif search_method == "USER_ACCOUNT":
-            accounts = [{"email": email} for email in emails]
-            update_wanted_hold("accounts", accounts)
-
-        elif search_method == "ALL_GROUPS":
-            update_wanted_hold("orgUnit", org_unit)
-
-        elif search_method == "GROUP_ACCOUNT":
-            accounts = [{"accountId": ac_id} for ac_id in ids]
-            update_wanted_hold("accounts", accounts)
+        self._update_wanted_hold(wanted_hold, search_method, emails, ids, org_unit_id)
 
         if corpus == "DRIVE":
             drive_query = dict()
