@@ -125,7 +125,7 @@ class GoogleVaultConnector(BaseConnector):
 
         view = param.get("state")
 
-        limit = self._validate_integer(action_result, param.get("limit"), 'limit', allow_zero=False)
+        limit = self._validate_integer(action_result, param.get("limit", DEFAULT_LIMIT), 'limit', allow_zero=False)
 
         if limit is None:
             return action_result.get_status()
@@ -155,7 +155,7 @@ class GoogleVaultConnector(BaseConnector):
             self.debug_print(FAILED_CREATE_GVAULT)
             return ret_val
 
-        limit = self._validate_integer(action_result, param.get("limit"), 'limit', allow_zero=False)
+        limit = self._validate_integer(action_result, param.get("limit", DEFAULT_LIMIT), 'limit', allow_zero=False)
 
         if limit is None:
             return action_result.get_status()
@@ -186,7 +186,7 @@ class GoogleVaultConnector(BaseConnector):
             return ret_val
 
         domain = param["domain"]
-        limit = self._validate_integer(action_result, param.get("limit"), 'limit', allow_zero=False)
+        limit = self._validate_integer(action_result, param.get("limit", DEFAULT_LIMIT), 'limit', allow_zero=False)
 
         if limit is None:
             return action_result.get_status()
@@ -486,7 +486,7 @@ class GoogleVaultConnector(BaseConnector):
         org_unit_id = param.get("org_unit_id")
         emails_to_search = param.get("user_email_ids")
         group_account_ids = param.get("group_account_ids")
-        include_shared_drive_files = param.get("include_shared_drive_files")
+        include_shared_drive_files = param.get("include_shared_drive_files", DEFAULT_BOOL_STATE)
         matter_id = param.get("matter_id")
 
         is_valid = self._validate_search_corpus_hold(action_result, search_method, corpus, emails_to_search, org_unit_id, group_account_ids)
@@ -670,7 +670,7 @@ class GoogleVaultConnector(BaseConnector):
 
         matter_id = param.get("matter_id")
 
-        limit = self._validate_integer(action_result, param.get("limit"), 'limit', allow_zero=False)
+        limit = self._validate_integer(action_result, param.get("limit", DEFAULT_LIMIT), 'limit', allow_zero=False)
 
         if limit is None:
             return action_result.get_status()
@@ -702,7 +702,7 @@ class GoogleVaultConnector(BaseConnector):
 
         matter_id = param.get("matter_id")
 
-        limit = self._validate_integer(action_result, param.get("limit"), 'limit', allow_zero=False)
+        limit = self._validate_integer(action_result, param.get("limit", DEFAULT_LIMIT), 'limit', allow_zero=False)
 
         if limit is None:
             return action_result.get_status()
@@ -873,12 +873,12 @@ class GoogleVaultConnector(BaseConnector):
         version_date = param.get("version_date")
         emails_to_search = param.get("email_ids")
         shared_drive_ids = param.get("shared_drive_ids")
-
         export_format = param.get("export_format")
-        exclude_drafts = param.get("exclude_drafts")
-        include_access_info = param.get("include_access_info")
-        include_shared_drives = param.get("include_shared_drives")
-        show_confidential_mode_content = param.get("show_confidential_mode_content")
+
+        exclude_drafts = param.get("exclude_drafts", DEFAULT_BOOL_STATE)
+        include_access_info = param.get("include_access_info", DEFAULT_BOOL_STATE)
+        include_shared_drives = param.get("include_shared_drives", DEFAULT_BOOL_STATE)
+        show_confidential_mode_content = param.get("show_confidential_mode_content", DEFAULT_BOOL_STATE)
         matter_id = param.get("matter_id")
 
         is_valid = self._vaidate_search_corpus(action_result, search_method, corpus, org_unit_id, emails_to_search, shared_drive_ids, data_scope)

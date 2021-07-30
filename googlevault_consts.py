@@ -11,7 +11,7 @@ GOOGLE_SCOPE_GROUP_READONLY = 'https://www.googleapis.com/auth/admin.directory.g
 GOOGLE_SCOPE_MEMBER_READONLY = 'https://www.googleapis.com/auth/admin.directory.group.member.readonly'
 GOOGLE_SCOPE_MEMBER = 'https://www.googleapis.com/auth/admin.directory.group.member'
 GOOGLE_GROUPS_SCOPE = [GOOGLE_SCOPE_GROUP, GOOGLE_SCOPE_GROUP_READONLY, GOOGLE_SCOPE_MEMBER_READONLY, GOOGLE_SCOPE_MEMBER]
-GSVAULT_INVALID_LIMIT = "Please provide non-zero positive integer in {param}]"
+GSVAULT_INVALID_LIMIT = "Please provide non-zero positive integer in {param}"
 GSVAULT_TIME_FORMAT_ERROR = "Please provide date/time in '%Y-%m-%dT%H:%M:%SZ' format"
 GSVAULT_TIME_RANGE_ERROR = "The given time range is incorrect"
 GSVAULT_CORPUS_GROUPS_ERROR = "You have to provide either group_account_ids or org_unit_id for corpus type GROUPS "
@@ -45,3 +45,5 @@ INVALID_USER_ACCOUNT = "Please provide valid list of user emails for search meth
 
 FAILED_CREATE_GVAULT = "Failed to create the Google Vault client"
 SUCCESS_CREATED_M_H = "Successfully added held account to {hold_id} hold id for {matter_id} matter id"
+DEFAULT_LIMIT = 100
+DEFAULT_BOOL_STATE = False
