@@ -44,6 +44,6 @@ INVALID_GROUP_ACC = "Please provide valid list of group account ID for search me
 INVALID_USER_ACCOUNT = "Please provide valid list of user emails for search method USER_ACCOUNT"
 
 FAILED_CREATE_GVAULT = "Failed to create the Google Vault client"
-SUCCESS_CREATED_M_H = "Successfully added held account to {hold_id} hold id for {matter_id} matter id"
+SUCCESS_ADDED_HELD_ACCOUNT = "Successfully added held account to {hold_id} hold id for {matter_id} matter id"
 DEFAULT_LIMIT = 100
 DEFAULT_BOOL_STATE = False

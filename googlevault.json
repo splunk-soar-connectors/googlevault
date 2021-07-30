@@ -498,9 +498,9 @@
             "description": "Move a matter to the CLOSED state",
             "verbose": "You can close the matter only if it is in the OPEN state. If the matter in the OPEN state and contains any holds, then, to close the matter all holds must be deleted. For this, you have to checkmark the <b>Delete all holds</b> parameter and run the action. If you keep the parameter unchecked and run the action, it will fail due to undeleted holds in the matter. In that case, the user has to delete all the holds manually; run this action after that to close the matter.",
             "type": "generic",
+            "undo": "reopen matter",
             "identifier": "close_matter",
             "read_only": false,
-            "undo": "reopen matter",
             "parameters": {
                 "matter_id": {
                     "description": "Matter ID",
@@ -627,9 +627,9 @@
             "description": "Move a matter to the DELETED state",
             "verbose": "You can delete the matter only if it is in the CLOSED state. If the matter is in the OPEN state and contains any holds, then, to delete it all holds must be deleted and the matter must be moved to the CLOSED state. For this, you have to checkmark the 'Delete all holds' parameter and run the action. By doing this, action will close the matter after deleting all the holds (if any) associated with it and move it to the DELETED state. If you keep the parameter unchecked and run the action, it will fail due to matter not being in the CLOSED state. In that case, the user has to move the matter to the CLOSED state by manually deleting all the associated holds; run this action after that to delete the matter.",
             "type": "generic",
+            "undo": "restore matter",
             "identifier": "delete_matter",
             "read_only": false,
-            "undo": "restore matter",
             "parameters": {
                 "matter_id": {
                     "description": "Matter ID",
@@ -755,9 +755,9 @@
             "action": "reopen matter",
             "description": "Reopens a matter to move it from CLOSED to OPEN state",
             "type": "generic",
+            "undo": "close matter",
             "identifier": "reopen_matter",
             "read_only": false,
-            "undo": "close matter",
             "parameters": {
                 "matter_id": {
                     "description": "Matter ID",
@@ -869,9 +869,9 @@
             "action": "restore matter",
             "description": "Restores a matter to move it from DELETED to CLOSED state",
             "type": "generic",
+            "undo": "delete matter",
             "identifier": "restore_matter",
             "read_only": false,
-            "undo": "delete matter",
             "parameters": {
                 "matter_id": {
                     "description": "Matter ID",
@@ -1707,9 +1707,9 @@
             "description": "Remove held account from the given hold ID",
             "verbose": "A held account can only be removed from given hold_id if the search_method of the hold is either USER_ACCOUNT or GROUP_ACCOUNT.",
             "type": "generic",
+            "undo": "add held account",
             "identifier": "remove_held_account",
             "read_only": false,
-            "undo": "add held account",
             "parameters": {
                 "matter_id": {
                     "description": "Matter ID",
@@ -1835,9 +1835,9 @@
             "description": "Add held account to the given hold ID",
             "verbose": "A held account can only be added to given hold_id if search_method of the hold is either USER_ACCOUNT or GROUP_ACCOUNT.",
             "type": "generic",
+            "undo": "remove held account",
             "identifier": "add_held_account",
             "read_only": false,
-            "undo": "remove held account",
             "parameters": {
                 "matter_id": {
                     "description": "Matter ID",

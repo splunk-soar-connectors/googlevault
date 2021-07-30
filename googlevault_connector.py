@@ -53,7 +53,7 @@ class GoogleVaultConnector(BaseConnector):
         except Exception as e:
             return action_result.set_status(phantom.APP_ERROR, "Unable to create load the key json", e), None
 
-        if (self._login_email):
+        if self._login_email:
             try:
                 credentials = credentials.with_subject(self._login_email)
             except Exception as e:
@@ -214,8 +214,8 @@ class GoogleVaultConnector(BaseConnector):
         if phantom.is_fail(ret_val):
             self.debug_print(FAILED_CREATE_GVAULT)
             return ret_val
-        name = param.get("name")
-        description = param.get("description")
+        name = param["name"]
+        description = param["description"]
         matter_content = {
             'name': name,
             'description': description,
@@ -232,7 +232,7 @@ class GoogleVaultConnector(BaseConnector):
     def _handle_get_matter(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
-        matter_id = param.get("matter_id")
+        matter_id = param["matter_id"]
         ret_val, client = self._create_client(action_result, scopes)
 
         if phantom.is_fail(ret_val):
@@ -268,7 +268,7 @@ class GoogleVaultConnector(BaseConnector):
             return ret_val
 
         delete_flag = param.get("delete_all_holds", True)
-        matter_id = param.get("matter_id")
+        matter_id = param["matter_id"]
 
         ret_val, flag, state = self._check_matter_state(action_result, client, matter_id=matter_id, state_for_check="OPEN")
 
@@ -359,7 +359,7 @@ class GoogleVaultConnector(BaseConnector):
             return ret_val
 
         delete_flag = param.get("delete_all_holds", True)
-        matter_id = param.get("matter_id")
+        matter_id = param["matter_id"]
 
         ret_val, flag, state = self._check_matter_state(action_result, client, matter_id=matter_id, state_for_check="DELETED")
 
@@ -389,7 +389,7 @@ class GoogleVaultConnector(BaseConnector):
     def _handle_restore_matter(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
-        matter_id = param.get("matter_id")
+        matter_id = param["matter_id"]
         ret_val, client = self._create_client(action_result, scopes)
 
         if phantom.is_fail(ret_val):
@@ -409,7 +409,7 @@ class GoogleVaultConnector(BaseConnector):
     def _handle_reopen_matter(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
-        matter_id = param.get("matter_id")
+        matter_id = param["matter_id"]
         ret_val, client = self._create_client(action_result, scopes)
 
         if phantom.is_fail(ret_val):
@@ -476,8 +476,8 @@ class GoogleVaultConnector(BaseConnector):
             self.debug_print(FAILED_CREATE_GVAULT)
             return ret_val
 
-        name = param.get('name')
-        corpus = param.get('type')
+        name = param['name']
+        corpus = param['type']
         search_method = param.get('search_method')
         terms = param.get("terms")
         end_time = param.get("end_time")
@@ -486,7 +486,7 @@ class GoogleVaultConnector(BaseConnector):
         emails_to_search = param.get("user_email_ids")
         group_account_ids = param.get("group_account_ids")
         include_shared_drive_files = param.get("include_shared_drive_files", DEFAULT_BOOL_STATE)
-        matter_id = param.get("matter_id")
+        matter_id = param["matter_id"]
 
         is_valid = self._validate_search_corpus_hold(action_result, search_method, corpus, emails_to_search, org_unit_id, group_account_ids)
         if phantom.is_fail(is_valid):
@@ -501,7 +501,7 @@ class GoogleVaultConnector(BaseConnector):
                 if not emails:
                     return action_result.set_status(phantom.APP_ERROR, INVALID_USER_ACCOUNT)
 
-        if search_method == "GROUP_ACCOUNT":
+        elif search_method == "GROUP_ACCOUNT":
             if group_account_ids:
                 ids = [x.strip() for x in group_account_ids.split(",")]
                 ids = list(filter(None, ids))
@@ -557,6 +557,7 @@ class GoogleVaultConnector(BaseConnector):
 
     def _validate_time_range(self, action_result, start_time=None, end_time=None, version_date=None):
         # validation for start time and end time
+        start = end = None
         try:
             if start_time:
                 start = datetime.datetime.strptime(start_time, "%Y-%m-%dT%H:%M:%SZ")
@@ -578,8 +579,8 @@ class GoogleVaultConnector(BaseConnector):
     def _handle_delete_hold(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
-        matter_id = param.get("matter_id")
-        hold_id = param.get("hold_id")
+        matter_id = param["matter_id"]
+        hold_id = param["hold_id"]
 
         ret_val, client = self._create_client(action_result, scopes)
 
@@ -616,9 +617,9 @@ class GoogleVaultConnector(BaseConnector):
             self.debug_print(FAILED_CREATE_GVAULT)
             return ret_val
 
-        account_id = param.get("account_id")
-        matter_id = param.get("matter_id")
-        hold_id = param.get("hold_id")
+        account_id = param["account_id"]
+        matter_id = param["matter_id"]
+        hold_id = param["hold_id"]
 
         held_account = {'accountId': account_id}
 
@@ -630,15 +631,15 @@ class GoogleVaultConnector(BaseConnector):
         action_result.add_data(result)
         action_result.update_summary({'matter_id': matter_id})
 
-        message = SUCCESS_CREATED_M_H.format(hold_id=hold_id, matter_id=matter_id)
+        message = SUCCESS_ADDED_HELD_ACCOUNT.format(hold_id=hold_id, matter_id=matter_id)
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
     def _handle_remove_held_account(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
-        account_id = param.get("account_id")
-        matter_id = param.get("matter_id")
-        hold_id = param.get("hold_id")
+        account_id = param["account_id"]
+        matter_id = param["matter_id"]
+        hold_id = param["hold_id"]
 
         ret_val, client = self._create_client(action_result, scopes)
 
@@ -654,7 +655,7 @@ class GoogleVaultConnector(BaseConnector):
         action_result.add_data(result)
         action_result.update_summary({'hold_id': hold_id, 'matter_id': matter_id})
 
-        message = SUCCESS_CREATED_M_H.format(hold_id=hold_id, matter_id=matter_id)
+        message = SUCCESS_ADDED_HELD_ACCOUNT.format(hold_id=hold_id, matter_id=matter_id)
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
     def _handle_list_holds(self, param):
@@ -667,7 +668,7 @@ class GoogleVaultConnector(BaseConnector):
             self.debug_print(FAILED_CREATE_GVAULT)
             return ret_val
 
-        matter_id = param.get("matter_id")
+        matter_id = param["matter_id"]
 
         limit = self._validate_integer(action_result, param.get("limit", DEFAULT_LIMIT), 'limit', allow_zero=False)
 
@@ -699,7 +700,7 @@ class GoogleVaultConnector(BaseConnector):
             self.debug_print(FAILED_CREATE_GVAULT)
             return ret_val
 
-        matter_id = param.get("matter_id")
+        matter_id = param["matter_id"]
 
         limit = self._validate_integer(action_result, param.get("limit", DEFAULT_LIMIT), 'limit', allow_zero=False)
 
@@ -858,10 +859,10 @@ class GoogleVaultConnector(BaseConnector):
             self.debug_print(FAILED_CREATE_GVAULT)
             return ret_val
 
-        name = param.get('name')
-        corpus = param.get('type')
-        data_scope = param.get('data_scope')
-        search_method = param.get('search_method')
+        name = param['name']
+        corpus = param['type']
+        data_scope = param['data_scope']
+        search_method = param['search_method']
 
         terms = param.get("terms")
         end_time = param.get("end_time")
@@ -878,7 +879,7 @@ class GoogleVaultConnector(BaseConnector):
         include_access_info = param.get("include_access_info", DEFAULT_BOOL_STATE)
         include_shared_drives = param.get("include_shared_drives", DEFAULT_BOOL_STATE)
         show_confidential_mode_content = param.get("show_confidential_mode_content", DEFAULT_BOOL_STATE)
-        matter_id = param.get("matter_id")
+        matter_id = param["matter_id"]
 
         is_valid = self._vaidate_search_corpus(action_result, search_method, corpus, org_unit_id, emails_to_search, shared_drive_ids, data_scope)
         if phantom.is_fail(is_valid):
@@ -899,7 +900,7 @@ class GoogleVaultConnector(BaseConnector):
                 if not emails:
                     return action_result.set_status(phantom.APP_ERROR, INVALID_USER_EMAILS)
 
-        if search_method == "TEAM_DRIVE":
+        elif search_method == "TEAM_DRIVE":
             if shared_drive_ids:
                 ids = [x.strip() for x in shared_drive_ids.split(",")]
                 ids = list(filter(None, ids))
@@ -981,8 +982,8 @@ class GoogleVaultConnector(BaseConnector):
         scopes = [GOOGLE_SCOPE]
 
         ret_val, client = self._create_client(action_result, scopes)
-        matter_id = param.get("matter_id")
-        export_id = param.get("export_id")
+        matter_id = param["matter_id"]
+        export_id = param["export_id"]
 
         if phantom.is_fail(ret_val):
             self.debug_print(FAILED_CREATE_GVAULT)
@@ -1089,7 +1090,7 @@ if __name__ == '__main__':
         login_url = BaseConnector._get_phantom_base_url() + "login"
         try:
             print("Accessing the Login page")
-            r = requests.get(login_url, verify=False)
+            r = requests.get(login_url, verify=True)
             csrftoken = r.cookies['csrftoken']
 
             data = dict()
@@ -1102,7 +1103,7 @@ if __name__ == '__main__':
             headers['Referer'] = login_url
 
             print("Logging into Platform to get the session id")
-            r2 = requests.post(login_url, verify=False, data=data, headers=headers)
+            r2 = requests.post(login_url, verify=True, data=data, headers=headers)
             session_id = r2.cookies['sessionid']
         except Exception as e:
             print("Unable to get session id from the platform. Error: " + str(e))
