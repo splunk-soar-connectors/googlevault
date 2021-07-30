@@ -70,25 +70,24 @@ class GoogleVaultConnector(BaseConnector):
         return phantom.APP_SUCCESS, client
 
     def _validate_integer(self, action_result, parameter, key, allow_zero=False):
-        if parameter is not None:
-            try:
-                if not float(parameter).is_integer():
-                    action_result.set_status(phantom.APP_ERROR, INVALID_INT.format(param=key))
-                    return None
-
-                parameter = int(parameter)
-            except Exception as e:
-                self.debug_print(GOOGLE_VAULT_EXCEPTION, e)
+        try:
+            if not float(parameter).is_integer():
                 action_result.set_status(phantom.APP_ERROR, INVALID_INT.format(param=key))
                 return None
 
-            if parameter < 0:
-                action_result.set_status(phantom.APP_ERROR, ERR_NEGATIVE_INT_PARAM.format(param=key))
-                return None
+            parameter = int(parameter)
+        except Exception as e:
+            self.debug_print(GOOGLE_VAULT_EXCEPTION, e)
+            action_result.set_status(phantom.APP_ERROR, INVALID_INT.format(param=key))
+            return None
 
-            if not allow_zero and parameter == 0:
-                action_result.set_status(phantom.APP_ERROR, GSVAULT_INVALID_LIMIT.format(param=key))
-                return None
+        if parameter < 0:
+            action_result.set_status(phantom.APP_ERROR, ERR_NEGATIVE_INT_PARAM.format(param=key))
+            return None
+
+        if not allow_zero and parameter == 0:
+            action_result.set_status(phantom.APP_ERROR, GSVAULT_INVALID_LIMIT.format(param=key))
+            return None
 
         return parameter
 
@@ -1048,7 +1047,7 @@ class GoogleVaultConnector(BaseConnector):
 
         login_email = config['login_email']
 
-        if (not ph_utils.is_email(login_email)):
+        if not ph_utils.is_email(login_email):
             return self.set_status(phantom.APP_ERROR, "Asset config 'login_email' failed validation")
 
         self._login_email = login_email
@@ -1080,13 +1079,13 @@ if __name__ == '__main__':
     username = args.username
     password = args.password
 
-    if (username is not None and password is None):
+    if username is not None and password is None:
         # User specified a username but not a password, so ask
         import getpass
 
         password = getpass.getpass("Password: ")
 
-    if (username and password):
+    if username and password:
         login_url = BaseConnector._get_phantom_base_url() + "login"
         try:
             print("Accessing the Login page")
@@ -1117,7 +1116,7 @@ if __name__ == '__main__':
         connector = GoogleVaultConnector()
         connector.print_progress_message = True
 
-        if (session_id is not None):
+        if session_id is not None:
             in_json['user_session_token'] = session_id
             connector._set_csrf_info(csrftoken, headers['Referer'])
 

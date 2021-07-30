@@ -500,6 +500,7 @@
             "type": "generic",
             "identifier": "close_matter",
             "read_only": false,
+            "undo": "reopen matter",
             "parameters": {
                 "matter_id": {
                     "description": "Matter ID",
@@ -628,6 +629,7 @@
             "type": "generic",
             "identifier": "delete_matter",
             "read_only": false,
+            "undo": "restore matter",
             "parameters": {
                 "matter_id": {
                     "description": "Matter ID",
@@ -755,6 +757,7 @@
             "type": "generic",
             "identifier": "reopen_matter",
             "read_only": false,
+            "undo": "close matter",
             "parameters": {
                 "matter_id": {
                     "description": "Matter ID",
@@ -868,6 +871,7 @@
             "type": "generic",
             "identifier": "restore_matter",
             "read_only": false,
+            "undo": "delete matter",
             "parameters": {
                 "matter_id": {
                     "description": "Matter ID",
@@ -1705,6 +1709,7 @@
             "type": "generic",
             "identifier": "remove_held_account",
             "read_only": false,
+            "undo": "add held account",
             "parameters": {
                 "matter_id": {
                     "description": "Matter ID",
@@ -1832,6 +1837,7 @@
             "type": "generic",
             "identifier": "add_held_account",
             "read_only": false,
+            "undo": "remove held account",
             "parameters": {
                 "matter_id": {
                     "description": "Matter ID",
