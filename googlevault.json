@@ -9,13 +9,17 @@
     "product_name": "Google Vault",
     "product_version_regex": ".*",
     "publisher": "Splunk",
-    "license": "Copyright (c) 2019 Splunk Inc.",
-    "app_version": "1.0.1",
+    "license": "Copyright (c) 2019-2021 Splunk Inc.",
+    "app_version": "2.0.0",
+    "python_version": "3",
     "utctime_updated": "2019-09-10T17:49:23.000000Z",
     "package_name": "phantom_googlevault",
-    "main_module": "googlevault_connector.pyc",
-    "min_phantom_version": "4.2.7532",
+    "main_module": "googlevault_connector.py",
+    "min_phantom_version": "4.9.39220",
     "app_wizard_version": "1.0.0",
+    "latest_tested_versions": [
+        "Cloud, July 2021"
+    ],
     "pip_dependencies": {
         "wheel": [
             {
@@ -44,11 +48,11 @@
             },
             {
                 "module": "httplib2",
-                "input_file": "wheels/httplib2_wheel/httplib2-0.13.1-py2-none-any.whl"
+                "input_file": "wheels/httplib2_wheel/httplib2-0.19.1-py3-none-any.whl"
             },
             {
                 "module": "google_api_python_client",
-                "input_file": "wheels/google_api_python_client/google_api_python_client-1.7.11-py2-none-any.whl"
+                "input_file": "wheels/google_api_python_client/google_api_python_client-1.7.12-py3-none-any.whl"
             },
             {
                 "module": "oauthclient",
@@ -81,9 +85,9 @@
     "actions": [
         {
             "action": "test connectivity",
-            "identifier": "test_connectivity",
             "description": "Validate the asset configuration for connectivity using supplied configuration",
             "type": "test",
+            "identifier": "test_connectivity",
             "read_only": true,
             "parameters": {},
             "output": [],
@@ -91,15 +95,14 @@
         },
         {
             "action": "list matters",
-            "identifier": "list_matters",
             "description": "List all open, closed, and deleted matters",
             "type": "investigate",
+            "identifier": "list_matters",
             "read_only": true,
             "parameters": {
                 "state": {
                     "description": "Type of matters to be retrieved",
                     "data_type": "string",
-                    "required": false,
                     "order": 0,
                     "value_list": [
                         "OPEN",
@@ -110,7 +113,6 @@
                 "limit": {
                     "description": "Maximum number of matters to return",
                     "data_type": "numeric",
-                    "required": false,
                     "order": 1
                 }
             },
@@ -205,19 +207,19 @@
                     ]
                 }
             ],
-            "versions": "EQ(*)",
             "render": {
                 "width": 12,
                 "title": "List Matters",
                 "type": "table",
                 "height": 5
-            }
+            },
+            "versions": "EQ(*)"
         },
         {
             "action": "create matter",
-            "identifier": "create_matter",
             "description": "Create a matter with OPEN state",
             "type": "generic",
+            "identifier": "create_matter",
             "read_only": false,
             "parameters": {
                 "name": {
@@ -296,8 +298,18 @@
                     "column_order": 1
                 },
                 {
-                    "data_path": "action_result.summary",
-                    "data_type": "string"
+                    "data_path": "action_result.summary.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "matter_name"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.description",
+                    "data_type": "string",
+                    "example_values": [
+                        "matter is being created for test purpose"
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
@@ -321,20 +333,20 @@
                     ]
                 }
             ],
-            "versions": "EQ(*)",
             "render": {
                 "width": 12,
                 "title": "Create Matter",
                 "type": "table",
                 "height": 5
-            }
+            },
+            "versions": "EQ(*)"
         },
         {
             "action": "get matter",
-            "identifier": "get_matter",
             "description": "Fetch information for the given matter ID",
             "verbose": "There are two views of a matter: BASIC (default) and FULL. The FULL view adds matter permissions in addition to the data received in the BASIC view.",
             "type": "investigate",
+            "identifier": "get_matter",
             "read_only": true,
             "parameters": {
                 "matter_id": {
@@ -350,7 +362,6 @@
                 "view": {
                     "description": "View of matter",
                     "data_type": "string",
-                    "required": false,
                     "order": 1,
                     "default": "BASIC",
                     "value_list": [
@@ -391,7 +402,7 @@
                     "example_values": [
                         "Matter Description"
                     ],
-                    "column_name": "Matter description",
+                    "column_name": "Matter Description",
                     "column_order": 3
                 },
                 {
@@ -446,8 +457,11 @@
                     "column_order": 1
                 },
                 {
-                    "data_path": "action_result.summary",
-                    "data_type": "string"
+                    "data_path": "action_result.summary.matter_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "9360993f-1cd6-4709-81e3-457ff0a0b4ba"
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
@@ -471,21 +485,21 @@
                     ]
                 }
             ],
-            "versions": "EQ(*)",
             "render": {
                 "width": 12,
                 "title": "Get Matter",
                 "type": "table",
                 "height": 5
-            }
+            },
+            "versions": "EQ(*)"
         },
         {
             "action": "close matter",
-            "identifier": "close_matter",
             "description": "Move a matter to the CLOSED state",
             "verbose": "You can close the matter only if it is in the OPEN state. If the matter in the OPEN state and contains any holds, then, to close the matter all holds must be deleted. For this, you have to checkmark the <b>Delete all holds</b> parameter and run the action. If you keep the parameter unchecked and run the action, it will fail due to undeleted holds in the matter. In that case, the user has to delete all the holds manually; run this action after that to close the matter.",
             "type": "generic",
             "undo": "reopen matter",
+            "identifier": "close_matter",
             "read_only": false,
             "parameters": {
                 "matter_id": {
@@ -501,7 +515,6 @@
                 "delete_all_holds": {
                     "description": "Delete all holds",
                     "data_type": "boolean",
-                    "required": false,
                     "order": 1,
                     "default": true
                 }
@@ -573,8 +586,11 @@
                     "column_order": 1
                 },
                 {
-                    "data_path": "action_result.summary",
-                    "data_type": "string"
+                    "data_path": "action_result.summary.matter_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "9360993f-1cd6-4709-81e3-457ff0a0b4ba"
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
@@ -598,21 +614,21 @@
                     ]
                 }
             ],
-            "versions": "EQ(*)",
             "render": {
                 "width": 12,
                 "title": "Close Matter",
                 "type": "table",
                 "height": 5
-            }
+            },
+            "versions": "EQ(*)"
         },
         {
             "action": "delete matter",
-            "identifier": "delete_matter",
             "description": "Move a matter to the DELETED state",
             "verbose": "You can delete the matter only if it is in the CLOSED state. If the matter is in the OPEN state and contains any holds, then, to delete it all holds must be deleted and the matter must be moved to the CLOSED state. For this, you have to checkmark the 'Delete all holds' parameter and run the action. By doing this, action will close the matter after deleting all the holds (if any) associated with it and move it to the DELETED state. If you keep the parameter unchecked and run the action, it will fail due to matter not being in the CLOSED state. In that case, the user has to move the matter to the CLOSED state by manually deleting all the associated holds; run this action after that to delete the matter.",
             "type": "generic",
             "undo": "restore matter",
+            "identifier": "delete_matter",
             "read_only": false,
             "parameters": {
                 "matter_id": {
@@ -628,7 +644,6 @@
                 "delete_all_holds": {
                     "description": "Delete all holds",
                     "data_type": "boolean",
-                    "required": false,
                     "order": 1,
                     "default": true
                 }
@@ -700,8 +715,11 @@
                     "column_order": 1
                 },
                 {
-                    "data_path": "action_result.summary",
-                    "data_type": "string"
+                    "data_path": "action_result.summary.matter_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "9360993f-1cd6-4709-81e3-457ff0a0b4ba"
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
@@ -725,20 +743,20 @@
                     ]
                 }
             ],
-            "versions": "EQ(*)",
             "render": {
                 "width": 12,
                 "title": "Delete Matter",
                 "type": "table",
                 "height": 5
-            }
+            },
+            "versions": "EQ(*)"
         },
         {
             "action": "reopen matter",
-            "identifier": "reopen_matter",
             "description": "Reopens a matter to move it from CLOSED to OPEN state",
             "type": "generic",
             "undo": "close matter",
+            "identifier": "reopen_matter",
             "read_only": false,
             "parameters": {
                 "matter_id": {
@@ -757,7 +775,8 @@
                     "data_path": "action_result.status",
                     "data_type": "string",
                     "example_values": [
-                        "success"
+                        "success",
+                        "failed"
                     ]
                 },
                 {
@@ -810,8 +829,11 @@
                     "column_order": 1
                 },
                 {
-                    "data_path": "action_result.summary",
-                    "data_type": "string"
+                    "data_path": "action_result.summary.matter_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "9360993f-1cd6-4709-81e3-457ff0a0b4ba"
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
@@ -835,20 +857,20 @@
                     ]
                 }
             ],
-            "versions": "EQ(*)",
             "render": {
                 "width": 12,
                 "title": "Reopen Matter",
                 "type": "table",
                 "height": 5
-            }
+            },
+            "versions": "EQ(*)"
         },
         {
             "action": "restore matter",
-            "identifier": "restore_matter",
             "description": "Restores a matter to move it from DELETED to CLOSED state",
             "type": "generic",
             "undo": "delete matter",
+            "identifier": "restore_matter",
             "read_only": false,
             "parameters": {
                 "matter_id": {
@@ -921,8 +943,11 @@
                     "column_order": 1
                 },
                 {
-                    "data_path": "action_result.summary",
-                    "data_type": "string"
+                    "data_path": "action_result.summary.matter_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "9360993f-1cd6-4709-81e3-457ff0a0b4ba"
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
@@ -946,19 +971,19 @@
                     ]
                 }
             ],
-            "versions": "EQ(*)",
             "render": {
                 "width": 12,
                 "title": "Restore Matter",
                 "type": "table",
                 "height": 5
-            }
+            },
+            "versions": "EQ(*)"
         },
         {
             "action": "list holds",
-            "identifier": "list_holds",
             "description": "List all holds for the given matter ID",
             "type": "investigate",
+            "identifier": "list_holds",
             "read_only": true,
             "parameters": {
                 "matter_id": {
@@ -974,7 +999,6 @@
                 "limit": {
                     "description": "Maximum number of holds to return",
                     "data_type": "numeric",
-                    "required": false,
                     "order": 1
                 }
             },
@@ -1183,20 +1207,20 @@
                     ]
                 }
             ],
-            "versions": "EQ(*)",
             "render": {
                 "width": 12,
                 "title": "List Holds",
                 "type": "custom",
                 "height": 5,
                 "view": "googlevault_view.display_view"
-            }
+            },
+            "versions": "EQ(*)"
         },
         {
             "action": "create hold",
-            "identifier": "create_hold",
             "description": "Create a hold within the given matter ID",
             "type": "generic",
+            "identifier": "create_hold",
             "read_only": false,
             "parameters": {
                 "name": {
@@ -1241,7 +1265,6 @@
                 "org_unit_id": {
                     "description": "Organization ID",
                     "data_type": "string",
-                    "required": false,
                     "order": 4,
                     "primary": true,
                     "contains": [
@@ -1251,7 +1274,6 @@
                 "user_email_ids": {
                     "description": "Comma-separated list of user emails",
                     "data_type": "string",
-                    "required": false,
                     "order": 5,
                     "primary": true,
                     "contains": [
@@ -1262,35 +1284,30 @@
                 "group_account_ids": {
                     "description": "Comma-separated list of group IDs",
                     "data_type": "string",
-                    "required": false,
                     "order": 6,
                     "primary": true,
                     "contains": [
-                        "gsvault group account id"
+                        "gsvault group account ids"
                     ]
                 },
                 "terms": {
                     "description": "Conditions to be met for a message to be covered by this hold",
                     "data_type": "string",
-                    "required": false,
                     "order": 7
                 },
                 "start_time": {
                     "description": "Start time (%Y-%m-%dT%H:%M:%SZ)",
                     "data_type": "string",
-                    "required": false,
                     "order": 8
                 },
                 "end_time": {
                     "description": "End time (%Y-%m-%dT%H:%M:%SZ)",
                     "data_type": "string",
-                    "required": false,
                     "order": 9
                 },
                 "include_shared_drive_files": {
                     "description": "Include files from associated shared drives",
                     "data_type": "boolean",
-                    "required": false,
                     "order": 10,
                     "default": false
                 }
@@ -1315,7 +1332,7 @@
                     "data_path": "action_result.parameter.group_account_ids",
                     "data_type": "string",
                     "contains": [
-                        "gsvault group account id"
+                        "gsvault group account ids"
                     ],
                     "example_values": [
                         "01302m9240iv47j"
@@ -1546,8 +1563,11 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.summary",
-                    "data_type": "string"
+                    "data_path": "action_result.summary.matter_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "9360993f-1cd6-4709-81e3-457ff0a0b4ba"
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
@@ -1571,20 +1591,20 @@
                     ]
                 }
             ],
-            "versions": "EQ(*)",
             "render": {
                 "width": 12,
                 "title": "Create Hold",
                 "type": "custom",
                 "height": 5,
                 "view": "googlevault_view.display_view"
-            }
+            },
+            "versions": "EQ(*)"
         },
         {
             "action": "delete hold",
-            "identifier": "delete_hold",
             "description": "Delete a hold",
             "type": "generic",
+            "identifier": "delete_hold",
             "read_only": false,
             "parameters": {
                 "matter_id": {
@@ -1646,8 +1666,11 @@
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.summary",
-                    "data_type": "string"
+                    "data_path": "action_result.summary.matter_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "9360993f-1cd6-4709-81e3-457ff0a0b4ba"
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
@@ -1671,21 +1694,21 @@
                     ]
                 }
             ],
-            "versions": "EQ(*)",
             "render": {
                 "width": 12,
                 "title": "Delete Hold",
                 "type": "table",
                 "height": 5
-            }
+            },
+            "versions": "EQ(*)"
         },
         {
             "action": "remove held account",
-            "identifier": "remove_held_account",
             "description": "Remove held account from the given hold ID",
             "verbose": "A held account can only be removed from given hold_id if the search_method of the hold is either USER_ACCOUNT or GROUP_ACCOUNT.",
             "type": "generic",
             "undo": "add held account",
+            "identifier": "remove_held_account",
             "read_only": false,
             "parameters": {
                 "matter_id": {
@@ -1771,8 +1794,11 @@
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.summary",
-                    "data_type": "string"
+                    "data_path": "action_result.summary.matter_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "9360993f-1cd6-4709-81e3-457ff0a0b4ba"
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
@@ -1796,21 +1822,21 @@
                     ]
                 }
             ],
-            "versions": "EQ(*)",
             "render": {
                 "width": 12,
                 "title": "Remove Held Account",
                 "type": "table",
                 "height": 5
-            }
+            },
+            "versions": "EQ(*)"
         },
         {
             "action": "add held account",
-            "identifier": "add_held_account",
             "description": "Add held account to the given hold ID",
             "verbose": "A held account can only be added to given hold_id if search_method of the hold is either USER_ACCOUNT or GROUP_ACCOUNT.",
             "type": "generic",
             "undo": "remove held account",
+            "identifier": "add_held_account",
             "read_only": false,
             "parameters": {
                 "matter_id": {
@@ -1944,8 +1970,11 @@
                     "column_order": 4
                 },
                 {
-                    "data_path": "action_result.summary",
-                    "data_type": "string"
+                    "data_path": "action_result.summary.matter_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "9360993f-1cd6-4709-81e3-457ff0a0b4ba"
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
@@ -1969,19 +1998,19 @@
                     ]
                 }
             ],
-            "versions": "EQ(*)",
             "render": {
                 "width": 12,
                 "title": "Add Held Account",
                 "type": "table",
                 "height": 5
-            }
+            },
+            "versions": "EQ(*)"
         },
         {
             "action": "list exports",
-            "identifier": "list_exports",
             "description": "List all exports for the given matter ID",
             "type": "investigate",
+            "identifier": "list_exports",
             "read_only": true,
             "parameters": {
                 "matter_id": {
@@ -1997,7 +2026,6 @@
                 "limit": {
                     "description": "Maximum number of exports to return",
                     "data_type": "numeric",
-                    "required": false,
                     "order": 1
                 }
             },
@@ -2313,20 +2341,20 @@
                     ]
                 }
             ],
-            "versions": "EQ(*)",
             "render": {
                 "width": 12,
                 "title": "List Exports",
                 "type": "custom",
                 "height": 5,
                 "view": "googlevault_view.display_view"
-            }
+            },
+            "versions": "EQ(*)"
         },
         {
             "action": "get export",
-            "identifier": "get_export",
             "description": "Get information of an export from the given matter ID",
             "type": "investigate",
+            "identifier": "get_export",
             "read_only": true,
             "parameters": {
                 "matter_id": {
@@ -2596,8 +2624,11 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.summary",
-                    "data_type": "string"
+                    "data_path": "action_result.summary.matter_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "9360993f-1cd6-4709-81e3-457ff0a0b4ba"
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
@@ -2621,21 +2652,21 @@
                     ]
                 }
             ],
-            "versions": "EQ(*)",
             "render": {
                 "width": 12,
                 "title": "Get Export",
                 "type": "custom",
                 "height": 5,
                 "view": "googlevault_view.display_view"
-            }
+            },
+            "versions": "EQ(*)"
         },
         {
             "action": "create export",
-            "identifier": "create_export",
             "description": "Perform a search based on the provided criteria and create an export for the search results",
             "verbose": "For ACCOUNT type search_method, you have to provide a valid list of email_ids. For ORG_UNIT type search_method, provide valid org_unit_id. For corpus type GROUPS, you have to select ACCOUNT search method and provide valid list of a group email_ids. The parameter export_format is supported only for the corpus type MAIL and GROUPS. The parameter exclude_drafts is supported only for the corpus type MAIL. The show_confidential_mode_content parameter is supported only for the corpus type MAIL. The parameters include_access_info and include_shared_drives are applicable only for the corpus type DRIVE. UNPROCESSED_DATA data_scope is not supported for corpus type DRIVE. The parameter version_date is only applicable for the corpus type DRIVE. If the corpus type is DRIVE and data scope is HELD_DATA, search_method TEAM_DRIVE is not allowed. Time zone is not applicable for the HELD_DATA data_scope. Terms parameter is not applicable for the UNPROCESSED_DATA data_scope. Google Vault selects the default data_region based on the region assigned to the owner of the matter. You can select one of the values from the United States(US) and Europe(EUROPE) to change the data_region of the created export. Exports are automatically deleted within 15 days of their creation.",
             "type": "generic",
+            "identifier": "create_export",
             "read_only": false,
             "parameters": {
                 "name": {
@@ -2690,7 +2721,6 @@
                 "org_unit_id": {
                     "description": "Organization ID",
                     "data_type": "string",
-                    "required": false,
                     "order": 5,
                     "primary": true,
                     "contains": [
@@ -2700,7 +2730,6 @@
                 "email_ids": {
                     "description": "Comma-separated list of email IDs (user or group)",
                     "data_type": "string",
-                    "required": false,
                     "order": 6,
                     "primary": true,
                     "contains": [
@@ -2712,7 +2741,6 @@
                 "shared_drive_ids": {
                     "description": "Comma-separated list of shared drive IDs",
                     "data_type": "string",
-                    "required": false,
                     "order": 7,
                     "primary": true,
                     "contains": [
@@ -2722,7 +2750,6 @@
                 "start_time": {
                     "description": "Start time (%Y-%m-%dT%H:%M:%SZ)",
                     "data_type": "string",
-                    "required": false,
                     "order": 8,
                     "example_values": [
                         "2019-07-01T00:00:00Z"
@@ -2731,13 +2758,11 @@
                 "end_time": {
                     "description": "End time (%Y-%m-%dT%H:%M:%SZ)",
                     "data_type": "string",
-                    "required": false,
                     "order": 9
                 },
                 "time_zone": {
                     "description": "Time zone for the export",
                     "data_type": "string",
-                    "required": false,
                     "order": 10,
                     "value_list": [
                         "Etc/GMT-14",
@@ -2778,19 +2803,16 @@
                 "terms": {
                     "description": "Terms",
                     "data_type": "string",
-                    "required": false,
                     "order": 11
                 },
                 "version_date": {
                     "description": "Version date (%Y-%m-%dT%H:%M:%SZ)",
                     "data_type": "string",
-                    "required": false,
                     "order": 12
                 },
                 "data_region": {
                     "description": "Data region",
                     "data_type": "string",
-                    "required": false,
                     "order": 13,
                     "value_list": [
                         "EUROPE",
@@ -2800,14 +2822,12 @@
                 "exclude_drafts": {
                     "description": "Exclude drafts",
                     "data_type": "boolean",
-                    "required": false,
                     "order": 14,
                     "default": false
                 },
                 "export_format": {
                     "description": "Export Format",
                     "data_type": "string",
-                    "required": false,
                     "order": 15,
                     "value_list": [
                         "PST",
@@ -2817,21 +2837,18 @@
                 "show_confidential_mode_content": {
                     "description": "Show confidential mode content",
                     "data_type": "boolean",
-                    "required": false,
                     "order": 16,
                     "default": false
                 },
                 "include_shared_drives": {
                     "description": "Include results from shared drives",
                     "data_type": "boolean",
-                    "required": false,
                     "order": 17,
                     "default": false
                 },
                 "include_access_info": {
                     "description": "Include access level information for users with indirect access to files (this may increase export duration)",
                     "data_type": "boolean",
-                    "required": false,
                     "order": 18,
                     "default": false
                 }
@@ -3213,8 +3230,11 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.summary",
-                    "data_type": "string"
+                    "data_path": "action_result.summary.matter_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "9360993f-1cd6-4709-81e3-457ff0a0b4ba"
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
@@ -3238,26 +3258,25 @@
                     ]
                 }
             ],
-            "versions": "EQ(*)",
             "render": {
                 "width": 12,
                 "title": "Create Export",
                 "type": "custom",
                 "height": 5,
                 "view": "googlevault_view.display_view"
-            }
+            },
+            "versions": "EQ(*)"
         },
         {
             "action": "list organizations",
-            "identifier": "list_organizations",
             "description": "List all organizations",
             "type": "investigate",
+            "identifier": "list_organizations",
             "read_only": true,
             "parameters": {
                 "limit": {
                     "description": "Maximum number of organizations to return",
                     "data_type": "numeric",
-                    "required": false,
                     "order": 0
                 }
             },
@@ -3318,7 +3337,7 @@
                     "example_values": [
                         "id:03ph8a2z1mtle0f"
                     ],
-                    "column_name": "Organization unit ID",
+                    "column_name": "Organization Unit ID",
                     "column_order": 2
                 },
                 {
@@ -3337,7 +3356,7 @@
                     "example_values": [
                         "id:03z8qrdt2kekpq1"
                     ],
-                    "column_name": "Parent organization unit ID",
+                    "column_name": "Parent Organization Unit ID",
                     "column_order": 3
                 },
                 {
@@ -3376,19 +3395,19 @@
                     ]
                 }
             ],
-            "versions": "EQ(*)",
             "render": {
                 "width": 12,
                 "title": "List Organizations",
                 "type": "table",
                 "height": 5
-            }
+            },
+            "versions": "EQ(*)"
         },
         {
             "action": "list groups",
-            "identifier": "list_groups",
             "description": "List all groups of a domain",
             "type": "investigate",
+            "identifier": "list_groups",
             "read_only": true,
             "parameters": {
                 "domain": {
@@ -3404,8 +3423,7 @@
                 "limit": {
                     "description": "Maximum number of groups to return",
                     "data_type": "numeric",
-                    "required": false,
-                    "order": 0
+                    "order": 1
                 }
             },
             "output": [
@@ -3468,7 +3486,7 @@
                         "gsvault group email ids",
                         "email"
                     ],
-                    "column_name": "Group email ID",
+                    "column_name": "Group Email ID",
                     "column_order": 2
                 },
                 {
@@ -3487,7 +3505,7 @@
                     "example_values": [
                         "01302m9240iv47j"
                     ],
-                    "column_name": "Group account ID",
+                    "column_name": "Group Account ID",
                     "column_order": 3
                 },
                 {
@@ -3545,13 +3563,13 @@
                     ]
                 }
             ],
-            "versions": "EQ(*)",
             "render": {
                 "width": 12,
                 "title": "List Groups",
                 "type": "table",
                 "height": 5
-            }
+            },
+            "versions": "EQ(*)"
         }
     ]
 }
