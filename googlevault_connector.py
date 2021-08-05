@@ -655,7 +655,7 @@ class GoogleVaultConnector(BaseConnector):
         action_result.add_data(result)
         action_result.update_summary({'hold_id': hold_id, 'matter_id': matter_id})
 
-        message = SUCCESS_ADDED_HELD_ACCOUNT.format(hold_id=hold_id, matter_id=matter_id)
+        message = SUCCESS_REMOVED_HELD_ACCOUNT.format(hold_id=hold_id, matter_id=matter_id)
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
     def _handle_list_holds(self, param):
