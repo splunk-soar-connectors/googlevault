@@ -12,6 +12,7 @@
     "license": "Copyright (c) 2019-2021 Splunk Inc.",
     "app_version": "2.0.7",
     "python_version": "3",
+    "fips_compliant":true,
     "utctime_updated": "2021-08-09T10:09:12.000000Z",
     "package_name": "phantom_googlevault",
     "main_module": "googlevault_connector.py",
