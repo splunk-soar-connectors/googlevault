@@ -14,21 +14,19 @@
 # and limitations under the License.
 #
 #
-# Phantom App imports
+import datetime
+import json
+import os
+
 import phantom.app as phantom
-from phantom.base_connector import BaseConnector
-from phantom.action_result import ActionResult
 import phantom.utils as ph_utils
+import requests
+from google.oauth2 import service_account
+from googleapiclient import discovery
+from phantom.action_result import ActionResult
+from phantom.base_connector import BaseConnector
 
 from googlevault_consts import *
-
-import json
-import datetime
-import requests
-
-from googleapiclient import discovery
-from google.oauth2 import service_account
-import os
 
 init_path = '{}/dependencies/google/__init__.py'.format(  # noqa
     os.path.dirname(os.path.abspath(__file__))  # noqa
@@ -152,7 +150,8 @@ class GoogleVaultConnector(BaseConnector):
         num_matters = len(matters)
         action_result.update_summary({'total_matters_returned': num_matters})
 
-        return action_result.set_status(phantom.APP_SUCCESS, 'Successfully retrieved {} matter{}'.format(num_matters, '' if num_matters == 1 else 's'))
+        return action_result.set_status(phantom.APP_SUCCESS, 'Successfully retrieved {} matter{}'.format(
+            num_matters, '' if num_matters == 1 else 's'))
 
     def _handle_list_organizations(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -182,7 +181,8 @@ class GoogleVaultConnector(BaseConnector):
         num_org_units = len(org_units)
         action_result.update_summary({'total_organization_units_returned': num_org_units})
 
-        return action_result.set_status(phantom.APP_SUCCESS, 'Successfully retrieved {} organization unit{}'.format(num_org_units, '' if num_org_units == 1 else 's'))
+        return action_result.set_status(phantom.APP_SUCCESS, 'Successfully retrieved {} organization unit{}'.format(
+            num_org_units, '' if num_org_units == 1 else 's'))
 
     def _handle_list_groups(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -213,7 +213,8 @@ class GoogleVaultConnector(BaseConnector):
         num_groups = len(groups)
         action_result.update_summary({'total_groups_returned': num_groups})
 
-        return action_result.set_status(phantom.APP_SUCCESS, "Successfully retrieved {} group{} for the domain '{}'".format(num_groups, '' if num_groups == 1 else 's', domain))
+        return action_result.set_status(phantom.APP_SUCCESS, "Successfully retrieved {} group{} for the domain '{}'".format(
+            num_groups, '' if num_groups == 1 else 's', domain))
 
     def _handle_create_matter(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -730,7 +731,8 @@ class GoogleVaultConnector(BaseConnector):
         num_exports = len(exports)
         action_result.update_summary({'total_exports_returned': num_exports})
 
-        return action_result.set_status(phantom.APP_SUCCESS, 'Successfully retrieved {} export{}'.format(num_exports, '' if num_exports == 1 else 's'))
+        return action_result.set_status(phantom.APP_SUCCESS, 'Successfully retrieved {} export{}'.format(
+            num_exports, '' if num_exports == 1 else 's'))
 
     def _paginator(self, client, limit=None, view=None, matter_id=None, hold_flag=False, domain=None):
         """
@@ -1073,8 +1075,9 @@ class GoogleVaultConnector(BaseConnector):
 
 if __name__ == '__main__':
 
-    import pudb
     import argparse
+
+    import pudb
 
     pudb.set_trace()
 

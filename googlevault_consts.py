@@ -13,7 +13,8 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 GOOGLE_SCOPE = 'https://www.googleapis.com/auth/ediscovery'
-GOOGLE_ORGANIZATIONS_SCOPE = ['https://www.googleapis.com/auth/admin.directory.orgunit', 'https://www.googleapis.com/auth/admin.directory.orgunit.readonly']
+GOOGLE_ORGANIZATIONS_SCOPE = ['https://www.googleapis.com/auth/admin.directory.orgunit',
+    'https://www.googleapis.com/auth/admin.directory.orgunit.readonly']
 GOOGLE_SCOPE_GROUP = 'https://www.googleapis.com/auth/admin.directory.group'
 GOOGLE_SCOPE_GROUP_READONLY = 'https://www.googleapis.com/auth/admin.directory.group.readonly'
 GOOGLE_SCOPE_MEMBER_READONLY = 'https://www.googleapis.com/auth/admin.directory.group.member.readonly'
