@@ -1,0 +1,26 @@
+Splunk SOAR Google Vault
+Copyright 2021 Splunk Inc.
+
+Third-party Software Attributions:
+
+Library: google-auth-oauthlib
+Version: 0.4.0
+License: Apache 2.0
+Unknown copyright
+
+Library: google-api-python-client
+Version: 1.7.12
+License: Apache 2.0
+License: MIT
+Copyright 2014 Google Inc
+
+Library: pudb
+Version: 2019.2
+License: MIT
+Copyright 2009 Andreas Kloeckner and contributors
+
+Library: charset-normalizer
+Version: 2.0.7
+License: MIT
+Copyright 2019 Ahmed TAHRI @Ousret](https://github.com/Ousret)
+Copyright 2019 TAHRI Ahmed R
