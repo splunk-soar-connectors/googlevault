@@ -13,7 +13,8 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 GOOGLE_SCOPE = 'https://www.googleapis.com/auth/ediscovery'
-GOOGLE_ORGANIZATIONS_SCOPE = ['https://www.googleapis.com/auth/admin.directory.orgunit', 'https://www.googleapis.com/auth/admin.directory.orgunit.readonly']
+GOOGLE_ORGANIZATIONS_SCOPE = ['https://www.googleapis.com/auth/admin.directory.orgunit',
+    'https://www.googleapis.com/auth/admin.directory.orgunit.readonly']
 GOOGLE_SCOPE_GROUP = 'https://www.googleapis.com/auth/admin.directory.group'
 GOOGLE_SCOPE_GROUP_READONLY = 'https://www.googleapis.com/auth/admin.directory.group.readonly'
 GOOGLE_SCOPE_MEMBER_READONLY = 'https://www.googleapis.com/auth/admin.directory.group.member.readonly'
@@ -55,4 +56,4 @@ FAILED_CREATE_GVAULT = "Failed to create the Google Vault client"
 SUCCESS_ADDED_HELD_ACCOUNT = "Successfully added held account to {hold_id} hold id for {matter_id} matter id"
 SUCCESS_REMOVED_HELD_ACCOUNT = "Successfully removed held account from {hold_id} hold id for {matter_id} matter id"
 DEFAULT_LIMIT = 100
-DEFAULT_BOOL_STATE = False
+DEFAULT_BOOL_STATE = 0
