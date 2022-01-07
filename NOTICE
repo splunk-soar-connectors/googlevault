@@ -1,12 +1,12 @@
 Splunk SOAR Google Vault
-Copyright 2021 Splunk Inc.
+Copyright (c) 2019-2021 Splunk Inc.
 
 Third-party Software Attributions:
 
-Library: google-auth-oauthlib
-Version: 0.4.0
-License: Apache 2.0
-Unknown copyright
+Library: cachetools
+Version: 2.0.1
+License: MIT
+Copyright 2014-2017 Thomas Kemmer
 
 Library: google-api-python-client
 Version: 1.7.12
@@ -14,13 +14,52 @@ License: Apache 2.0
 License: MIT
 Copyright 2014 Google Inc
 
-Library: pudb
-Version: 2019.2
-License: MIT
-Copyright 2009 Andreas Kloeckner and contributors
+Library: google-auth
+Version: 1.4.1
+License: Apache 2.0
+Unknown copyright
 
-Library: charset-normalizer
-Version: 2.0.7
+Library: google-auth-httplib2
+Version: 0.0.3
+License: Apache 2.0
+Unknown copyright
+
+Library: google-auth-oauthlib
+Version: 0.4.0
+License: Apache 2.0
+Unknown copyright
+
+Library: httplib2
+Version: 0.19.1
 License: MIT
-Copyright 2019 Ahmed TAHRI @Ousret](https://github.com/Ousret)
-Copyright 2019 TAHRI Ahmed R
+Copyright 2006 by Joe Gregorio
+
+Library: oauth2client
+Version: 4.1.3
+License: Apache 2.0
+Unknown copyright
+
+Library: pyasn1
+Version: 0.4.6
+License: BSD 2
+Copyright 2005-2019 Ilya Etingof <etingof@gmail.com>
+
+Library: pyasn1-modules
+Version: 0.2.6
+License: BSD 2
+Copyright 2005-2019 Ilya Etingof <etingof@gmail.com>
+
+Library: requests
+Version: 2.25.0
+License: Apache 2.0
+Kenneth Reitz
+
+Library: rsa
+Version: 4.7.2
+License: Apache 2.0
+Copyright 2011 Sybren A
+
+Library: uritemplate
+Version: 3.0.0
+License: Apache 2.0
+Unknown copyright
