@@ -57,3 +57,4 @@ SUCCESS_ADDED_HELD_ACCOUNT = "Successfully added held account to {hold_id} hold 
 SUCCESS_REMOVED_HELD_ACCOUNT = "Successfully removed held account from {hold_id} hold id for {matter_id} matter id"
 DEFAULT_LIMIT = 100
 DEFAULT_BOOL_STATE = 0
+DEFAULT_TIMEOUT = 30
