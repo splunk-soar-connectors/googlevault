@@ -2,15 +2,15 @@
 # Google Vault
 
 Publisher: Splunk  
-Connector Version: 2\.0\.8  
+Connector Version: 2\.0\.10  
 Product Vendor: Google  
 Product Name: Google Vault  
 Product Version Supported (regex): "\.\*"  
-Minimum Product Version: 5\.0\.0  
+Minimum Product Version: 5\.1\.0  
 
 This app supports the actions to perform eDiscovery and provide a compliance solution for G Suite, allowing customers to retain, hold, search, and export their data
 
-[comment]: # " File: readme.md"
+[comment]: # " File: README.md"
 [comment]: # "  Copyright (c) 2019-2022 Splunk Inc."
 [comment]: # ""
 [comment]: # "Licensed under the Apache License, Version 2.0 (the 'License');"
