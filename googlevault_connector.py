@@ -1,24 +1,32 @@
 # File: googlevault_connector.py
-# Copyright (c) 2019-2021 Splunk Inc.
 #
-# SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
-# without a valid written license from Splunk Inc. is PROHIBITED.
+# Copyright (c) 2019-2022 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software distributed under
+# the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+# either express or implied. See the License for the specific language governing permissions
+# and limitations under the License.
+#
+#
+import datetime
+import json
+import os
 
-# Phantom App imports
 import phantom.app as phantom
-from phantom.base_connector import BaseConnector
-from phantom.action_result import ActionResult
 import phantom.utils as ph_utils
+import requests
+from google.oauth2 import service_account
+from googleapiclient import discovery
+from phantom.action_result import ActionResult
+from phantom.base_connector import BaseConnector
 
 from googlevault_consts import *
-
-import json
-import datetime
-import requests
-
-from googleapiclient import discovery
-from google.oauth2 import service_account
-import os
 
 init_path = '{}/dependencies/google/__init__.py'.format(  # noqa
     os.path.dirname(os.path.abspath(__file__))  # noqa
@@ -142,7 +150,8 @@ class GoogleVaultConnector(BaseConnector):
         num_matters = len(matters)
         action_result.update_summary({'total_matters_returned': num_matters})
 
-        return action_result.set_status(phantom.APP_SUCCESS, 'Successfully retrieved {} matter{}'.format(num_matters, '' if num_matters == 1 else 's'))
+        return action_result.set_status(phantom.APP_SUCCESS, 'Successfully retrieved {} matter{}'.format(
+            num_matters, '' if num_matters == 1 else 's'))
 
     def _handle_list_organizations(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -172,7 +181,8 @@ class GoogleVaultConnector(BaseConnector):
         num_org_units = len(org_units)
         action_result.update_summary({'total_organization_units_returned': num_org_units})
 
-        return action_result.set_status(phantom.APP_SUCCESS, 'Successfully retrieved {} organization unit{}'.format(num_org_units, '' if num_org_units == 1 else 's'))
+        return action_result.set_status(phantom.APP_SUCCESS, 'Successfully retrieved {} organization unit{}'.format(
+            num_org_units, '' if num_org_units == 1 else 's'))
 
     def _handle_list_groups(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -203,7 +213,8 @@ class GoogleVaultConnector(BaseConnector):
         num_groups = len(groups)
         action_result.update_summary({'total_groups_returned': num_groups})
 
-        return action_result.set_status(phantom.APP_SUCCESS, "Successfully retrieved {} group{} for the domain '{}'".format(num_groups, '' if num_groups == 1 else 's', domain))
+        return action_result.set_status(phantom.APP_SUCCESS, "Successfully retrieved {} group{} for the domain '{}'".format(
+            num_groups, '' if num_groups == 1 else 's', domain))
 
     def _handle_create_matter(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -720,7 +731,8 @@ class GoogleVaultConnector(BaseConnector):
         num_exports = len(exports)
         action_result.update_summary({'total_exports_returned': num_exports})
 
-        return action_result.set_status(phantom.APP_SUCCESS, 'Successfully retrieved {} export{}'.format(num_exports, '' if num_exports == 1 else 's'))
+        return action_result.set_status(phantom.APP_SUCCESS, 'Successfully retrieved {} export{}'.format(
+            num_exports, '' if num_exports == 1 else 's'))
 
     def _paginator(self, client, limit=None, view=None, matter_id=None, hold_flag=False, domain=None):
         """
@@ -1063,8 +1075,10 @@ class GoogleVaultConnector(BaseConnector):
 
 if __name__ == '__main__':
 
-    import pudb
     import argparse
+    import sys
+
+    import pudb
 
     pudb.set_trace()
 
@@ -1090,7 +1104,7 @@ if __name__ == '__main__':
         login_url = BaseConnector._get_phantom_base_url() + "login"
         try:
             print("Accessing the Login page")
-            r = requests.get(login_url, verify=True)
+            r = requests.get(login_url, verify=True, timeout=DEFAULT_TIMEOUT)
             csrftoken = r.cookies['csrftoken']
 
             data = dict()
@@ -1103,11 +1117,11 @@ if __name__ == '__main__':
             headers['Referer'] = login_url
 
             print("Logging into Platform to get the session id")
-            r2 = requests.post(login_url, verify=True, data=data, headers=headers)
+            r2 = requests.post(login_url, verify=True, data=data, headers=headers, timeout=DEFAULT_TIMEOUT)
             session_id = r2.cookies['sessionid']
         except Exception as e:
             print("Unable to get session id from the platform. Error: " + str(e))
-            exit(1)
+            sys.exit(1)
 
     with open(args.input_test_json) as f:
         in_json = f.read()
@@ -1124,4 +1138,4 @@ if __name__ == '__main__':
         ret_val = connector._handle_action(json.dumps(in_json), None)
         print(json.dumps(json.loads(ret_val), indent=4))
 
-    exit(0)
+    sys.exit(0)
