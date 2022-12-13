@@ -101,7 +101,7 @@ class GoogleVaultConnector(BaseConnector):
 
     def _handle_test_connectivity(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
-        scopes = [GOOGLE_SCOPE]
+        scopes = [GOOGLE_SCOPE_READONLY]
         self.save_progress(CREATE_GOOGLE_VAULT_CLIENT)
 
         ret_val, client = self._create_client(action_result, scopes)
@@ -122,7 +122,7 @@ class GoogleVaultConnector(BaseConnector):
 
     def _handle_list_matters(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
-        scopes = [GOOGLE_SCOPE]
+        scopes = [GOOGLE_SCOPE_READONLY]
 
         ret_val, client = self._create_client(action_result, scopes)
 
@@ -155,7 +155,7 @@ class GoogleVaultConnector(BaseConnector):
 
     def _handle_list_organizations(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
-        scopes = GOOGLE_ORGANIZATIONS_SCOPE
+        scopes = [GOOGLE_ORGANIZATIONS_SCOPE_READONLY]
 
         ret_val, client = self._create_client(action_result, scopes)
 
@@ -186,7 +186,7 @@ class GoogleVaultConnector(BaseConnector):
 
     def _handle_list_groups(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
-        scopes = GOOGLE_GROUPS_SCOPE
+        scopes = [GOOGLE_SCOPE_GROUP_READONLY]
 
         ret_val, client = self._create_client(action_result, scopes)
 
@@ -242,7 +242,7 @@ class GoogleVaultConnector(BaseConnector):
 
     def _handle_get_matter(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
-        scopes = [GOOGLE_SCOPE]
+        scopes = [GOOGLE_SCOPE_READONLY]
         matter_id = param["matter_id"]
         ret_val, client = self._create_client(action_result, scopes)
 
@@ -671,7 +671,7 @@ class GoogleVaultConnector(BaseConnector):
 
     def _handle_list_holds(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
-        scopes = [GOOGLE_SCOPE]
+        scopes = [GOOGLE_SCOPE_READONLY]
 
         ret_val, client = self._create_client(action_result, scopes)
 
@@ -703,7 +703,7 @@ class GoogleVaultConnector(BaseConnector):
 
     def _handle_list_exports(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
-        scopes = [GOOGLE_SCOPE]
+        scopes = [GOOGLE_SCOPE_READONLY]
 
         ret_val, client = self._create_client(action_result, scopes)
 
@@ -991,7 +991,7 @@ class GoogleVaultConnector(BaseConnector):
 
     def _handle_get_export(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
-        scopes = [GOOGLE_SCOPE]
+        scopes = [GOOGLE_SCOPE_READONLY]
 
         ret_val, client = self._create_client(action_result, scopes)
         matter_id = param["matter_id"]
