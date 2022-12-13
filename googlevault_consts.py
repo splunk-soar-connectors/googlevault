@@ -35,7 +35,7 @@ MAKING_TEST_CALL_GOOGLE_VAULT = "Making test call to Google Vault for fetching t
 TEST_CONNECTIVITY_PASSED = "Test Connectivity Passed"
 ERROR_WHILE_LISTING_MATTERS = "Error while listing matters"
 INVALID_INT = "Please provide a valid integer value in the {param}"
-ERR_NEGATIVE_INT_PARAM = "Please provide a valid non-negative integer value in the {param}"
+ERROR_NEGATIVE_INT_PARAM = "Please provide a valid non-negative integer value in the {param}"
 GOOGLE_VAULT_EXCEPTION = "Google vault exception: "
 NO_DATA_FOUND = "No data found"
 

@@ -90,7 +90,7 @@ class GoogleVaultConnector(BaseConnector):
             return None
 
         if parameter < 0:
-            action_result.set_status(phantom.APP_ERROR, ERR_NEGATIVE_INT_PARAM.format(param=key))
+            action_result.set_status(phantom.APP_ERROR, ERROR_NEGATIVE_INT_PARAM.format(param=key))
             return None
 
         if not allow_zero and parameter == 0:
@@ -121,6 +121,7 @@ class GoogleVaultConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_list_matters(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE_READONLY]
 
@@ -154,6 +155,7 @@ class GoogleVaultConnector(BaseConnector):
             num_matters, '' if num_matters == 1 else 's'))
 
     def _handle_list_organizations(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_ORGANIZATIONS_SCOPE_READONLY]
 
@@ -185,6 +187,7 @@ class GoogleVaultConnector(BaseConnector):
             num_org_units, '' if num_org_units == 1 else 's'))
 
     def _handle_list_groups(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE_GROUP_READONLY]
 
@@ -217,6 +220,7 @@ class GoogleVaultConnector(BaseConnector):
             num_groups, '' if num_groups == 1 else 's', domain))
 
     def _handle_create_matter(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
 
@@ -241,6 +245,7 @@ class GoogleVaultConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully created matter")
 
     def _handle_get_matter(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE_READONLY]
         matter_id = param["matter_id"]
@@ -269,6 +274,7 @@ class GoogleVaultConnector(BaseConnector):
         return phantom.APP_SUCCESS, response
 
     def _handle_close_matter(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
 
@@ -360,6 +366,7 @@ class GoogleVaultConnector(BaseConnector):
         return phantom.APP_SUCCESS, flag, state
 
     def _handle_delete_matter(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
 
@@ -398,6 +405,7 @@ class GoogleVaultConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully deleted matter")
 
     def _handle_restore_matter(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
         matter_id = param["matter_id"]
@@ -418,6 +426,7 @@ class GoogleVaultConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully restored matter")
 
     def _handle_reopen_matter(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
         matter_id = param["matter_id"]
@@ -478,6 +487,7 @@ class GoogleVaultConnector(BaseConnector):
         return phantom.APP_SUCCESS
 
     def _handle_create_hold(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
 
@@ -588,6 +598,7 @@ class GoogleVaultConnector(BaseConnector):
         return phantom.APP_SUCCESS
 
     def _handle_delete_hold(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
         matter_id = param["matter_id"]
@@ -619,6 +630,7 @@ class GoogleVaultConnector(BaseConnector):
         return phantom.APP_SUCCESS, response
 
     def _handle_add_held_account(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
 
@@ -646,6 +658,7 @@ class GoogleVaultConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
     def _handle_remove_held_account(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
         account_id = param["account_id"]
@@ -670,6 +683,7 @@ class GoogleVaultConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
     def _handle_list_holds(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE_READONLY]
 
@@ -702,6 +716,7 @@ class GoogleVaultConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS, 'Successfully retrieved {} hold{}'.format(num_holds, '' if num_holds == 1 else 's'))
 
     def _handle_list_exports(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE_READONLY]
 
@@ -862,6 +877,7 @@ class GoogleVaultConnector(BaseConnector):
             query.update(drive_dict)
 
     def _handle_create_export(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
 
@@ -990,6 +1006,7 @@ class GoogleVaultConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully created export")
 
     def _handle_get_export(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE_READONLY]
 

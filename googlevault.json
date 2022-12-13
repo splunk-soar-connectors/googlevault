@@ -123,7 +123,7 @@
         {
             "action": "test connectivity",
             "description": "Validate the asset configuration for connectivity using supplied configuration",
-            "verbose": "Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery.readonly</li></ul>",
+            "verbose": "Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery.readonly</li></ul>.",
             "type": "test",
             "identifier": "test_connectivity",
             "read_only": true,
@@ -257,7 +257,7 @@
         {
             "action": "create matter",
             "description": "Create a matter with OPEN state",
-            "verbose": "Action uses the Admin SDK API to create a matter. Requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>",
+            "verbose": "Action uses the Admin SDK API to create a matter. Requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>.",
             "type": "generic",
             "identifier": "create_matter",
             "read_only": false,
@@ -384,7 +384,7 @@
         {
             "action": "get matter",
             "description": "Fetch information for the given matter ID",
-            "verbose": "There are two views of a matter: BASIC (default) and FULL. The FULL view adds matter permissions in addition to the data received in the BASIC view. Requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery.readonly</li></ul>",
+            "verbose": "There are two views of a matter: BASIC (default) and FULL. The FULL view adds matter permissions in addition to the data received in the BASIC view. Requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery.readonly</li></ul>.",
             "type": "investigate",
             "identifier": "get_matter",
             "read_only": true,
@@ -536,7 +536,7 @@
         {
             "action": "close matter",
             "description": "Move a matter to the CLOSED state",
-            "verbose": "You can close the matter only if it is in the OPEN state. If the matter is in the OPEN state and contains any holds, then, to close the matter all holds must be deleted. For this, you have to checkmark the <b>Delete all holds</b> parameter and run the action. If you keep the parameter unchecked and run the action, it will fail due to undeleted holds in the matter. In that case, the user has to delete all the holds manually; run this action after that to close the matter.<br>Requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>",
+            "verbose": "You can close the matter only if it is in the OPEN state. If the matter is in the OPEN state and contains any holds, then, to close the matter all holds must be deleted. For this, you have to checkmark the <b>Delete all holds</b> parameter and run the action. If you keep the parameter unchecked and run the action, it will fail due to undeleted holds in the matter. In that case, the user has to delete all the holds manually; run this action after that to close the matter.<br>Requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>.",
             "type": "generic",
             "undo": "reopen matter",
             "identifier": "close_matter",
@@ -665,7 +665,7 @@
         {
             "action": "delete matter",
             "description": "Move a matter to the DELETED state",
-            "verbose": "You can delete the matter only if it is in the CLOSED state. If the matter is in the OPEN state and contains any holds, then, to delete it all holds must be deleted and the matter must be moved to the CLOSED state. For this, you have to checkmark the 'Delete all holds' parameter and run the action. By doing this, action will close the matter after deleting all the holds (if any) associated with it and move it to the DELETED state. If you keep the parameter unchecked and run the action, it will fail due to the matter not being in the CLOSED state. In that case, the user has to move the matter to the CLOSED state by manually deleting all the associated holds; run this action after that to delete the matter.<br>Requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>",
+            "verbose": "You can delete the matter only if it is in the CLOSED state. If the matter is in the OPEN state and contains any holds, then, to delete it all holds must be deleted and the matter must be moved to the CLOSED state. For this, you have to checkmark the 'Delete all holds' parameter and run the action. By doing this, action will close the matter after deleting all the holds (if any) associated with it and move it to the DELETED state. If you keep the parameter unchecked and run the action, it will fail due to the matter not being in the CLOSED state. In that case, the user has to move the matter to the CLOSED state by manually deleting all the associated holds; run this action after that to delete the matter.<br>Requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>.",
             "type": "generic",
             "undo": "restore matter",
             "identifier": "delete_matter",
@@ -794,7 +794,7 @@
         {
             "action": "reopen matter",
             "description": "Reopens a matter to move it from CLOSED to OPEN state",
-            "verbose": "Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>",
+            "verbose": "Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>.",
             "type": "generic",
             "undo": "close matter",
             "identifier": "reopen_matter",
@@ -909,7 +909,7 @@
         {
             "action": "restore matter",
             "description": "Restores a matter to move it from DELETED to CLOSED state",
-            "verbose": "Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>",
+            "verbose": "Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>.",
             "type": "generic",
             "undo": "delete matter",
             "identifier": "restore_matter",
@@ -1262,7 +1262,7 @@
         {
             "action": "create hold",
             "description": "Create a hold within the given matter ID",
-            "verbose": "Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>",
+            "verbose": "Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>.",
             "type": "generic",
             "identifier": "create_hold",
             "read_only": false,
@@ -1647,7 +1647,7 @@
         {
             "action": "delete hold",
             "description": "Delete a hold",
-            "verbose": "Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>",
+            "verbose": "Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>.",
             "type": "generic",
             "identifier": "delete_hold",
             "read_only": false,
@@ -1750,7 +1750,7 @@
         {
             "action": "remove held account",
             "description": "Remove held account from the given hold ID",
-            "verbose": "A held account can only be removed from the given hold_id if the search_method of the hold is either USER_ACCOUNT or GROUP_ACCOUNT.<br>Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>",
+            "verbose": "A held account can only be removed from the given hold_id if the search_method of the hold is either USER_ACCOUNT or GROUP_ACCOUNT.<br>Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>.",
             "type": "generic",
             "undo": "add held account",
             "identifier": "remove_held_account",
@@ -1885,7 +1885,7 @@
         {
             "action": "add held account",
             "description": "Add held account to the given hold ID",
-            "verbose": "A held account can only be added to the given hold_id if the search_method of the hold is either USER_ACCOUNT or GROUP_ACCOUNT.<br>Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>",
+            "verbose": "A held account can only be added to the given hold_id if the search_method of the hold is either USER_ACCOUNT or GROUP_ACCOUNT.<br>Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>.",
             "type": "generic",
             "undo": "remove held account",
             "identifier": "add_held_account",
@@ -2406,7 +2406,7 @@
         {
             "action": "get export",
             "description": "Get information of an export from the given matter ID",
-            "verbose": "Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery.readonly</li></ul>",
+            "verbose": "Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery.readonly</li></ul>.",
             "type": "investigate",
             "identifier": "get_export",
             "read_only": true,
@@ -2725,7 +2725,7 @@
         {
             "action": "create export",
             "description": "Perform a search based on the provided criteria and create an export for the search results",
-            "verbose": "For ACCOUNT type search_method, you have to provide a valid list of email_ids. For ORG_UNIT type search_method, provide valid org_unit_id. For corpus type GROUPS, you have to select ACCOUNT search method and provide valid list of a group email_ids. The parameter export_format is supported only for the corpus type MAIL and GROUPS. The parameter exclude_drafts is supported only for the corpus type MAIL. The show_confidential_mode_content parameter is supported only for the corpus type MAIL. The parameters include_access_info and include_shared_drives are applicable only for the corpus type DRIVE. UNPROCESSED_DATA data_scope is not supported for corpus type DRIVE. The parameter version_date is only applicable for the corpus type DRIVE. If the corpus type is DRIVE and data scope is HELD_DATA, search_method TEAM_DRIVE is not allowed. Time zone is not applicable for the HELD_DATA data_scope. Terms parameter is not applicable for the UNPROCESSED_DATA data_scope. Google Vault selects the default data_region based on the region assigned to the owner of the matter. You can select one of the values from the United States(US) and Europe(EUROPE) to change the data_region of the created export. Exports are automatically deleted within 15 days of their creation.<br>Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>",
+            "verbose": "For ACCOUNT type search_method, you have to provide a valid list of email_ids. For ORG_UNIT type search_method, provide valid org_unit_id. For corpus type GROUPS, you have to select ACCOUNT search method and provide valid list of a group email_ids. The parameter export_format is supported only for the corpus type MAIL and GROUPS. The parameter exclude_drafts is supported only for the corpus type MAIL. The show_confidential_mode_content parameter is supported only for the corpus type MAIL. The parameters include_access_info and include_shared_drives are applicable only for the corpus type DRIVE. UNPROCESSED_DATA data_scope is not supported for corpus type DRIVE. The parameter version_date is only applicable for the corpus type DRIVE. If the corpus type is DRIVE and data scope is HELD_DATA, search_method TEAM_DRIVE is not allowed. Time zone is not applicable for the HELD_DATA data_scope. Terms parameter is not applicable for the UNPROCESSED_DATA data_scope. Google Vault selects the default data_region based on the region assigned to the owner of the matter. You can select one of the values from the United States(US) and Europe(EUROPE) to change the data_region of the created export. Exports are automatically deleted within 15 days of their creation.<br>Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>.",
             "type": "generic",
             "identifier": "create_export",
             "read_only": false,
@@ -3604,7 +3604,7 @@
                     "data_path": "action_result.message",
                     "data_type": "string",
                     "example_values": [
-                        "Successfully retrieved 5 groups for the domain 'testphantom.com'"
+                        "Successfully retrieved 5 groups for the domain 'test.com'"
                     ]
                 },
                 {
