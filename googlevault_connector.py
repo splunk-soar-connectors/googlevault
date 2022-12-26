@@ -118,7 +118,7 @@ class GoogleVaultConnector(BaseConnector):
             except Exception as e:
                 if "429" in str(e):
                     if retry_count < 7:
-                        wait_time = (2**retry_count) + (random.randint(0, 1000)*(10**-3))
+                        wait_time = (2 ** retry_count) + (random.randint(0, 1000) * (10 ** -3))
                         self.debug_print(f"{message}. Retrying after {wait_time} seconds")
                         time.sleep(wait_time)
                         time_elapsed += wait_time
