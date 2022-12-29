@@ -117,15 +117,15 @@ class GoogleVaultConnector(BaseConnector):
 
             except Exception as e:
                 if "429" in str(e):
-                    if retry_count < 7:
-                        wait_time = (2 ** retry_count) + (random.randint(0, 1000) * (10 ** -3))
-                        self.debug_print(f"{message}. Retrying after {wait_time} seconds")
-                        time.sleep(wait_time)
-                        time_elapsed += wait_time
+                    if retry_count < 6:
                         retry_count += 1
-                        continue
+
+                    wait_time = (2 ** retry_count) + (random.randint(0, 1000) * (10 ** -3))
+                    self.debug_print(f"{message}. Retrying after {wait_time} seconds.")
+                    time.sleep(wait_time)
                     time_elapsed += wait_time
-                    retry_count += 1
+                    error_message = e
+                    continue
 
                 error_message = e
                 break
@@ -148,9 +148,9 @@ class GoogleVaultConnector(BaseConnector):
         method = client.matters().list(pageSize=10)
         ret_val, matters = self.make_request(action_result, method, ERROR_WHILE_LISTING_MATTERS)
 
-        if phantom.is_fail(matters):
+        if phantom.is_fail(ret_val):
             self.save_progress(TEST_CONNECTIVITY_FAILED)
-            return ret_val
+            return action_result.get_status()
 
         self.save_progress(TEST_CONNECTIVITY_PASSED)
         return action_result.set_status(phantom.APP_SUCCESS)
@@ -176,8 +176,8 @@ class GoogleVaultConnector(BaseConnector):
         method = None
         ret_val, matters = self.make_request(action_result, method, ERROR_WHILE_LISTING_MATTERS, client=client, limit=limit, view=view)
 
-        if phantom.is_fail(matters):
-            return ret_val
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         if not matters:
             return action_result.set_status(phantom.APP_ERROR, NO_DATA_FOUND)
@@ -276,8 +276,8 @@ class GoogleVaultConnector(BaseConnector):
         method = client.matters().create(body=matter_content)
         ret_val, matter = self.make_request(action_result, method, ERROR_WHILE_CREATING_MATTER)
 
-        if phantom.is_fail(matter):
-            return ret_val
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         action_result.add_data(matter)
         action_result.update_summary({'name': name, 'description': description})
@@ -308,8 +308,8 @@ class GoogleVaultConnector(BaseConnector):
         method = client.matters().get(matterId=matter_id, view=view)
         ret_val, response = self.make_request(action_result, method, ERROR_WHILE_FETCHING_MATTER)
 
-        if phantom.is_fail(response):
-            return ret_val, None
+        if phantom.is_fail(ret_val):
+            return action_result.get_status(), None
 
         return phantom.APP_SUCCESS, response
 
@@ -340,8 +340,8 @@ class GoogleVaultConnector(BaseConnector):
             method = client.matters().close(matterId=matter_id)
             ret_val, matter = self.make_request(action_result, method, ERROR_WHILE_CLOSING_MATTER)
 
-            if phantom.is_fail(matter):
-                return ret_val
+            if phantom.is_fail(ret_val):
+                return action_result.get_status()
 
         else:
             ret_val, matter = self._close_single_matter(action_result, client, matter_id=matter_id)
@@ -363,8 +363,8 @@ class GoogleVaultConnector(BaseConnector):
         method = client.matters().close(matterId=matter_id)
         ret_val, response = self.make_request(action_result, method, ERROR_WHILE_CLOSING_MATTER)
 
-        if phantom.is_fail(response):
-            return ret_val, None
+        if phantom.is_fail(ret_val):
+            return action_result.get_status(), None
 
         return phantom.APP_SUCCESS, response
 
@@ -441,8 +441,8 @@ class GoogleVaultConnector(BaseConnector):
         method = client.matters().delete(matterId=matter_id)
         ret_val, matter = self.make_request(action_result, method, ERROR_WHILE_DELETING_MATTER)
 
-        if phantom.is_fail(matter):
-            return ret_val, None
+        if phantom.is_fail(ret_val):
+            return action_result.get_status(), None
 
         action_result.add_data(matter)
         action_result.update_summary({'matter_id': matter_id})
@@ -463,8 +463,8 @@ class GoogleVaultConnector(BaseConnector):
         method = client.matters().undelete(matterId=matter_id)
         ret_val, matter = self.make_request(action_result, method, ERROR_WHILE_RESTORING_MATTER)
 
-        if phantom.is_fail(matter):
-            return ret_val, None
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         action_result.add_data(matter)
         action_result.update_summary({'matter_id': matter_id})
@@ -485,8 +485,8 @@ class GoogleVaultConnector(BaseConnector):
         method = client.matters().reopen(matterId=matter_id)
         ret_val, matter = self.make_request(action_result, method, ERROR_WHILE_REOPENING_MATTER)
 
-        if phantom.is_fail(matter):
-            return ret_val, None
+        if phantom.is_fail(ret_val):
+            return action_result.get_status(), None
 
         action_result.add_data(matter)
         action_result.update_summary({'matter_id': matter_id})
@@ -616,8 +616,8 @@ class GoogleVaultConnector(BaseConnector):
         method = client.matters().holds().create(matterId=matter_id, body=wanted_hold)
         ret_val, hold = self.make_request(action_result, method, ERROR_WHILE_CREATING_HOLD)
 
-        if phantom.is_fail(hold):
-            return ret_val, None
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         action_result.add_data(hold)
         action_result.update_summary({'matter_id': matter_id})
@@ -673,8 +673,8 @@ class GoogleVaultConnector(BaseConnector):
         method = client.matters().holds().delete(matterId=matter_id, holdId=hold_id)
         ret_val, response = self.make_request(action_result, method, ERROR_WHILE_DELETING_HOLD)
 
-        if phantom.is_fail(response):
-            return ret_val, None
+        if phantom.is_fail(ret_val):
+            return action_result.get_status(), None
 
         return phantom.APP_SUCCESS, response
 
@@ -698,8 +698,8 @@ class GoogleVaultConnector(BaseConnector):
         method = client.matters().holds().accounts().create(matterId=matter_id, holdId=hold_id, body=held_account)
         ret_val, result = self.make_request(action_result, method, ERROR_WHILE_ADDING_HELD_ACCOUNT)
 
-        if phantom.is_fail(result):
-            return ret_val, None
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         action_result.add_data(result)
         action_result.update_summary({'matter_id': matter_id})
@@ -724,8 +724,8 @@ class GoogleVaultConnector(BaseConnector):
         method = client.matters().holds().accounts().delete(matterId=matter_id, holdId=hold_id, accountId=account_id)
         ret_val, result = self.make_request(action_result, method, ERROR_WHILE_REMOVING_HELD_ACCOUNT)
 
-        if phantom.is_fail(result):
-            return ret_val, None
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         action_result.add_data(result)
         action_result.update_summary({'hold_id': hold_id, 'matter_id': matter_id})
@@ -754,8 +754,8 @@ class GoogleVaultConnector(BaseConnector):
         method = None
         ret_val, holds = self.make_request(action_result, method, ERROR_WHILE_LISTING_HOLDS, client, limit=limit, matter_id=matter_id)
 
-        if phantom.is_fail(holds):
-            return ret_val, None
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         if not holds:
             return action_result.set_status(phantom.APP_ERROR, "No data found")
@@ -789,8 +789,8 @@ class GoogleVaultConnector(BaseConnector):
         method = None
         ret_val, exports = self.make_request(action_result, method, ERROR_WHILE_LISTING_EXPORTS, client, limit=limit, matter_id=matter_id)
 
-        if phantom.is_fail(exports):
-            return ret_val, None
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         if not exports:
             return action_result.set_status(phantom.APP_ERROR, "No data found")
@@ -1053,8 +1053,8 @@ class GoogleVaultConnector(BaseConnector):
         method = client.matters().exports().create(matterId=matter_id, body=wanted_export)
         ret_val, export = self.make_request(action_result, method, ERROR_WHILE_CREATING_EXPORT)
 
-        if phantom.is_fail(export):
-            return ret_val, None
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         action_result.add_data(export)
         action_result.update_summary({'matter_id': matter_id})
@@ -1077,8 +1077,8 @@ class GoogleVaultConnector(BaseConnector):
         method = client.matters().exports().get(matterId=matter_id, exportId=export_id)
         ret_val, result = self.make_request(action_result, method, ERROR_WHILE_FETCHING_EXPORT)
 
-        if phantom.is_fail(result):
-            return ret_val, None
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         action_result.add_data(result)
         action_result.update_summary({'matter_id': matter_id})
