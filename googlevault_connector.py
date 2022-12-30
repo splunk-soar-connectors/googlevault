@@ -442,7 +442,7 @@ class GoogleVaultConnector(BaseConnector):
         ret_val, matter = self.make_request(action_result, method, ERROR_WHILE_DELETING_MATTER)
 
         if phantom.is_fail(ret_val):
-            return action_result.get_status(), None
+            return action_result.get_status()
 
         action_result.add_data(matter)
         action_result.update_summary({'matter_id': matter_id})
@@ -486,7 +486,7 @@ class GoogleVaultConnector(BaseConnector):
         ret_val, matter = self.make_request(action_result, method, ERROR_WHILE_REOPENING_MATTER)
 
         if phantom.is_fail(ret_val):
-            return action_result.get_status(), None
+            return action_result.get_status()
 
         action_result.add_data(matter)
         action_result.update_summary({'matter_id': matter_id})
