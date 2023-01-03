@@ -1,6 +1,6 @@
 # File: googlevault_consts.py
 #
-# Copyright (c) 2019-2022 Splunk Inc.
+# Copyright (c) 2019-2023 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -68,4 +68,4 @@ SUCCESS_REMOVED_HELD_ACCOUNT = "Successfully removed held account from {hold_id}
 DEFAULT_LIMIT = 100
 DEFAULT_BOOL_STATE = 0
 DEFAULT_TIMEOUT = 30
-GOOGLE_VAULT_NUMBER_OF_RETRIES = 8
+REQUEST_TIMEOUT = 600
