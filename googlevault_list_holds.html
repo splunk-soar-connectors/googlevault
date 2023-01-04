@@ -9,8 +9,8 @@
 
 {% block widget_content %} <!-- Main Start Block -->
 
-<!-- File: gsvault_create_hold.html
-  Copyright (c) 2019-2022 Splunk Inc.
+<!-- File: googlevault_list_holds.html
+  Copyright (c) 2019-2023 Splunk Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -86,10 +86,6 @@ and limitations under the License.
                 <h4 class="wf-h4-style">Info</h4>
                 <table class="wf-table-vertical">
                     <tr>
-                        <td>Hold name</td>
-                        <td>{{ result.param.name }}</td>
-                    </tr>
-                    <tr>
                         <td>Matter ID</td>
                         <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['gsvault matter id'],
                             'value': '{{ result.param.matter_id }}' }], 0, {{ container.id }}, null, false);">
@@ -98,58 +94,10 @@ and limitations under the License.
                         <span class="fa fa-caret-down" style="font-size: smaller;"></span>
                         </a></td>
                     </tr>
-                    <tr>
-                        <td>Corpus Type</td>
-                        <td>{{ result.param.type }}</td>
-                    </tr>
-                    <tr>
-                        <td>Search Method</td>
-                        <td>{{ result.param.search_method }}</td>
-                    </tr>
-                    {% if result.param.org_unit_id %}
+                    {% if result.param.limit %}
                         <tr>
-                            <td>Organization Unit ID</td>
-                            <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['gsvault org unit id'],
-                                'value': '{{ result.param.org_unit_id }}' }], 0, {{ container.id }}, null, false);">
-                            {{ result.param.org_unit_id }}
-                            &nbsp;
-                            <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                            </a></td>
-                        </tr>
-                    {% endif %}
-                    {% if result.param.user_email_ids %}
-                        <tr>
-                            <td>User email IDs</td>
-                            <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['gsvault email ids'],
-                                'value': '{{ result.param.user_email_ids }}' }], 0, {{ container.id }}, null, false);">
-                            {{ result.param.user_email_ids }}
-                            &nbsp;
-                            <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                            </a></td>
-                        </tr>
-                    {% endif %}
-                    {% if result.param.terms %}
-                        <tr>
-                            <td>Terms</td>
-                            <td>{{ result.param.terms }}</td>
-                        </tr>
-                    {% endif %}
-                    {% if result.param.start_time %}
-                        <tr>
-                            <td>Start time</td>
-                            <td>{{ result.param.start_time }}</td>
-                        </tr>
-                    {% endif %}
-                    {% if result.param.end_time %}
-                        <tr>
-                            <td>End time</td>
-                            <td>{{ result.param.end_time }}</td>
-                        </tr>
-                    {% endif %}
-                    {% if result.param.include_shared_drive_files %}
-                        <tr>
-                            <td>Include shared drive files</td>
-                            <td>{{ result.param.include_shared_drive_files }}</td>
+                            <td>Limit</td>
+                            <td>{{ result.param.limit }}</td>
                         </tr>
                     {% endif %}
                 </table>
@@ -162,7 +110,7 @@ and limitations under the License.
                         <th class="widget-th">Hold ID</th>
                         <th class="widget-th">Hold Name</th>
                         <th class="widget-th">Corpus Type</th>
-                        <th class="widget-th">Accounts(User/Group) / Oragnization</th>
+                        <th class="widget-th">Accounts / Oragnization</th>
                         <th class="widget-th">Query</th>
                         <th class="widget-th">Update Time</th>
                     </thead>
@@ -194,7 +142,7 @@ and limitations under the License.
                                     </tr>
                                 </table>
                             </td>
-                            {% elif finding_data.accounts and result.param.search_method == "USER_ACCOUNT" %}
+                            {% elif finding_data.accounts %}
                             <td>
                                 <table class="phantom-table dataTable">
                                     <thead>
@@ -220,33 +168,6 @@ and limitations under the License.
                                         </a></td>
                                         <td>{{ account.firstName }}</td>
                                         <td>{{ account.lastName }}</td>
-                                        <td>{{ account.holdTime }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </table>
-                            </td>
-                            {% elif finding_data.accounts and result.param.search_method == "GROUP_ACCOUNT" %}
-                            <td>
-                                <table class="phantom-table dataTable">
-                                    <thead>
-                                        <th class="widget-th">Group Account ID</th>
-                                        <th class="widget-th">Email</th>
-                                        <th class="widget-th">Hold Time</th>
-                                    </thead>
-                                    {% for account in finding_data.accounts %}
-                                    <tr>
-                                        <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['gsvault group id'],
-                                            'value': '{{ account.accountId }}' }], 0, {{ container.id }}, null, false);">
-                                        {{ account.accountId }}
-                                        &nbsp;
-                                        <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                                        </a></td>
-                                        <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['gsvault email ids', 'email'],
-                                            'value': '{{ account.email }}' }], 0, {{ container.id }}, null, false);">
-                                        {{ account.email }}
-                                        &nbsp;
-                                        <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                                        </a></td>
                                         <td>{{ account.holdTime }}</td>
                                     </tr>
                                     {% endfor %}

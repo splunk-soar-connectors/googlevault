@@ -1,6 +1,6 @@
 # File: googlevault_consts.py
 #
-# Copyright (c) 2019-2022 Splunk Inc.
+# Copyright (c) 2019-2023 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,13 +13,9 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 GOOGLE_SCOPE = 'https://www.googleapis.com/auth/ediscovery'
-GOOGLE_ORGANIZATIONS_SCOPE = ['https://www.googleapis.com/auth/admin.directory.orgunit',
-    'https://www.googleapis.com/auth/admin.directory.orgunit.readonly']
-GOOGLE_SCOPE_GROUP = 'https://www.googleapis.com/auth/admin.directory.group'
+GOOGLE_SCOPE_READONLY = 'https://www.googleapis.com/auth/ediscovery.readonly'
+GOOGLE_ORGANIZATIONS_SCOPE_READONLY = 'https://www.googleapis.com/auth/admin.directory.orgunit.readonly'
 GOOGLE_SCOPE_GROUP_READONLY = 'https://www.googleapis.com/auth/admin.directory.group.readonly'
-GOOGLE_SCOPE_MEMBER_READONLY = 'https://www.googleapis.com/auth/admin.directory.group.member.readonly'
-GOOGLE_SCOPE_MEMBER = 'https://www.googleapis.com/auth/admin.directory.group.member'
-GOOGLE_GROUPS_SCOPE = [GOOGLE_SCOPE_GROUP, GOOGLE_SCOPE_GROUP_READONLY, GOOGLE_SCOPE_MEMBER_READONLY, GOOGLE_SCOPE_MEMBER]
 GSVAULT_INVALID_LIMIT = "Please provide non-zero positive integer in {param}"
 GSVAULT_TIME_FORMAT_ERROR = "Please provide date/time in '%Y-%m-%dT%H:%M:%SZ' format"
 GSVAULT_TIME_RANGE_ERROR = "The given time range is incorrect"
@@ -38,8 +34,22 @@ TEST_CONNECTIVITY_FAILED = "Test Connectivity Failed"
 MAKING_TEST_CALL_GOOGLE_VAULT = "Making test call to Google Vault for fetching the list of matters..."
 TEST_CONNECTIVITY_PASSED = "Test Connectivity Passed"
 ERROR_WHILE_LISTING_MATTERS = "Error while listing matters"
+ERROR_WHILE_CREATING_MATTER = "Error while creating matter"
+ERROR_WHILE_FETCHING_MATTER = "Error while fetching matter"
+ERROR_WHILE_CLOSING_MATTER = "Error while closing matter"
+ERROR_WHILE_DELETING_MATTER = "Error while deleting matter"
+ERROR_WHILE_RESTORING_MATTER = "Error while restoring matter"
+ERROR_WHILE_REOPENING_MATTER = "Error while reopening matter"
+ERROR_WHILE_CREATING_HOLD = "Error while creating hold"
+ERROR_WHILE_DELETING_HOLD = "Error while deleting hold"
+ERROR_WHILE_LISTING_HOLDS = "Error while listing holds"
+ERROR_WHILE_ADDING_HELD_ACCOUNT = "Error while adding held account to hold for given matter ID"
+ERROR_WHILE_REMOVING_HELD_ACCOUNT = "Error while removing held account to hold for given matter ID"
+ERROR_WHILE_CREATING_EXPORT = "Error while creating export"
+ERROR_WHILE_LISTING_EXPORTS = "Error while listing exports"
+ERROR_WHILE_FETCHING_EXPORT = "Error while fetching export"
 INVALID_INT = "Please provide a valid integer value in the {param}"
-ERR_NEGATIVE_INT_PARAM = "Please provide a valid non-negative integer value in the {param}"
+ERROR_NEGATIVE_INT_PARAM = "Please provide a valid non-negative integer value in the {param}"
 GOOGLE_VAULT_EXCEPTION = "Google vault exception: "
 NO_DATA_FOUND = "No data found"
 
@@ -58,3 +68,4 @@ SUCCESS_REMOVED_HELD_ACCOUNT = "Successfully removed held account from {hold_id}
 DEFAULT_LIMIT = 100
 DEFAULT_BOOL_STATE = 0
 DEFAULT_TIMEOUT = 30
+REQUEST_TIMEOUT = 600
