@@ -1,6 +1,6 @@
 # File: googlevault_view.py
 #
-# Copyright (c) 2019-2022 Splunk Inc.
+# Copyright (c) 2019-2023 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -59,14 +59,14 @@ def display_view(provides, all_app_runs, context):
             results.append(ctx_result)
 
     if provides == "create hold":
-       return_page = "gsvault_create_hold.html"
+       return_page = "googlevault_create_hold.html"
     if provides == "list holds":
-       return_page = "gsvault_list_holds.html"
+       return_page = "googlevault_list_holds.html"
     if provides == "list exports":
-       return_page = "gsvault_list_exports.html"
+       return_page = "googlevault_list_exports.html"
     if provides == "create export":
-       return_page = "gsvault_create_export.html"
+       return_page = "googlevault_create_export.html"
     if provides == "get export":
-       return_page = "gsvault_get_export.html"
+       return_page = "googlevault_get_export.html"
 
     return return_page

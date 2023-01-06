@@ -1,6 +1,6 @@
 # File: googlevault_connector.py
 #
-# Copyright (c) 2019-2022 Splunk Inc.
+# Copyright (c) 2019-2023 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 import datetime
 import json
 import os
+import random
+import time
 
 import phantom.app as phantom
 import phantom.utils as ph_utils
@@ -90,7 +92,7 @@ class GoogleVaultConnector(BaseConnector):
             return None
 
         if parameter < 0:
-            action_result.set_status(phantom.APP_ERROR, ERR_NEGATIVE_INT_PARAM.format(param=key))
+            action_result.set_status(phantom.APP_ERROR, ERROR_NEGATIVE_INT_PARAM.format(param=key))
             return None
 
         if not allow_zero and parameter == 0:
@@ -99,9 +101,45 @@ class GoogleVaultConnector(BaseConnector):
 
         return parameter
 
+    def make_request(self, action_result, message, method=None, client=None, limit=None,
+                    view=None, matter_id=None, hold_flag=False, domain=None):
+        """
+        This method will make request to the server and return the results.
+        In case of rateLimitExceeded error,it will implement the exponential backoff retry mechanism
+        as given in https://developers.google.com/admin-sdk/directory/v1/limits#backoff
+        """
+        result = None
+        error_message = ""
+        time_elapsed = 0
+        retry_count = 0
+        while time_elapsed < REQUEST_TIMEOUT:
+            try:
+                if not method and client:
+                    result = self._paginator(client, limit, view, matter_id, hold_flag, domain)
+                else:
+                    result = method.execute()
+
+                return action_result.set_status(phantom.APP_SUCCESS), result
+
+            except Exception as e:
+                error_message = e
+                if "429" in str(e):
+                    if retry_count < 6:
+                        retry_count += 1
+
+                    wait_time = (2 ** retry_count) + (random.randint(0, 1000) * (10 ** -3))
+                    self.debug_print(f"{message}. Retrying after {wait_time} seconds.")
+                    time.sleep(wait_time)
+                    time_elapsed += wait_time
+                    continue
+
+                break
+
+        return action_result.set_status(phantom.APP_ERROR, message, error_message), None
+
     def _handle_test_connectivity(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
-        scopes = [GOOGLE_SCOPE]
+        scopes = [GOOGLE_SCOPE_READONLY]
         self.save_progress(CREATE_GOOGLE_VAULT_CLIENT)
 
         ret_val, client = self._create_client(action_result, scopes)
@@ -111,18 +149,21 @@ class GoogleVaultConnector(BaseConnector):
             return ret_val
 
         self.save_progress(MAKING_TEST_CALL_GOOGLE_VAULT)
-        try:
-            client.matters().list(pageSize=10).execute()
-        except Exception as e:
+
+        method = client.matters().list(pageSize=10)
+        ret_val, matters = self.make_request(action_result, ERROR_WHILE_LISTING_MATTERS, method)
+
+        if phantom.is_fail(ret_val):
             self.save_progress(TEST_CONNECTIVITY_FAILED)
-            return action_result.set_status(phantom.APP_ERROR, ERROR_WHILE_LISTING_MATTERS, e)
+            return action_result.get_status()
 
         self.save_progress(TEST_CONNECTIVITY_PASSED)
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_list_matters(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
-        scopes = [GOOGLE_SCOPE]
+        scopes = [GOOGLE_SCOPE_READONLY]
 
         ret_val, client = self._create_client(action_result, scopes)
 
@@ -136,10 +177,11 @@ class GoogleVaultConnector(BaseConnector):
 
         if limit is None:
             return action_result.get_status()
-        try:
-            matters = self._paginator(client, limit=limit, view=view)
-        except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, ERROR_WHILE_LISTING_MATTERS, e)
+
+        ret_val, matters = self.make_request(action_result, ERROR_WHILE_LISTING_MATTERS, client=client, limit=limit, view=view)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         if not matters:
             return action_result.set_status(phantom.APP_ERROR, NO_DATA_FOUND)
@@ -154,8 +196,9 @@ class GoogleVaultConnector(BaseConnector):
             num_matters, '' if num_matters == 1 else 's'))
 
     def _handle_list_organizations(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
-        scopes = GOOGLE_ORGANIZATIONS_SCOPE
+        scopes = [GOOGLE_ORGANIZATIONS_SCOPE_READONLY]
 
         ret_val, client = self._create_client(action_result, scopes)
 
@@ -185,8 +228,9 @@ class GoogleVaultConnector(BaseConnector):
             num_org_units, '' if num_org_units == 1 else 's'))
 
     def _handle_list_groups(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
-        scopes = GOOGLE_GROUPS_SCOPE
+        scopes = [GOOGLE_SCOPE_GROUP_READONLY]
 
         ret_val, client = self._create_client(action_result, scopes)
 
@@ -217,6 +261,7 @@ class GoogleVaultConnector(BaseConnector):
             num_groups, '' if num_groups == 1 else 's', domain))
 
     def _handle_create_matter(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
 
@@ -231,18 +276,21 @@ class GoogleVaultConnector(BaseConnector):
             'name': name,
             'description': description,
         }
-        try:
-            matter = client.matters().create(body=matter_content).execute()
-        except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, "Error while creating matter", e)
+
+        method = client.matters().create(body=matter_content)
+        ret_val, matter = self.make_request(action_result, ERROR_WHILE_CREATING_MATTER, method)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         action_result.add_data(matter)
         action_result.update_summary({'name': name, 'description': description})
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully created matter")
 
     def _handle_get_matter(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
-        scopes = [GOOGLE_SCOPE]
+        scopes = [GOOGLE_SCOPE_READONLY]
         matter_id = param["matter_id"]
         ret_val, client = self._create_client(action_result, scopes)
 
@@ -261,14 +309,16 @@ class GoogleVaultConnector(BaseConnector):
 
     def _get_single_matter(self, action_result, client, matter_id, view="BASIC"):
 
-        try:
-            response = client.matters().get(matterId=matter_id, view=view).execute()
-        except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, "Error while fetching matter", e), None
+        method = client.matters().get(matterId=matter_id, view=view)
+        ret_val, response = self.make_request(action_result, ERROR_WHILE_FETCHING_MATTER, method)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status(), None
 
         return phantom.APP_SUCCESS, response
 
     def _handle_close_matter(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
 
@@ -290,10 +340,13 @@ class GoogleVaultConnector(BaseConnector):
             return action_result.set_status(phantom.APP_ERROR, "Matter already exists in {} state".format(state))
 
         if not delete_flag:
-            try:
-                matter = client.matters().close(matterId=matter_id).execute()
-            except Exception as e:
-                return action_result.set_status(phantom.APP_ERROR, "Error while closing matter", e)
+
+            method = client.matters().close(matterId=matter_id)
+            ret_val, matter = self.make_request(action_result, ERROR_WHILE_CLOSING_MATTER, method)
+
+            if phantom.is_fail(ret_val):
+                return action_result.get_status()
+
         else:
             ret_val, matter = self._close_single_matter(action_result, client, matter_id=matter_id)
 
@@ -311,10 +364,11 @@ class GoogleVaultConnector(BaseConnector):
         if phantom.is_fail(ret_val):
             return action_result.get_status()
 
-        try:
-            response = client.matters().close(matterId=matter_id).execute()
-        except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, "Error while closing matter", e)
+        method = client.matters().close(matterId=matter_id)
+        ret_val, response = self.make_request(action_result, ERROR_WHILE_CLOSING_MATTER, method)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status(), None
 
         return phantom.APP_SUCCESS, response
 
@@ -360,6 +414,7 @@ class GoogleVaultConnector(BaseConnector):
         return phantom.APP_SUCCESS, flag, state
 
     def _handle_delete_matter(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
 
@@ -387,10 +442,11 @@ class GoogleVaultConnector(BaseConnector):
                 if phantom.is_fail(ret_val):
                     return action_result.get_status()
 
-        try:
-            matter = client.matters().delete(matterId=matter_id).execute()
-        except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, "Error while deleting matter", e)
+        method = client.matters().delete(matterId=matter_id)
+        ret_val, matter = self.make_request(action_result, ERROR_WHILE_DELETING_MATTER, method)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         action_result.add_data(matter)
         action_result.update_summary({'matter_id': matter_id})
@@ -398,6 +454,7 @@ class GoogleVaultConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully deleted matter")
 
     def _handle_restore_matter(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
         matter_id = param["matter_id"]
@@ -407,10 +464,11 @@ class GoogleVaultConnector(BaseConnector):
             self.debug_print(FAILED_CREATE_GVAULT)
             return ret_val
 
-        try:
-            matter = client.matters().undelete(matterId=matter_id).execute()
-        except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, "Error while restoring matter", e)
+        method = client.matters().undelete(matterId=matter_id)
+        ret_val, matter = self.make_request(action_result, ERROR_WHILE_RESTORING_MATTER, method)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         action_result.add_data(matter)
         action_result.update_summary({'matter_id': matter_id})
@@ -418,6 +476,7 @@ class GoogleVaultConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully restored matter")
 
     def _handle_reopen_matter(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
         matter_id = param["matter_id"]
@@ -427,10 +486,11 @@ class GoogleVaultConnector(BaseConnector):
             self.debug_print(FAILED_CREATE_GVAULT)
             return ret_val
 
-        try:
-            matter = client.matters().reopen(matterId=matter_id).execute()
-        except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, "Error while reopening matter", e)
+        method = client.matters().reopen(matterId=matter_id)
+        ret_val, matter = self.make_request(action_result, ERROR_WHILE_REOPENING_MATTER, method)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         action_result.add_data(matter)
         action_result.update_summary({'matter_id': matter_id})
@@ -478,6 +538,7 @@ class GoogleVaultConnector(BaseConnector):
         return phantom.APP_SUCCESS
 
     def _handle_create_hold(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
 
@@ -556,10 +617,11 @@ class GoogleVaultConnector(BaseConnector):
                 elif corpus == "GROUPS":
                     wanted_hold.update({"query": {"groupsQuery": query}})
 
-        try:
-            hold = client.matters().holds().create(matterId=matter_id, body=wanted_hold).execute()
-        except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, "Error while creating hold", e)
+        method = client.matters().holds().create(matterId=matter_id, body=wanted_hold)
+        ret_val, hold = self.make_request(action_result, ERROR_WHILE_CREATING_HOLD, method)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         action_result.add_data(hold)
         action_result.update_summary({'matter_id': matter_id})
@@ -588,6 +650,7 @@ class GoogleVaultConnector(BaseConnector):
         return phantom.APP_SUCCESS
 
     def _handle_delete_hold(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
         matter_id = param["matter_id"]
@@ -611,14 +674,16 @@ class GoogleVaultConnector(BaseConnector):
 
     def _delete_single_hold(self, action_result, client, matter_id, hold_id):
 
-        try:
-            response = client.matters().holds().delete(matterId=matter_id, holdId=hold_id).execute()
-        except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, "Error while deleting hold", e), None
+        method = client.matters().holds().delete(matterId=matter_id, holdId=hold_id)
+        ret_val, response = self.make_request(action_result, ERROR_WHILE_DELETING_HOLD, method)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status(), None
 
         return phantom.APP_SUCCESS, response
 
     def _handle_add_held_account(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
 
@@ -634,10 +699,11 @@ class GoogleVaultConnector(BaseConnector):
 
         held_account = {'accountId': account_id}
 
-        try:
-            result = client.matters().holds().accounts().create(matterId=matter_id, holdId=hold_id, body=held_account).execute()
-        except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, "Error while adding held account to hold for given matter ID", e)
+        method = client.matters().holds().accounts().create(matterId=matter_id, holdId=hold_id, body=held_account)
+        ret_val, result = self.make_request(action_result, ERROR_WHILE_ADDING_HELD_ACCOUNT, method)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         action_result.add_data(result)
         action_result.update_summary({'matter_id': matter_id})
@@ -646,6 +712,7 @@ class GoogleVaultConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
     def _handle_remove_held_account(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
         account_id = param["account_id"]
@@ -658,10 +725,11 @@ class GoogleVaultConnector(BaseConnector):
             self.debug_print(FAILED_CREATE_GVAULT)
             return ret_val
 
-        try:
-            result = client.matters().holds().accounts().delete(matterId=matter_id, holdId=hold_id, accountId=account_id).execute()
-        except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, "Error while removing held account to hold for given matter ID", e)
+        method = client.matters().holds().accounts().delete(matterId=matter_id, holdId=hold_id, accountId=account_id)
+        ret_val, result = self.make_request(action_result, ERROR_WHILE_REMOVING_HELD_ACCOUNT, method)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         action_result.add_data(result)
         action_result.update_summary({'hold_id': hold_id, 'matter_id': matter_id})
@@ -670,8 +738,9 @@ class GoogleVaultConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
     def _handle_list_holds(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
-        scopes = [GOOGLE_SCOPE]
+        scopes = [GOOGLE_SCOPE_READONLY]
 
         ret_val, client = self._create_client(action_result, scopes)
 
@@ -685,10 +754,11 @@ class GoogleVaultConnector(BaseConnector):
 
         if limit is None:
             return action_result.get_status()
-        try:
-            holds = self._paginator(client, limit=limit, matter_id=matter_id)
-        except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, "Error while listing holds", e)
+
+        ret_val, holds = self.make_request(action_result, ERROR_WHILE_LISTING_HOLDS, client=client, limit=limit, matter_id=matter_id)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         if not holds:
             return action_result.set_status(phantom.APP_ERROR, "No data found")
@@ -702,8 +772,9 @@ class GoogleVaultConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS, 'Successfully retrieved {} hold{}'.format(num_holds, '' if num_holds == 1 else 's'))
 
     def _handle_list_exports(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
-        scopes = [GOOGLE_SCOPE]
+        scopes = [GOOGLE_SCOPE_READONLY]
 
         ret_val, client = self._create_client(action_result, scopes)
 
@@ -717,10 +788,11 @@ class GoogleVaultConnector(BaseConnector):
 
         if limit is None:
             return action_result.get_status()
-        try:
-            exports = self._paginator(client, limit=limit, matter_id=matter_id)
-        except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, "Error while listing exports", e)
+
+        ret_val, exports = self.make_request(action_result, ERROR_WHILE_LISTING_EXPORTS, client=client, limit=limit, matter_id=matter_id)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         if not exports:
             return action_result.set_status(phantom.APP_ERROR, "No data found")
@@ -862,6 +934,7 @@ class GoogleVaultConnector(BaseConnector):
             query.update(drive_dict)
 
     def _handle_create_export(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
 
@@ -979,10 +1052,11 @@ class GoogleVaultConnector(BaseConnector):
         if export_options:
             wanted_export.update({"exportOptions": export_options})
 
-        try:
-            export = client.matters().exports().create(matterId=matter_id, body=wanted_export).execute()
-        except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, "Error while creating export", e)
+        method = client.matters().exports().create(matterId=matter_id, body=wanted_export)
+        ret_val, export = self.make_request(action_result, ERROR_WHILE_CREATING_EXPORT, method)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         action_result.add_data(export)
         action_result.update_summary({'matter_id': matter_id})
@@ -990,8 +1064,9 @@ class GoogleVaultConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully created export")
 
     def _handle_get_export(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
-        scopes = [GOOGLE_SCOPE]
+        scopes = [GOOGLE_SCOPE_READONLY]
 
         ret_val, client = self._create_client(action_result, scopes)
         matter_id = param["matter_id"]
@@ -1001,10 +1076,11 @@ class GoogleVaultConnector(BaseConnector):
             self.debug_print(FAILED_CREATE_GVAULT)
             return ret_val
 
-        try:
-            result = client.matters().exports().get(matterId=matter_id, exportId=export_id).execute()
-        except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, "Error while fetching export", e)
+        method = client.matters().exports().get(matterId=matter_id, exportId=export_id)
+        ret_val, result = self.make_request(action_result, ERROR_WHILE_FETCHING_EXPORT, method)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         action_result.add_data(result)
         action_result.update_summary({'matter_id': matter_id})

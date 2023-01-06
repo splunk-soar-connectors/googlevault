@@ -9,8 +9,8 @@
 
 {% block widget_content %} <!-- Main Start Block -->
 
-<!-- File: gsvault_get_export.html
-  Copyright (c) 2019-2022 Splunk Inc.
+<!-- File: googlevault_list_exports.html
+  Copyright (c) 2019-2023 Splunk Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -94,15 +94,12 @@ and limitations under the License.
                         <span class="fa fa-caret-down" style="font-size: smaller;"></span>
                         </a></td>
                     </tr>
-                    <tr>
-                        <td>Export ID</td>
-                        <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['gsvault export id'],
-                            'value': '{{ result.param.export_id }}' }], 0, {{ container.id }}, null, false);">
-                        {{ result.param.export_id }}
-                        &nbsp;
-                        <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                        </a></td>
-                    </tr>
+                    {% if result.param.limit %}
+                        <tr>
+                            <td>Limit</td>
+                            <td>{{ result.param.limit }}</td>
+                        </tr>
+                    {% endif %}
                 </table>
             </div>
 
@@ -133,6 +130,7 @@ and limitations under the License.
                             &nbsp;
                             <span class="fa fa-caret-down" style="font-size: smaller;"></span>
                             </a></td>
+
                             <td>{{ finding_data.name }}</td>
                             <td>{{ finding_data.status }}</td>
                             <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['gsvault matter id'],
@@ -141,10 +139,12 @@ and limitations under the License.
                             &nbsp;
                             <span class="fa fa-caret-down" style="font-size: smaller;"></span>
                             </a></td>
+
                             <td>{{ finding_data.query.corpus }}</td>
                             <td>{{ finding_data.query.searchMethod }}</td>
                             <td>{{ finding_data.query.dataScope }}</td>
                             <td>{{ finding_data.query.method }}</td>
+
                             {% if finding_data.query.orgUnitInfo or finding_data.query.sharedDriveInfo or finding_data.query.accountInfo %}
                             <td>
                                 {% if finding_data.query.searchMethod == "ORG_UNIT" %}
