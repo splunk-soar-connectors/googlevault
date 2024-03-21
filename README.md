@@ -11,7 +11,7 @@ Minimum Product Version: 5.3.5
 This app supports the actions to perform eDiscovery and provide a compliance solution for G Suite, allowing customers to retain, hold, search, and export their data
 
 [comment]: # " File: README.md"
-[comment]: # "  Copyright (c) 2019-2023 Splunk Inc."
+[comment]: # "  Copyright (c) 2019-2024 Splunk Inc."
 [comment]: # ""
 [comment]: # "Licensed under the Apache License, Version 2.0 (the 'License');"
 [comment]: # "you may not use this file except in compliance with the License."
@@ -765,7 +765,7 @@ DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 action_result.status | string |  |   success  failed 
 action_result.parameter.limit | numeric |  |   100 
 action_result.data.\*.description | string |  |   test.com 
-action_result.data.\*.etag | string |  |   "f-A4wQx02aM-7Cegj6o2Lk8/RjBTZYgkNFkXC95y28MFhk3MTRQ" 
+action_result.data.\*.etag | string |  |   "f-A4wQx02aM-7Cegj6o2Lk8/RjBTZYgkNFkXC95y28MFhk3MTRQ"  # pragma: allowlist secret
 action_result.data.\*.kind | string |  |   admin#directory#orgUnit 
 action_result.data.\*.name | string |  |   test.com 
 action_result.data.\*.orgUnitId | string |  `gsvault org unit id`  |   id:03ph8a2z1mtle0f 
@@ -801,7 +801,7 @@ action_result.data.\*.adminCreated | boolean |  |   True  False
 action_result.data.\*.description | string |  |   This is for testing Purpose 
 action_result.data.\*.directMembersCount | string |  |   0 
 action_result.data.\*.email | string |  `gsvault group email ids`  `email`  |   testgroup@testdomain.com 
-action_result.data.\*.etag | string |  |   "f-A4wQx02aM-7Cegj6o2Lk8/khBiJGjhnDQr0c_dCHzV0wULDBY" 
+action_result.data.\*.etag | string |  |   "f-A4wQx02aM-7Cegj6o2Lk8/khBiJGjhnDQr0c_dCHzV0wULDBY"  # pragma: allowlist secret
 action_result.data.\*.id | string |  `gsvault group account id`  |   01302m9240iv47j 
 action_result.data.\*.kind | string |  |   admin#directory#group 
 action_result.data.\*.name | string |  |   testgroup 
