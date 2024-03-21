@@ -765,7 +765,7 @@ DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 action_result.status | string |  |   success  failed 
 action_result.parameter.limit | numeric |  |   100 
 action_result.data.\*.description | string |  |   test.com 
-action_result.data.\*.etag | string |  |   "f-A4wQx02aM-7Cegj6o2Lk8/RjBTZYgkNFkXC95y28MFhk3MTRQ"  # pragma: allowlist secret
+action_result.data.\*.etag | string |  |   "f-A4wQx02aM-7Cegj6o2Lk8/RjBTZYgkNFkXC95y28MFhk3MTRQ" 
 action_result.data.\*.kind | string |  |   admin#directory#orgUnit 
 action_result.data.\*.name | string |  |   test.com 
 action_result.data.\*.orgUnitId | string |  `gsvault org unit id`  |   id:03ph8a2z1mtle0f 
@@ -801,7 +801,7 @@ action_result.data.\*.adminCreated | boolean |  |   True  False
 action_result.data.\*.description | string |  |   This is for testing Purpose 
 action_result.data.\*.directMembersCount | string |  |   0 
 action_result.data.\*.email | string |  `gsvault group email ids`  `email`  |   testgroup@testdomain.com 
-action_result.data.\*.etag | string |  |   "f-A4wQx02aM-7Cegj6o2Lk8/khBiJGjhnDQr0c_dCHzV0wULDBY"  # pragma: allowlist secret
+action_result.data.\*.etag | string |  |   "f-A4wQx02aM-7Cegj6o2Lk8/khBiJGjhnDQr0c_dCHzV0wULDBY" 
 action_result.data.\*.id | string |  `gsvault group account id`  |   01302m9240iv47j 
 action_result.data.\*.kind | string |  |   admin#directory#group 
 action_result.data.\*.name | string |  |   testgroup 
