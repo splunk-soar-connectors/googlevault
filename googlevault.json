@@ -9,8 +9,8 @@
     "product_name": "Google Vault",
     "product_version_regex": ".*",
     "publisher": "Splunk",
-    "license": "Copyright (c) 2019-2023 Splunk Inc.",
-    "app_version": "2.1.0",
+    "license": "Copyright (c) 2019-2024 Splunk Inc.",
+    "app_version": "2.1.1",
     "python_version": "3",
     "fips_compliant": true,
     "utctime_updated": "2022-01-19T00:53:45.000000Z",
@@ -28,14 +28,6 @@
                 "input_file": "wheels/py3/cachetools-4.2.4-py3-none-any.whl"
             },
             {
-                "module": "certifi",
-                "input_file": "wheels/py3/certifi-2022.12.7-py3-none-any.whl"
-            },
-            {
-                "module": "chardet",
-                "input_file": "wheels/shared/chardet-3.0.4-py2.py3-none-any.whl"
-            },
-            {
                 "module": "google_api_python_client",
                 "input_file": "wheels/py3/google_api_python_client-1.7.12-py3-none-any.whl"
             },
@@ -45,31 +37,23 @@
             },
             {
                 "module": "google_auth_httplib2",
-                "input_file": "wheels/shared/google_auth_httplib2-0.1.0-py2.py3-none-any.whl"
+                "input_file": "wheels/shared/google_auth_httplib2-0.2.0-py2.py3-none-any.whl"
             },
             {
                 "module": "httplib2",
-                "input_file": "wheels/py3/httplib2-0.21.0-py3-none-any.whl"
-            },
-            {
-                "module": "idna",
-                "input_file": "wheels/shared/idna-2.10-py2.py3-none-any.whl"
+                "input_file": "wheels/py3/httplib2-0.22.0-py3-none-any.whl"
             },
             {
                 "module": "pyasn1",
-                "input_file": "wheels/shared/pyasn1-0.4.8-py2.py3-none-any.whl"
+                "input_file": "wheels/shared/pyasn1-0.5.1-py2.py3-none-any.whl"
             },
             {
                 "module": "pyasn1_modules",
-                "input_file": "wheels/shared/pyasn1_modules-0.2.8-py2.py3-none-any.whl"
+                "input_file": "wheels/shared/pyasn1_modules-0.3.0-py2.py3-none-any.whl"
             },
             {
                 "module": "pyparsing",
-                "input_file": "wheels/py3/pyparsing-3.0.9-py3-none-any.whl"
-            },
-            {
-                "module": "requests",
-                "input_file": "wheels/shared/requests-2.25.0-py2.py3-none-any.whl"
+                "input_file": "wheels/py3/pyparsing-3.1.2-py3-none-any.whl"
             },
             {
                 "module": "rsa",
@@ -82,10 +66,6 @@
             {
                 "module": "uritemplate",
                 "input_file": "wheels/shared/uritemplate-3.0.1-py2.py3-none-any.whl"
-            },
-            {
-                "module": "urllib3",
-                "input_file": "wheels/shared/urllib3-1.26.13-py2.py3-none-any.whl"
             }
         ]
     },
@@ -3619,15 +3599,7 @@
         "wheel": [
             {
                 "module": "cachetools",
-                "input_file": "wheels/py3/cachetools-5.2.0-py3-none-any.whl"
-            },
-            {
-                "module": "certifi",
-                "input_file": "wheels/py3/certifi-2022.12.7-py3-none-any.whl"
-            },
-            {
-                "module": "chardet",
-                "input_file": "wheels/shared/chardet-3.0.4-py2.py3-none-any.whl"
+                "input_file": "wheels/py3/cachetools-5.3.3-py3-none-any.whl"
             },
             {
                 "module": "google_api_python_client",
@@ -3639,31 +3611,23 @@
             },
             {
                 "module": "google_auth_httplib2",
-                "input_file": "wheels/shared/google_auth_httplib2-0.1.0-py2.py3-none-any.whl"
+                "input_file": "wheels/shared/google_auth_httplib2-0.2.0-py2.py3-none-any.whl"
             },
             {
                 "module": "httplib2",
-                "input_file": "wheels/py3/httplib2-0.21.0-py3-none-any.whl"
-            },
-            {
-                "module": "idna",
-                "input_file": "wheels/shared/idna-2.10-py2.py3-none-any.whl"
+                "input_file": "wheels/py3/httplib2-0.22.0-py3-none-any.whl"
             },
             {
                 "module": "pyasn1",
-                "input_file": "wheels/shared/pyasn1-0.4.8-py2.py3-none-any.whl"
+                "input_file": "wheels/shared/pyasn1-0.5.1-py2.py3-none-any.whl"
             },
             {
                 "module": "pyasn1_modules",
-                "input_file": "wheels/shared/pyasn1_modules-0.2.8-py2.py3-none-any.whl"
+                "input_file": "wheels/shared/pyasn1_modules-0.3.0-py2.py3-none-any.whl"
             },
             {
                 "module": "pyparsing",
-                "input_file": "wheels/py3/pyparsing-3.0.9-py3-none-any.whl"
-            },
-            {
-                "module": "requests",
-                "input_file": "wheels/shared/requests-2.25.0-py2.py3-none-any.whl"
+                "input_file": "wheels/py3/pyparsing-3.1.2-py3-none-any.whl"
             },
             {
                 "module": "rsa",
@@ -3676,10 +3640,6 @@
             {
                 "module": "uritemplate",
                 "input_file": "wheels/shared/uritemplate-3.0.1-py2.py3-none-any.whl"
-            },
-            {
-                "module": "urllib3",
-                "input_file": "wheels/shared/urllib3-1.26.13-py2.py3-none-any.whl"
             }
         ]
     }
