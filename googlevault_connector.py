@@ -1,6 +1,6 @@
 # File: googlevault_connector.py
 #
-# Copyright (c) 2019-2024 Splunk Inc.
+# Copyright (c) 2019-2025 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,13 +30,14 @@ from phantom.base_connector import BaseConnector
 
 from googlevault_consts import *
 
-init_path = '{}/dependencies/google/__init__.py'.format(  # noqa
-    os.path.dirname(os.path.abspath(__file__))  # noqa
-)  # noqa
+
+init_path = "{}/dependencies/google/__init__.py".format(  # noqa
+    os.path.dirname(os.path.abspath(__file__))
+)
 try:
-    open(init_path, 'a+').close()  # noqa
-except Exception:  # noqa
-    pass  # noqa
+    open(init_path, "a+").close()
+except Exception:
+    pass
 
 
 class RetVal(tuple):
@@ -45,11 +46,9 @@ class RetVal(tuple):
 
 
 class GoogleVaultConnector(BaseConnector):
-
     def __init__(self):
-
         # Call the BaseConnectors init first
-        super(GoogleVaultConnector, self).__init__()
+        super().__init__()
 
         self._state = None
         self._login_email = None
@@ -70,10 +69,10 @@ class GoogleVaultConnector(BaseConnector):
                 return action_result.set_status(phantom.APP_ERROR, "Failed to create delegated credentials", e), None
 
         try:
-            if self.get_action_identifier() in ['list_organizations', 'list_groups']:
-                client = discovery.build('admin', 'directory_v1', credentials=credentials)
+            if self.get_action_identifier() in ["list_organizations", "list_groups"]:
+                client = discovery.build("admin", "directory_v1", credentials=credentials)
             else:
-                client = discovery.build('vault', 'v1', credentials=credentials)
+                client = discovery.build("vault", "v1", credentials=credentials)
         except Exception as e:
             return action_result.set_status(phantom.APP_ERROR, "Unable to create client", e), None
 
@@ -101,8 +100,9 @@ class GoogleVaultConnector(BaseConnector):
 
         return parameter
 
-    def make_request(self, action_result, message, method=None, client=None, limit=None,
-                    view=None, matter_id=None, hold_flag=False, domain=None):
+    def make_request(
+        self, action_result, message, method=None, client=None, limit=None, view=None, matter_id=None, hold_flag=False, domain=None
+    ):
         """
         This method will make request to the server and return the results.
         In case of rateLimitExceeded error,it will implement the exponential backoff retry mechanism
@@ -127,7 +127,7 @@ class GoogleVaultConnector(BaseConnector):
                     if retry_count < 6:
                         retry_count += 1
 
-                    wait_time = (2 ** retry_count) + (random.randint(0, 1000) * (10 ** -3))
+                    wait_time = (2**retry_count) + (random.randint(0, 1000) * (10**-3))
                     self.debug_print(f"{message}. Retrying after {wait_time} seconds.")
                     time.sleep(wait_time)
                     time_elapsed += wait_time
@@ -161,7 +161,7 @@ class GoogleVaultConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_list_matters(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE_READONLY]
 
@@ -173,7 +173,7 @@ class GoogleVaultConnector(BaseConnector):
 
         view = param.get("state")
 
-        limit = self._validate_integer(action_result, param.get("limit", DEFAULT_LIMIT), 'limit', allow_zero=False)
+        limit = self._validate_integer(action_result, param.get("limit", DEFAULT_LIMIT), "limit", allow_zero=False)
 
         if limit is None:
             return action_result.get_status()
@@ -190,13 +190,14 @@ class GoogleVaultConnector(BaseConnector):
             action_result.add_data(matter)
 
         num_matters = len(matters)
-        action_result.update_summary({'total_matters_returned': num_matters})
+        action_result.update_summary({"total_matters_returned": num_matters})
 
-        return action_result.set_status(phantom.APP_SUCCESS, 'Successfully retrieved {} matter{}'.format(
-            num_matters, '' if num_matters == 1 else 's'))
+        return action_result.set_status(
+            phantom.APP_SUCCESS, "Successfully retrieved {} matter{}".format(num_matters, "" if num_matters == 1 else "s")
+        )
 
     def _handle_list_organizations(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_ORGANIZATIONS_SCOPE_READONLY]
 
@@ -206,7 +207,7 @@ class GoogleVaultConnector(BaseConnector):
             self.debug_print(FAILED_CREATE_GVAULT)
             return ret_val
 
-        limit = self._validate_integer(action_result, param.get("limit", DEFAULT_LIMIT), 'limit', allow_zero=False)
+        limit = self._validate_integer(action_result, param.get("limit", DEFAULT_LIMIT), "limit", allow_zero=False)
 
         if limit is None:
             return action_result.get_status()
@@ -222,13 +223,14 @@ class GoogleVaultConnector(BaseConnector):
             action_result.add_data(org_unit)
 
         num_org_units = len(org_units)
-        action_result.update_summary({'total_organization_units_returned': num_org_units})
+        action_result.update_summary({"total_organization_units_returned": num_org_units})
 
-        return action_result.set_status(phantom.APP_SUCCESS, 'Successfully retrieved {} organization unit{}'.format(
-            num_org_units, '' if num_org_units == 1 else 's'))
+        return action_result.set_status(
+            phantom.APP_SUCCESS, "Successfully retrieved {} organization unit{}".format(num_org_units, "" if num_org_units == 1 else "s")
+        )
 
     def _handle_list_groups(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE_GROUP_READONLY]
 
@@ -239,14 +241,14 @@ class GoogleVaultConnector(BaseConnector):
             return ret_val
 
         domain = param["domain"]
-        limit = self._validate_integer(action_result, param.get("limit", DEFAULT_LIMIT), 'limit', allow_zero=False)
+        limit = self._validate_integer(action_result, param.get("limit", DEFAULT_LIMIT), "limit", allow_zero=False)
 
         if limit is None:
             return action_result.get_status()
         try:
             groups = self._paginator(client, limit=limit, domain=domain)
         except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, "Error while listing groups for the given domain '{}'".format(domain), e)
+            return action_result.set_status(phantom.APP_ERROR, f"Error while listing groups for the given domain '{domain}'", e)
 
         if not groups:
             return action_result.set_status(phantom.APP_ERROR, NO_DATA_FOUND)
@@ -255,13 +257,15 @@ class GoogleVaultConnector(BaseConnector):
             action_result.add_data(group)
 
         num_groups = len(groups)
-        action_result.update_summary({'total_groups_returned': num_groups})
+        action_result.update_summary({"total_groups_returned": num_groups})
 
-        return action_result.set_status(phantom.APP_SUCCESS, "Successfully retrieved {} group{} for the domain '{}'".format(
-            num_groups, '' if num_groups == 1 else 's', domain))
+        return action_result.set_status(
+            phantom.APP_SUCCESS,
+            "Successfully retrieved {} group{} for the domain '{}'".format(num_groups, "" if num_groups == 1 else "s", domain),
+        )
 
     def _handle_create_matter(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
 
@@ -273,8 +277,8 @@ class GoogleVaultConnector(BaseConnector):
         name = param["name"]
         description = param["description"]
         matter_content = {
-            'name': name,
-            'description': description,
+            "name": name,
+            "description": description,
         }
 
         method = client.matters().create(body=matter_content)
@@ -284,11 +288,11 @@ class GoogleVaultConnector(BaseConnector):
             return action_result.get_status()
 
         action_result.add_data(matter)
-        action_result.update_summary({'name': name, 'description': description})
+        action_result.update_summary({"name": name, "description": description})
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully created matter")
 
     def _handle_get_matter(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE_READONLY]
         matter_id = param["matter_id"]
@@ -304,11 +308,10 @@ class GoogleVaultConnector(BaseConnector):
             return action_result.get_status()
 
         action_result.add_data(matter)
-        action_result.update_summary({'matter_id': matter_id})
+        action_result.update_summary({"matter_id": matter_id})
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully fetched matter")
 
     def _get_single_matter(self, action_result, client, matter_id, view="BASIC"):
-
         method = client.matters().get(matterId=matter_id, view=view)
         ret_val, response = self.make_request(action_result, ERROR_WHILE_FETCHING_MATTER, method)
 
@@ -318,7 +321,7 @@ class GoogleVaultConnector(BaseConnector):
         return phantom.APP_SUCCESS, response
 
     def _handle_close_matter(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
 
@@ -337,10 +340,9 @@ class GoogleVaultConnector(BaseConnector):
             return action_result.get_status()
 
         if not flag:
-            return action_result.set_status(phantom.APP_ERROR, "Matter already exists in {} state".format(state))
+            return action_result.set_status(phantom.APP_ERROR, f"Matter already exists in {state} state")
 
         if not delete_flag:
-
             method = client.matters().close(matterId=matter_id)
             ret_val, matter = self.make_request(action_result, ERROR_WHILE_CLOSING_MATTER, method)
 
@@ -354,11 +356,10 @@ class GoogleVaultConnector(BaseConnector):
                 return action_result.get_status()
 
         action_result.add_data(matter)
-        action_result.update_summary({'matter_id': matter_id})
+        action_result.update_summary({"matter_id": matter_id})
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully closed matter")
 
     def _close_single_matter(self, action_result, client, matter_id):
-
         ret_val = self._check_for_hold(action_result, client, matter_id=matter_id)
 
         if phantom.is_fail(ret_val):
@@ -373,7 +374,6 @@ class GoogleVaultConnector(BaseConnector):
         return phantom.APP_SUCCESS, response
 
     def _check_for_hold(self, action_result, client, matter_id):
-
         holds = self._paginator(client, matter_id=matter_id, hold_flag=True)
 
         if not holds:
@@ -387,7 +387,6 @@ class GoogleVaultConnector(BaseConnector):
         return phantom.APP_SUCCESS
 
     def _delete_all_holds(self, action_result, client, matter_id, holds):
-
         for hold in holds:
             hold_id = hold.get("holdId")
             if hold_id:
@@ -398,7 +397,6 @@ class GoogleVaultConnector(BaseConnector):
         return phantom.APP_SUCCESS
 
     def _check_matter_state(self, action_result, client, matter_id, state_for_check=None):
-
         flag = False
         state = None
 
@@ -414,7 +412,7 @@ class GoogleVaultConnector(BaseConnector):
         return phantom.APP_SUCCESS, flag, state
 
     def _handle_delete_matter(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
 
@@ -433,7 +431,7 @@ class GoogleVaultConnector(BaseConnector):
             return action_result.get_status()
 
         if flag:
-            return action_result.set_status(phantom.APP_ERROR, "Matter already exists in {} state".format(state))
+            return action_result.set_status(phantom.APP_ERROR, f"Matter already exists in {state} state")
 
         if state == "OPEN":
             if delete_flag:
@@ -449,12 +447,12 @@ class GoogleVaultConnector(BaseConnector):
             return action_result.get_status()
 
         action_result.add_data(matter)
-        action_result.update_summary({'matter_id': matter_id})
+        action_result.update_summary({"matter_id": matter_id})
 
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully deleted matter")
 
     def _handle_restore_matter(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
         matter_id = param["matter_id"]
@@ -471,12 +469,12 @@ class GoogleVaultConnector(BaseConnector):
             return action_result.get_status()
 
         action_result.add_data(matter)
-        action_result.update_summary({'matter_id': matter_id})
+        action_result.update_summary({"matter_id": matter_id})
 
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully restored matter")
 
     def _handle_reopen_matter(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
         matter_id = param["matter_id"]
@@ -493,15 +491,14 @@ class GoogleVaultConnector(BaseConnector):
             return action_result.get_status()
 
         action_result.add_data(matter)
-        action_result.update_summary({'matter_id': matter_id})
+        action_result.update_summary({"matter_id": matter_id})
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully reopened matter")
 
     def _update_wanted_hold(self, wanted_hold, search_method, emails, ids, org_unit_id):
-
         def update_hold(key, value):
             wanted_hold.update({key: value})
 
-        org_unit = {'orgUnitId': org_unit_id}
+        org_unit = {"orgUnitId": org_unit_id}
         if search_method == "ORG_UNIT":
             update_hold("orgUnit", org_unit)
 
@@ -538,7 +535,7 @@ class GoogleVaultConnector(BaseConnector):
         return phantom.APP_SUCCESS
 
     def _handle_create_hold(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
 
@@ -548,9 +545,9 @@ class GoogleVaultConnector(BaseConnector):
             self.debug_print(FAILED_CREATE_GVAULT)
             return ret_val
 
-        name = param['name']
-        corpus = param['type']
-        search_method = param.get('search_method')
+        name = param["name"]
+        corpus = param["type"]
+        search_method = param.get("search_method")
         terms = param.get("terms")
         end_time = param.get("end_time")
         start_time = param.get("start_time")
@@ -581,10 +578,7 @@ class GoogleVaultConnector(BaseConnector):
                 if not ids:
                     return action_result.set_status(phantom.APP_ERROR, GSVAULT_CORPUS_GROUPS_ERROR)
 
-        wanted_hold = {
-            'name': name,
-            'corpus': corpus
-        }
+        wanted_hold = {"name": name, "corpus": corpus}
 
         self._update_wanted_hold(wanted_hold, search_method, emails, ids, org_unit_id)
 
@@ -624,7 +618,7 @@ class GoogleVaultConnector(BaseConnector):
             return action_result.get_status()
 
         action_result.add_data(hold)
-        action_result.update_summary({'matter_id': matter_id})
+        action_result.update_summary({"matter_id": matter_id})
 
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully created hold")
 
@@ -650,7 +644,7 @@ class GoogleVaultConnector(BaseConnector):
         return phantom.APP_SUCCESS
 
     def _handle_delete_hold(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
         matter_id = param["matter_id"]
@@ -668,12 +662,11 @@ class GoogleVaultConnector(BaseConnector):
             return action_result.get_status()
 
         action_result.add_data(result)
-        action_result.update_summary({'matter_id': matter_id})
+        action_result.update_summary({"matter_id": matter_id})
 
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully deleted hold")
 
     def _delete_single_hold(self, action_result, client, matter_id, hold_id):
-
         method = client.matters().holds().delete(matterId=matter_id, holdId=hold_id)
         ret_val, response = self.make_request(action_result, ERROR_WHILE_DELETING_HOLD, method)
 
@@ -683,7 +676,7 @@ class GoogleVaultConnector(BaseConnector):
         return phantom.APP_SUCCESS, response
 
     def _handle_add_held_account(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
 
@@ -697,7 +690,7 @@ class GoogleVaultConnector(BaseConnector):
         matter_id = param["matter_id"]
         hold_id = param["hold_id"]
 
-        held_account = {'accountId': account_id}
+        held_account = {"accountId": account_id}
 
         method = client.matters().holds().accounts().create(matterId=matter_id, holdId=hold_id, body=held_account)
         ret_val, result = self.make_request(action_result, ERROR_WHILE_ADDING_HELD_ACCOUNT, method)
@@ -706,13 +699,13 @@ class GoogleVaultConnector(BaseConnector):
             return action_result.get_status()
 
         action_result.add_data(result)
-        action_result.update_summary({'matter_id': matter_id})
+        action_result.update_summary({"matter_id": matter_id})
 
         message = SUCCESS_ADDED_HELD_ACCOUNT.format(hold_id=hold_id, matter_id=matter_id)
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
     def _handle_remove_held_account(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
         account_id = param["account_id"]
@@ -732,13 +725,13 @@ class GoogleVaultConnector(BaseConnector):
             return action_result.get_status()
 
         action_result.add_data(result)
-        action_result.update_summary({'hold_id': hold_id, 'matter_id': matter_id})
+        action_result.update_summary({"hold_id": hold_id, "matter_id": matter_id})
 
         message = SUCCESS_REMOVED_HELD_ACCOUNT.format(hold_id=hold_id, matter_id=matter_id)
         return action_result.set_status(phantom.APP_SUCCESS, message)
 
     def _handle_list_holds(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE_READONLY]
 
@@ -750,7 +743,7 @@ class GoogleVaultConnector(BaseConnector):
 
         matter_id = param["matter_id"]
 
-        limit = self._validate_integer(action_result, param.get("limit", DEFAULT_LIMIT), 'limit', allow_zero=False)
+        limit = self._validate_integer(action_result, param.get("limit", DEFAULT_LIMIT), "limit", allow_zero=False)
 
         if limit is None:
             return action_result.get_status()
@@ -767,12 +760,12 @@ class GoogleVaultConnector(BaseConnector):
             action_result.add_data(hold)
 
         num_holds = len(holds)
-        action_result.update_summary({'total_holds_returned': num_holds})
+        action_result.update_summary({"total_holds_returned": num_holds})
 
-        return action_result.set_status(phantom.APP_SUCCESS, 'Successfully retrieved {} hold{}'.format(num_holds, '' if num_holds == 1 else 's'))
+        return action_result.set_status(phantom.APP_SUCCESS, "Successfully retrieved {} hold{}".format(num_holds, "" if num_holds == 1 else "s"))
 
     def _handle_list_exports(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE_READONLY]
 
@@ -784,7 +777,7 @@ class GoogleVaultConnector(BaseConnector):
 
         matter_id = param["matter_id"]
 
-        limit = self._validate_integer(action_result, param.get("limit", DEFAULT_LIMIT), 'limit', allow_zero=False)
+        limit = self._validate_integer(action_result, param.get("limit", DEFAULT_LIMIT), "limit", allow_zero=False)
 
         if limit is None:
             return action_result.get_status()
@@ -801,10 +794,11 @@ class GoogleVaultConnector(BaseConnector):
             action_result.add_data(export)
 
         num_exports = len(exports)
-        action_result.update_summary({'total_exports_returned': num_exports})
+        action_result.update_summary({"total_exports_returned": num_exports})
 
-        return action_result.set_status(phantom.APP_SUCCESS, 'Successfully retrieved {} export{}'.format(
-            num_exports, '' if num_exports == 1 else 's'))
+        return action_result.set_status(
+            phantom.APP_SUCCESS, "Successfully retrieved {} export{}".format(num_exports, "" if num_exports == 1 else "s")
+        )
 
     def _paginator(self, client, limit=None, view=None, matter_id=None, hold_flag=False, domain=None):
         """
@@ -822,9 +816,9 @@ class GoogleVaultConnector(BaseConnector):
         kwargs = {}
 
         if action_id == "list_organizations":
-            kwargs['customerId'] = 'my_customer'
+            kwargs["customerId"] = "my_customer"
         elif action_id == "list_groups":
-            kwargs['domain'] = domain
+            kwargs["domain"] = domain
 
         if view:
             kwargs.update({"state": view})
@@ -864,7 +858,7 @@ class GoogleVaultConnector(BaseConnector):
             if limit and len(list_items) >= limit:
                 return list_items[:limit]
 
-            page_token = response.get('nextPageToken')
+            page_token = response.get("nextPageToken")
             if not page_token:
                 break
 
@@ -910,31 +904,19 @@ class GoogleVaultConnector(BaseConnector):
                 query.update({"terms": terms})
 
         if search_method == "ORG_UNIT":
-            org_dict = {
-                "orgUnitInfo": {
-                    "org_unit_id": org_unit_id
-                }
-            }
+            org_dict = {"orgUnitInfo": {"org_unit_id": org_unit_id}}
             query.update(org_dict)
 
         if search_method == "ACCOUNT":
-            account_dict = {
-                "accountInfo": {
-                    "emails": emails
-                }
-            }
+            account_dict = {"accountInfo": {"emails": emails}}
             query.update(account_dict)
 
         if search_method == "TEAM_DRIVE":
-            drive_dict = {
-                "sharedDriveInfo": {
-                    "sharedDriveIds": ids
-                }
-            }
+            drive_dict = {"sharedDriveInfo": {"sharedDriveIds": ids}}
             query.update(drive_dict)
 
     def _handle_create_export(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE]
 
@@ -944,10 +926,10 @@ class GoogleVaultConnector(BaseConnector):
             self.debug_print(FAILED_CREATE_GVAULT)
             return ret_val
 
-        name = param['name']
-        corpus = param['type']
-        data_scope = param['data_scope']
-        search_method = param['search_method']
+        name = param["name"]
+        corpus = param["type"]
+        data_scope = param["data_scope"]
+        search_method = param["search_method"]
 
         terms = param.get("terms")
         end_time = param.get("end_time")
@@ -970,11 +952,7 @@ class GoogleVaultConnector(BaseConnector):
         if phantom.is_fail(is_valid):
             return action_result.get_status()
 
-        query = {
-            'corpus': corpus,
-            'dataScope': data_scope,
-            'searchMethod': search_method
-        }
+        query = {"corpus": corpus, "dataScope": data_scope, "searchMethod": search_method}
 
         emails = ids = list()
         if search_method == "ACCOUNT":
@@ -1000,9 +978,7 @@ class GoogleVaultConnector(BaseConnector):
 
         self._update_query(query, search_method, data_scope, timezone, ids, emails, terms, start_time, end_time, org_unit_id)
 
-        wanted_export = {
-            'name': name
-        }
+        wanted_export = {"name": name}
 
         export_options = dict()
 
@@ -1024,7 +1000,7 @@ class GoogleVaultConnector(BaseConnector):
             drive_options = dict()
 
             if include_access_info:
-                export_options.update({"driveOptions": {'includeAccessInfo': include_access_info}})
+                export_options.update({"driveOptions": {"includeAccessInfo": include_access_info}})
 
             if version_date:
                 ret_val = self._validate_time_range(action_result, version_date=version_date)
@@ -1035,7 +1011,7 @@ class GoogleVaultConnector(BaseConnector):
                 drive_options.update({"versionDate": version_date})
 
             if include_shared_drives:
-                drive_options.update({'includeSharedDrives': include_shared_drives})
+                drive_options.update({"includeSharedDrives": include_shared_drives})
 
             if drive_options:
                 query.update({"driveOptions": drive_options})
@@ -1059,12 +1035,12 @@ class GoogleVaultConnector(BaseConnector):
             return action_result.get_status()
 
         action_result.add_data(export)
-        action_result.update_summary({'matter_id': matter_id})
+        action_result.update_summary({"matter_id": matter_id})
 
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully created export")
 
     def _handle_get_export(self, param):
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         action_result = self.add_action_result(ActionResult(dict(param)))
         scopes = [GOOGLE_SCOPE_READONLY]
 
@@ -1083,7 +1059,7 @@ class GoogleVaultConnector(BaseConnector):
             return action_result.get_status()
 
         action_result.add_data(result)
-        action_result.update_summary({'matter_id': matter_id})
+        action_result.update_summary({"matter_id": matter_id})
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully fetched export")
 
     def handle_action(self, param):
@@ -1094,38 +1070,37 @@ class GoogleVaultConnector(BaseConnector):
 
         # Dictionary mapping each action with its corresponding actions
         supported_actions = {
-            'list_matters': self._handle_list_matters,
-            'create_matter': self._handle_create_matter,
-            'get_matter': self._handle_get_matter,
-            'delete_matter': self._handle_delete_matter,
-            'restore_matter': self._handle_restore_matter,
-            'reopen_matter': self._handle_reopen_matter,
-            'close_matter': self._handle_close_matter,
-            'create_export': self._handle_create_export,
-            'test_connectivity': self._handle_test_connectivity,
-            'get_export': self._handle_get_export,
-            'list_exports': self._handle_list_exports,
-            'create_hold': self._handle_create_hold,
-            'list_holds': self._handle_list_holds,
-            'delete_hold': self._handle_delete_hold,
-            'add_held_account': self._handle_add_held_account,
-            'remove_held_account': self._handle_remove_held_account,
-            'list_organizations': self._handle_list_organizations,
-            'list_groups': self._handle_list_groups
+            "list_matters": self._handle_list_matters,
+            "create_matter": self._handle_create_matter,
+            "get_matter": self._handle_get_matter,
+            "delete_matter": self._handle_delete_matter,
+            "restore_matter": self._handle_restore_matter,
+            "reopen_matter": self._handle_reopen_matter,
+            "close_matter": self._handle_close_matter,
+            "create_export": self._handle_create_export,
+            "test_connectivity": self._handle_test_connectivity,
+            "get_export": self._handle_get_export,
+            "list_exports": self._handle_list_exports,
+            "create_hold": self._handle_create_hold,
+            "list_holds": self._handle_list_holds,
+            "delete_hold": self._handle_delete_hold,
+            "add_held_account": self._handle_add_held_account,
+            "remove_held_account": self._handle_remove_held_account,
+            "list_organizations": self._handle_list_organizations,
+            "list_groups": self._handle_list_groups,
         }
 
         try:
             run_action = supported_actions[action_id]
         except Exception:
-            raise ValueError('action %r is not supported' % action_id)
+            raise ValueError(f"action {action_id!r} is not supported")
 
         return run_action(param)
 
     def initialize(self):
-
         config = self.get_config()
         self._state = self.load_state()
-        key_json = config['key_json']
+        key_json = config["key_json"]
 
         try:
             key_dict = json.loads(key_json)
@@ -1134,7 +1109,7 @@ class GoogleVaultConnector(BaseConnector):
 
         self._key_dict = key_dict
 
-        login_email = config['login_email']
+        login_email = config["login_email"]
 
         if not ph_utils.is_email(login_email):
             return self.set_status(phantom.APP_ERROR, "Asset config 'login_email' failed validation")
@@ -1144,13 +1119,11 @@ class GoogleVaultConnector(BaseConnector):
         return phantom.APP_SUCCESS
 
     def finalize(self):
-
         self.save_state(self._state)
         return phantom.APP_SUCCESS
 
 
-if __name__ == '__main__':
-
+if __name__ == "__main__":
     import argparse
     import sys
 
@@ -1160,9 +1133,9 @@ if __name__ == '__main__':
 
     argparser = argparse.ArgumentParser()
 
-    argparser.add_argument('input_test_json', help='Input Test JSON file')
-    argparser.add_argument('-u', '--username', help='username', required=False)
-    argparser.add_argument('-p', '--password', help='password', required=False)
+    argparser.add_argument("input_test_json", help="Input Test JSON file")
+    argparser.add_argument("-u", "--username", help="username", required=False)
+    argparser.add_argument("-p", "--password", help="password", required=False)
 
     args = argparser.parse_args()
     session_id = None
@@ -1181,20 +1154,20 @@ if __name__ == '__main__':
         try:
             print("Accessing the Login page")
             r = requests.get(login_url, verify=True, timeout=DEFAULT_TIMEOUT)
-            csrftoken = r.cookies['csrftoken']
+            csrftoken = r.cookies["csrftoken"]
 
             data = dict()
-            data['username'] = username
-            data['password'] = password
-            data['csrfmiddlewaretoken'] = csrftoken
+            data["username"] = username
+            data["password"] = password
+            data["csrfmiddlewaretoken"] = csrftoken
 
             headers = dict()
-            headers['Cookie'] = 'csrftoken=' + csrftoken
-            headers['Referer'] = login_url
+            headers["Cookie"] = "csrftoken=" + csrftoken
+            headers["Referer"] = login_url
 
             print("Logging into Platform to get the session id")
             r2 = requests.post(login_url, verify=True, data=data, headers=headers, timeout=DEFAULT_TIMEOUT)
-            session_id = r2.cookies['sessionid']
+            session_id = r2.cookies["sessionid"]
         except Exception as e:
             print("Unable to get session id from the platform. Error: " + str(e))
             sys.exit(1)
@@ -1208,8 +1181,8 @@ if __name__ == '__main__':
         connector.print_progress_message = True
 
         if session_id is not None:
-            in_json['user_session_token'] = session_id
-            connector._set_csrf_info(csrftoken, headers['Referer'])
+            in_json["user_session_token"] = session_id
+            connector._set_csrf_info(csrftoken, headers["Referer"])
 
         ret_val = connector._handle_action(json.dumps(in_json), None)
         print(json.dumps(json.loads(ret_val), indent=4))

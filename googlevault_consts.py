@@ -1,6 +1,6 @@
 # File: googlevault_consts.py
 #
-# Copyright (c) 2019-2024 Splunk Inc.
+# Copyright (c) 2019-2025 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,10 +12,10 @@
 # the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
-GOOGLE_SCOPE = 'https://www.googleapis.com/auth/ediscovery'
-GOOGLE_SCOPE_READONLY = 'https://www.googleapis.com/auth/ediscovery.readonly'
-GOOGLE_ORGANIZATIONS_SCOPE_READONLY = 'https://www.googleapis.com/auth/admin.directory.orgunit.readonly'
-GOOGLE_SCOPE_GROUP_READONLY = 'https://www.googleapis.com/auth/admin.directory.group.readonly'
+GOOGLE_SCOPE = "https://www.googleapis.com/auth/ediscovery"
+GOOGLE_SCOPE_READONLY = "https://www.googleapis.com/auth/ediscovery.readonly"
+GOOGLE_ORGANIZATIONS_SCOPE_READONLY = "https://www.googleapis.com/auth/admin.directory.orgunit.readonly"
+GOOGLE_SCOPE_GROUP_READONLY = "https://www.googleapis.com/auth/admin.directory.group.readonly"
 GSVAULT_INVALID_LIMIT = "Please provide non-zero positive integer in {param}"
 GSVAULT_TIME_FORMAT_ERROR = "Please provide date/time in '%Y-%m-%dT%H:%M:%SZ' format"
 GSVAULT_TIME_RANGE_ERROR = "The given time range is incorrect"
