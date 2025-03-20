@@ -1,16 +1,17 @@
 {% extends 'widgets/widget_template.html' %}
 {% load custom_template %}
-
-{% block custom_title_prop %}{% if title_logo %}style="background-size: auto 60%; background-position: 50%; background-repeat: no-repeat; background-image: url('/app_resource/{{ title_logo }}');"{% endif %}{% endblock %}
+{% block custom_title_prop %}
+  {% if title_logo %}
+    style="background-size: auto 60%; background-position: 50%; background-repeat: no-repeat; background-image: url('/app_resource/{{ title_logo }}');"
+  {% endif %}
+{% endblock %}
 {% block title1 %}{{ title1 }}{% endblock %}
 {% block title2 %}{{ title2 }}{% endblock %}
-{% block custom_tools %}
-{% endblock %}
-
-{% block widget_content %} <!-- Main Start Block -->
-
-<!-- File: googlevault_list_exports.html
-  Copyright (c) 2019-2024 Splunk Inc.
+{% block custom_tools %}{% endblock %}
+{% block widget_content %}
+  <!-- Main Start Block -->
+  <!-- File: googlevault_list_exports.html
+  Copyright (c) 2019-2025 Splunk Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,8 +24,7 @@ the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
 either express or implied. See the License for the specific language governing permissions
 and limitations under the License.
 -->
-<style>
-
+  <style>
     .gsvault a:hover {
         text-decoration:underline;
     }
@@ -73,299 +73,309 @@ and limitations under the License.
     .gsvault .dataTable .glyphicon.glyphicon-dot:before {
        content: "\25cf"; font-size: 10px;
    }
-</style>
-
-<div class="gsvault" style="overflow: auto; width: 100% height: 100%; padding-left:10px; padding-right:10px">
+  </style>
+  <div class="gsvault"
+       style="overflow: auto;
+              width: 100% height: 100%;
+              padding-left:10px;
+              padding-right:10px">
     <!-- Main Div -->
-
-    {% for result in results %} <!-- loop for each result -->
-        {% if not result.data %}
-            <h4 class="wf-h4-style">No data found</h4>
-        {% else %}
-            <div class="info">
-                <h4 class="wf-h4-style">Info</h4>
-                <table class="wf-table-vertical">
-                    <tr>
-                        <td>Matter ID</td>
-                        <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['gsvault matter id'],
-                            'value': '{{ result.param.matter_id }}' }], 0, {{ container.id }}, null, false);">
-                        {{ result.param.matter_id }}
-                        &nbsp;
-                        <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                        </a></td>
-                    </tr>
-                    {% if result.param.limit %}
-                        <tr>
-                            <td>Limit</td>
-                            <td>{{ result.param.limit }}</td>
-                        </tr>
+    {% for result in results %}
+      <!-- loop for each result -->
+      {% if not result.data %}
+        <h4 class="wf-h4-style">No data found</h4>
+      {% else %}
+        <div class="info">
+          <h4 class="wf-h4-style">Info</h4>
+          <table class="wf-table-vertical">
+            <tr>
+              <td>Matter ID</td>
+              <td>
+                <a href="javascript:;"
+                   onclick="context_menu(this, [{'contains': ['gsvault matter id'], 'value': '{{ result.param.matter_id }}' }], 0, {{ container.id }}, null, false);">
+                  {{ result.param.matter_id }}
+                  &nbsp;
+                  <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                </a>
+              </td>
+            </tr>
+            {% if result.param.limit %}
+              <tr>
+                <td>Limit</td>
+                <td>{{ result.param.limit }}</td>
+              </tr>
+            {% endif %}
+          </table>
+        </div>
+        <div class="data">
+          <h4 class="wf-h4-style">Data</h4>
+          <table class="phantom-table dataTable">
+            <thead>
+              <th class="widget-th">Export ID</th>
+              <th class="widget-th">Export Name</th>
+              <th class="widget-th">Export Status</th>
+              <th class="widget-th">Matter ID</th>
+              <th class="widget-th">Corpus Type</th>
+              <th class="widget-th">Search Method</th>
+              <th class="widget-th">Data Scope</th>
+              <th class="widget-th">Method</th>
+              <th class="widget-th">Info</th>
+              <th class="widget-th">Requester</th>
+              <th class="widget-th">Query</th>
+              <th class="widget-th">Export Options</th>
+              <th class="widget-th">Timezone</th>
+              <th class="widget-th">Create Time</th>
+            </thead>
+            {% for finding_data in result.data %}
+              <tr>
+                <td>
+                  <a href="javascript:;"
+                     onclick="context_menu(this, [{'contains': ['gsvault export id'], 'value': '{{ finding_data.id }}' }], 0, {{ container.id }}, null, false);">
+                    {{ finding_data.id }}
+                    &nbsp;
+                    <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                  </a>
+                </td>
+                <td>{{ finding_data.name }}</td>
+                <td>{{ finding_data.status }}</td>
+                <td>
+                  <a href="javascript:;"
+                     onclick="context_menu(this, [{'contains': ['gsvault matter id'], 'value': '{{ finding_data.matterId }}' }], 0, {{ container.id }}, null, false);">
+                    {{ finding_data.matterId }}
+                    &nbsp;
+                    <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                  </a>
+                </td>
+                <td>{{ finding_data.query.corpus }}</td>
+                <td>{{ finding_data.query.searchMethod }}</td>
+                <td>{{ finding_data.query.dataScope }}</td>
+                <td>{{ finding_data.query.method }}</td>
+                {% if finding_data.query.orgUnitInfo or finding_data.query.sharedDriveInfo or finding_data.query.accountInfo %}
+                  <td>
+                    {% if finding_data.query.searchMethod == "ORG_UNIT" %}
+                      {% if finding_data.query.orgUnitInfo.orgUnitId %}
+                        <table class="phantom-table dataTable">
+                          <thead>
+                            <th class="widget-th">Organization Unit ID</th>
+                          </thead>
+                          <tr>
+                            <td>
+                              <a href="javascript:;"
+                                 onclick="context_menu(this, [{'contains': ['gsvault org unit id'], 'value': '{{ finding_data.query.orgUnitInfo.orgUnitId }}' }], 0, {{ container.id }}, null, false);">
+                                {{ finding_data.query.orgUnitInfo.orgUnitId }}
+                                &nbsp;
+                                <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                              </a>
+                            </td>
+                          </tr>
+                        </table>
+                      {% endif %}
+                    {% elif finding_data.query.searchMethod == "TEAM_DRIVE" %}
+                      {% if finding_data.query.sharedDriveInfo %}
+                        <table class="phantom-table dataTable">
+                          <thead>
+                            {% if finding_data.query.sharedDriveInfo.sharedDriveIds %}<th class="widget-th">Shared Drive ID</th>{% endif %}
+                          </thead>
+                          {% if finding_data.query.sharedDriveInfo.sharedDriveIds %}
+                            {% for id in finding_data.query.sharedDriveInfo.sharedDriveIds %}
+                              <tr>
+                                <td>
+                                  <a href="javascript:;"
+                                     onclick="context_menu(this, [{'contains': ['gsvault shared drive ids'], 'value': '{{ id }}' }], 0, {{ container.id }}, null, false);">
+                                    {{ id }}
+                                    &nbsp;
+                                    <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                                  </a>
+                                </td>
+                              </tr>
+                            {% endfor %}
+                          {% endif %}
+                        </table>
+                      {% endif %}
+                      {% if finding_data.query.teamDriveInfo %}
+                        <table class="phantom-table dataTable">
+                          <thead>
+                            {% if finding_data.query.teamDriveInfo.teamDriveIds %}<th class="widget-th">Team Drive ID</th>{% endif %}
+                          </thead>
+                          {% if finding_data.query.teamDriveInfo.teamDriveIds %}
+                            {% for id in finding_data.query.teamDriveInfo.teamDriveIds %}
+                              <tr>
+                                <td>
+                                  <a href="javascript:;"
+                                     onclick="context_menu(this, [{'contains': ['gsvault shared drive ids'], 'value': '{{ id }}' }], 0, {{ container.id }}, null, false);">
+                                    {{ id }}
+                                    &nbsp;
+                                    <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                                  </a>
+                                </td>
+                              </tr>
+                            {% endfor %}
+                          {% endif %}
+                        </table>
+                      {% endif %}
+                    {% elif finding_data.query.searchMethod == "ACCOUNT" and finding_data.query.corpus == "GROUPS" %}
+                      {% if finding_data.query.accountInfo.emails %}
+                        <table class="phantom-table dataTable">
+                          <thead>
+                            <th class="widget-th">Group Account Emails</th>
+                          </thead>
+                          {% for email in finding_data.query.accountInfo.emails %}
+                            <tr>
+                              <td>
+                                <a href="javascript:;"
+                                   onclick="context_menu(this, [{'contains': ['email'], 'value': '{{ email }}' }], 0, {{ container.id }}, null, false);">
+                                  {{ email }}
+                                  &nbsp;
+                                  <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                                </a>
+                              </td>
+                            </tr>
+                          {% endfor %}
+                        </table>
+                      {% endif %}
+                    {% elif finding_data.query.searchMethod == "ACCOUNT" and finding_data.query.corpus != "GROUPS" %}
+                      {% if finding_data.query.accountInfo.emails %}
+                        <table class="phantom-table dataTable">
+                          <thead>
+                            <th class="widget-th">User Account Emails</th>
+                          </thead>
+                          {% for email in finding_data.query.accountInfo.emails %}
+                            <tr>
+                              <td>
+                                <a href="javascript:;"
+                                   onclick="context_menu(this, [{'contains': ['email'], 'value': '{{ email }}' }], 0, {{ container.id }}, null, false);">
+                                  {{ email }}
+                                  &nbsp;
+                                  <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                                </a>
+                              </td>
+                            </tr>
+                          {% endfor %}
+                        </table>
+                      {% endif %}
+                    {% else %}
+                      <td>None</td>
                     {% endif %}
-                </table>
-            </div>
-
-            <div class="data">
-                <h4 class="wf-h4-style">Data</h4>
-                <table class="phantom-table dataTable">
+                  </td>
+                {% else %}
+                  <td>None</td>
+                {% endif %}
+                <td>
+                  <table class="phantom-table dataTable">
                     <thead>
-                        <th class="widget-th">Export ID</th>
-                        <th class="widget-th">Export Name</th>
-                        <th class="widget-th">Export Status</th>
-                        <th class="widget-th">Matter ID</th>
-                        <th class="widget-th">Corpus Type</th>
-                        <th class="widget-th">Search Method</th>
-                        <th class="widget-th">Data Scope</th>
-                        <th class="widget-th">Method</th>
-                        <th class="widget-th">Info</th>
-                        <th class="widget-th">Requester</th>
-                        <th class="widget-th">Query</th>
-                        <th class="widget-th">Export Options</th>
-                        <th class="widget-th">Timezone</th>
-                        <th class="widget-th">Create Time</th>
+                      <th class="widget-th">Display Name</th>
+                      <th class="widget-th">Email</th>
                     </thead>
-                    {% for finding_data in result.data %}
-                        <tr>
-                            <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['gsvault export id'],
-                                'value': '{{ finding_data.id }}' }], 0, {{ container.id }}, null, false);">
-                            {{ finding_data.id }}
-                            &nbsp;
-                            <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                            </a></td>
-
-                            <td>{{ finding_data.name }}</td>
-                            <td>{{ finding_data.status }}</td>
-                            <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['gsvault matter id'],
-                                'value': '{{ finding_data.matterId }}' }], 0, {{ container.id }}, null, false);">
-                            {{ finding_data.matterId }}
-                            &nbsp;
-                            <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                            </a></td>
-
-                            <td>{{ finding_data.query.corpus }}</td>
-                            <td>{{ finding_data.query.searchMethod }}</td>
-                            <td>{{ finding_data.query.dataScope }}</td>
-                            <td>{{ finding_data.query.method }}</td>
-
-                            {% if finding_data.query.orgUnitInfo or finding_data.query.sharedDriveInfo or finding_data.query.accountInfo %}
-                            <td>
-                                {% if finding_data.query.searchMethod == "ORG_UNIT" %}
-                                    {% if finding_data.query.orgUnitInfo.orgUnitId %}
-                                    <table class="phantom-table dataTable">
-                                        <thead>
-                                            <th class="widget-th">Organization Unit ID</th>
-                                        </thead>
-                                        <tr>
-                                            <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['gsvault org unit id'],
-                                                'value': '{{ finding_data.query.orgUnitInfo.orgUnitId }}' }], 0, {{ container.id }}, null, false);">
-                                            {{ finding_data.query.orgUnitInfo.orgUnitId }}
-                                            &nbsp;
-                                            <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                                            </a></td>
-                                        </tr>
-                                    </table>
-                                    {% endif %}
-                                {% elif finding_data.query.searchMethod == "TEAM_DRIVE" %}
-                                    {% if finding_data.query.sharedDriveInfo %}
-                                    <table class="phantom-table dataTable">
-                                        <thead>
-                                            {% if finding_data.query.sharedDriveInfo.sharedDriveIds %}
-                                                <th class="widget-th">Shared Drive ID</th>
-                                            {% endif %}
-                                        </thead>
-                                        {% if finding_data.query.sharedDriveInfo.sharedDriveIds %}
-                                            {% for id in finding_data.query.sharedDriveInfo.sharedDriveIds %}
-                                            <tr>
-                                                <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['gsvault shared drive ids'],
-                                                    'value': '{{ id }}' }], 0, {{ container.id }}, null, false);">
-                                                {{ id }}
-                                                &nbsp;
-                                                <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                                                </a>
-                                                </td>
-                                            </tr>
-                                            {% endfor %}
-                                        {% endif %}
-                                    </table>
-                                    {% endif %}
-                                    {% if finding_data.query.teamDriveInfo %}
-                                    <table class="phantom-table dataTable">
-                                        <thead>
-                                            {% if finding_data.query.teamDriveInfo.teamDriveIds %}
-                                                <th class="widget-th">Team Drive ID</th>
-                                            {% endif %}
-                                        </thead>
-                                        {% if finding_data.query.teamDriveInfo.teamDriveIds %}
-                                            {% for id in finding_data.query.teamDriveInfo.teamDriveIds %}
-                                            <tr>
-                                                <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['gsvault shared drive ids'],
-                                                    'value': '{{ id }}' }], 0, {{ container.id }}, null, false);">
-                                                {{ id }}
-                                                &nbsp;
-                                                <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                                                </a></td>
-                                            </tr>
-                                            {% endfor %}
-                                        {% endif %}
-                                    </table>
-                                    {% endif %}
-                                {% elif finding_data.query.searchMethod == "ACCOUNT" and finding_data.query.corpus == "GROUPS" %}
-                                    {% if finding_data.query.accountInfo.emails %}
-                                        <table class="phantom-table dataTable">
-                                            <thead>
-                                                <th class="widget-th">Group Account Emails</th>
-                                            </thead>
-                                            {% for email in finding_data.query.accountInfo.emails %}
-                                                <tr><td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['email'],
-                                                    'value': '{{ email }}' }], 0, {{ container.id }}, null, false);">
-                                                {{ email }}
-                                                &nbsp;
-                                                <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                                                </a></td></tr>
-                                            {% endfor %}
-                                        </table>
-                                    {% endif %}
-                                {% elif finding_data.query.searchMethod == "ACCOUNT" and finding_data.query.corpus != "GROUPS" %}
-                                    {% if finding_data.query.accountInfo.emails %}
-                                        <table class="phantom-table dataTable">
-                                            <thead>
-                                                <th class="widget-th">User Account Emails</th>
-                                            </thead>
-                                            {% for email in finding_data.query.accountInfo.emails %}
-                                                <tr><td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['email'],
-                                                    'value': '{{ email }}' }], 0, {{ container.id }}, null, false);">
-                                                {{ email }}
-                                                &nbsp;
-                                                <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                                                </a></td></tr>
-                                            {% endfor %}
-                                        </table>
-                                    {% endif %}
-                                {% else %}
-                                    <td>None</td>
+                    <tr>
+                      <td>{{ finding_data.requester.displayName }}</td>
+                      <td>
+                        <a href="javascript:;"
+                           onclick="context_menu(this, [{'contains': ['gsvault email ids', 'email'], 'value': '{{ finding_data.requester.email }}' }], 0, {{ container.id }}, null, false);">
+                          {{ finding_data.requester.email }}
+                          &nbsp;
+                          <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+                <td>
+                  {% if finding_data.query.startTime or finding_data.query.endTime or finding_data.query.terms %}
+                    <table class="phantom-table dataTable">
+                      <thead>
+                        <th class="widget-th">Start Time</th>
+                        <th class="widget-th">End Time</th>
+                        <th class="widget-th">Terms</th>
+                      </thead>
+                      <tr>
+                        <td>{{ finding_data.query.startTime }}</td>
+                        <td>{{ finding_data.query.endTime }}</td>
+                        <td>{{ finding_data.query.terms }}</td>
+                      </tr>
+                    </table>
+                  {% else %}
+                    None
+                  {% endif %}
+                </td>
+                <td>
+                  {% if finding_data.exportOptions %}
+                    <table class="phantom-table dataTable">
+                      <thead>
+                        <th class="widget-th">region</th>
+                        {% if finding_data.exportOptions.groupsOptions %}
+                          <th class="widget-th">Groups Options</th>
+                        {% elif finding_data.exportOptions.mailOptions %}
+                          <th class="widget-th">Mail Options</th>
+                        {% elif finding_data.exportOptions.driveOptions %}
+                          <th class="widget-th">Drive Options</th>
+                        {% else %}
+                          <th class="widget-th">Options</th>
+                        {% endif %}
+                      </thead>
+                      <tr>
+                        <td>{{ finding_data.exportOptions.region }}</td>
+                        {% if finding_data.exportOptions.groupsOptions %}
+                          <td>
+                            <table class="phantom-table dataTable">
+                              <thead>
+                                {% if finding_data.exportOptions.groupsOptions.exportFormat %}<th>Export Format</th>{% endif %}
+                              </thead>
+                              <tr>
+                                {% if finding_data.exportOptions.groupsOptions.exportFormat %}
+                                  <td>{{ finding_data.exportOptions.groupsOptions.exportFormat }}</td>
                                 {% endif %}
-                            </td>
-                            {% else %}
-                            <td>None</td>
-                            {% endif %}
-                            <td>
-                                <table class="phantom-table dataTable">
-                                    <thead>
-                                        <th class="widget-th">Display Name</th>
-                                        <th class="widget-th">Email</th>
-                                    </thead>
-                                    <tr>
-                                        <td>{{ finding_data.requester.displayName }}</td>
-                                        <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['gsvault email ids', 'email'],
-                                            'value': '{{ finding_data.requester.email }}' }], 0, {{ container.id }}, null, false);">
-                                        {{ finding_data.requester.email }}
-                                        &nbsp;
-                                        <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                                        </a></td>
-                                    </tr>
-                                </table>
-                            </td>
-                            <td>
-                                {% if finding_data.query.startTime or finding_data.query.endTime or finding_data.query.terms %}
-                                <table class="phantom-table dataTable">
-                                    <thead>
-                                        <th class="widget-th">Start Time</th>
-                                        <th class="widget-th">End Time</th>
-                                        <th class="widget-th">Terms</th>
-                                    </thead>
-                                    <tr>
-                                        <td>{{ finding_data.query.startTime }}</td>
-                                        <td>{{ finding_data.query.endTime }}</td>
-                                        <td>{{ finding_data.query.terms }}</td>
-                                    </tr>
-                                </table>
-                                {% else %}
-                                    None
+                              </tr>
+                            </table>
+                          </td>
+                        {% elif finding_data.exportOptions.mailOptions %}
+                          <td>
+                            <table class="phantom-table dataTable">
+                              <thead>
+                                {% if finding_data.exportOptions.mailOptions.exportFormat %}<th>Export Format</th>{% endif %}
+                                {% if finding_data.exportOptions.mailOptions.showConfidentialModeContent %}
+                                  <th>Show Confidential Mode Content</th>
                                 {% endif %}
-                            </td>
-                            <td>
-                                {% if finding_data.exportOptions %}
-                                <table class="phantom-table dataTable">
-                                    <thead>
-                                        <th class="widget-th">region</th>
-                                        {% if finding_data.exportOptions.groupsOptions %}
-                                            <th class="widget-th">Groups Options</th>
-                                        {% elif finding_data.exportOptions.mailOptions %}
-                                            <th class="widget-th">Mail Options</th>
-                                        {% elif finding_data.exportOptions.driveOptions %}
-                                            <th class="widget-th">Drive Options</th>
-                                        {% else %}
-                                            <th class="widget-th">Options</th>
-                                        {% endif %}
-                                    </thead>
-                                    <tr>
-                                        <td>{{ finding_data.exportOptions.region }}</td>
-                                        {% if finding_data.exportOptions.groupsOptions %}
-                                            <td>
-                                                <table class="phantom-table dataTable">
-                                                    <thead>
-                                                        {% if finding_data.exportOptions.groupsOptions.exportFormat %}
-                                                            <th>Export Format</th>
-                                                        {% endif %}
-                                                    </thead>
-                                                    <tr>
-                                                        {% if finding_data.exportOptions.groupsOptions.exportFormat %}
-                                                            <td>{{ finding_data.exportOptions.groupsOptions.exportFormat }}</td>
-                                                        {% endif %}
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        {% elif finding_data.exportOptions.mailOptions %}
-                                            <td>
-                                                <table class="phantom-table dataTable">
-                                                    <thead>
-                                                        {% if finding_data.exportOptions.mailOptions.exportFormat %}
-                                                            <th>Export Format</th>
-                                                        {% endif %}
-                                                        {% if finding_data.exportOptions.mailOptions.showConfidentialModeContent %}
-                                                            <th>Show Confidential Mode Content</th>
-                                                        {% endif %}
-                                                    </thead>
-                                                    <tr>
-                                                        {% if finding_data.exportOptions.mailOptions.exportFormat %}
-                                                            <td>{{ finding_data.exportOptions.mailOptions.exportFormat }}</td>
-                                                        {% endif %}
-                                                        {% if finding_data.exportOptions.mailOptions.showConfidentialModeContent %}
-                                                            <td>{{ finding_data.exportOptions.mailOptions.showConfidentialModeContent }}</td>
-                                                        {% endif %}
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        {% elif finding_data.exportOptions.driveOptions %}
-                                            <td>
-                                                <table class="phantom-table dataTable">
-                                                    <thead>
-                                                        {% if finding_data.exportOptions.driveOptions.includeAccessInfo %}
-                                                            <th>Include Access Info</th>
-                                                        {% endif %}
-                                                    </thead>
-                                                    <tr>
-                                                        {% if finding_data.exportOptions.driveOptions.includeAccessInfo %}
-                                                            <td>{{ finding_data.exportOptions.driveOptions.includeAccessInfo }}</td>
-                                                        {% endif %}
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        {% else %}
-                                            <td>None</td>
-                                        {% endif %}
-                                    </tr>
-                                </table>
+                              </thead>
+                              <tr>
+                                {% if finding_data.exportOptions.mailOptions.exportFormat %}
+                                  <td>{{ finding_data.exportOptions.mailOptions.exportFormat }}</td>
                                 {% endif %}
-                            </td>
-                            <td>{{ finding_data.query.timeZone }}</td>
-                            <td>{{ finding_data.createTime }}</td>
-                        </tr>
-                    {% endfor %}
-                </table>
-            </div>
-        {% endif %}
+                                {% if finding_data.exportOptions.mailOptions.showConfidentialModeContent %}
+                                  <td>{{ finding_data.exportOptions.mailOptions.showConfidentialModeContent }}</td>
+                                {% endif %}
+                              </tr>
+                            </table>
+                          </td>
+                        {% elif finding_data.exportOptions.driveOptions %}
+                          <td>
+                            <table class="phantom-table dataTable">
+                              <thead>
+                                {% if finding_data.exportOptions.driveOptions.includeAccessInfo %}<th>Include Access Info</th>{% endif %}
+                              </thead>
+                              <tr>
+                                {% if finding_data.exportOptions.driveOptions.includeAccessInfo %}
+                                  <td>{{ finding_data.exportOptions.driveOptions.includeAccessInfo }}</td>
+                                {% endif %}
+                              </tr>
+                            </table>
+                          </td>
+                        {% else %}
+                          <td>None</td>
+                        {% endif %}
+                      </tr>
+                    </table>
+                  {% endif %}
+                </td>
+                <td>{{ finding_data.query.timeZone }}</td>
+                <td>{{ finding_data.createTime }}</td>
+              </tr>
+            {% endfor %}
+          </table>
+        </div>
+      {% endif %}
     {% endfor %}
-</div>
-<script>
+  </div>
+  <script>
 $.extend(true, $.fn.dataTable.defaults, {
     "searching": true,
     "bLengthChange": false,
@@ -384,6 +394,5 @@ $.extend(true, $.fn.dataTable.defaults, {
   });
   $('.dataTable').DataTable();
 
-</script>
-
+  </script>
 {% endblock %}
