@@ -25,7 +25,7 @@
         "wheel": [
             {
                 "module": "cachetools",
-                "input_file": "wheels/py3/cachetools-4.2.4-py3-none-any.whl"
+                "input_file": "wheels/py3/cachetools-5.5.2-py3-none-any.whl"
             },
             {
                 "module": "google_api_python_client",
@@ -45,23 +45,19 @@
             },
             {
                 "module": "pyasn1",
-                "input_file": "wheels/shared/pyasn1-0.5.1-py2.py3-none-any.whl"
+                "input_file": "wheels/py3/pyasn1-0.6.1-py3-none-any.whl"
             },
             {
                 "module": "pyasn1_modules",
-                "input_file": "wheels/shared/pyasn1_modules-0.3.0-py2.py3-none-any.whl"
+                "input_file": "wheels/py3/pyasn1_modules-0.4.1-py3-none-any.whl"
             },
             {
                 "module": "pyparsing",
-                "input_file": "wheels/py3/pyparsing-3.1.2-py3-none-any.whl"
+                "input_file": "wheels/py3/pyparsing-3.2.3-py3-none-any.whl"
             },
             {
                 "module": "rsa",
                 "input_file": "wheels/py3/rsa-4.9-py3-none-any.whl"
-            },
-            {
-                "module": "six",
-                "input_file": "wheels/shared/six-1.16.0-py2.py3-none-any.whl"
             },
             {
                 "module": "uritemplate",

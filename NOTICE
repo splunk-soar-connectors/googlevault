@@ -1,50 +1,59 @@
 Splunk SOAR Google Vault
-Copyright (c) 2019-2024 Splunk Inc.
+Copyright (c) 2019-2025 Splunk Inc.
 
-Third-party Software Attributions:
+Third Party Software Attributions:
 
-Library: cachetools
-Version: 4.2.4
+Name: cachetools
+Version: 5.5.2
+Author: Thomas Kemmer
 License: MIT
-Copyright 2014-2017 Thomas Kemmer
 
-Library: google-api-python-client
+Name: google-api-python-client
 Version: 1.7.12
+Author: Google Inc.
 License: Apache 2.0
-License: MIT
-Copyright 2014 Google Inc
 
-Library: google-auth
+Name: google-auth
 Version: 2.15.0
+Author: Google Cloud Platform
 License: Apache 2.0
-Unknown copyright
 
-Library: google-auth-httplib2
-Version: 0.1.0
+Name: google-auth-httplib2
+Version: 0.2.0
+Author: Google Cloud Platform
 License: Apache 2.0
-Unknown copyright
 
-Library: httplib2
-Version: 0.21.0
+Name: httplib2
+Version: 0.22.0
+Author: Joe Gregorio
 License: MIT
-Copyright 2006 by Joe Gregorio
 
-Library: pyasn1
-Version: 0.4.8
-License: BSD 2
-Copyright 2005-2019 Ilya Etingof <etingof@gmail.com>
+Name: pyasn1
+Version: 0.6.1
+Author: Ilya Etingof
+License: BSD-2-Clause
 
-Library: pyasn1-modules
-Version: 0.2.8
-License: BSD 2
-Copyright 2005-2019 Ilya Etingof <etingof@gmail.com>
+Name: pyasn1_modules
+Version: 0.4.1
+Author: Ilya Etingof
+License: BSD
 
-Library: rsa
+Name: pyparsing
+Version: 3.2.3
+Author:
+License:
+
+Name: rsa
 Version: 4.9
-License: Apache 2.0
-Copyright 2011 Sybren A
+Author: Sybren A. Stüvel
+License: Apache-2.0
 
-Library: uritemplate
+Name: six
+Version: 1.17.0
+Author: Benjamin Peterson
+License: MIT
+
+Name: uritemplate
 Version: 3.0.1
-License: Apache 2.0
-Unknown copyright
+Author: Ian Stapleton Cordasco
+License: BSD 3-Clause License or Apache License, Version 2.0
