@@ -21,54 +21,6 @@
     "latest_tested_versions": [
         "Cloud, December 2022"
     ],
-    "pip_dependencies": {
-        "wheel": [
-            {
-                "module": "cachetools",
-                "input_file": "wheels/py3/cachetools-4.2.4-py3-none-any.whl"
-            },
-            {
-                "module": "google_api_python_client",
-                "input_file": "wheels/py3/google_api_python_client-1.7.12-py3-none-any.whl"
-            },
-            {
-                "module": "google_auth",
-                "input_file": "wheels/shared/google_auth-2.15.0-py2.py3-none-any.whl"
-            },
-            {
-                "module": "google_auth_httplib2",
-                "input_file": "wheels/shared/google_auth_httplib2-0.2.0-py2.py3-none-any.whl"
-            },
-            {
-                "module": "httplib2",
-                "input_file": "wheels/py3/httplib2-0.22.0-py3-none-any.whl"
-            },
-            {
-                "module": "pyasn1",
-                "input_file": "wheels/shared/pyasn1-0.5.1-py2.py3-none-any.whl"
-            },
-            {
-                "module": "pyasn1_modules",
-                "input_file": "wheels/shared/pyasn1_modules-0.3.0-py2.py3-none-any.whl"
-            },
-            {
-                "module": "pyparsing",
-                "input_file": "wheels/py3/pyparsing-3.1.2-py3-none-any.whl"
-            },
-            {
-                "module": "rsa",
-                "input_file": "wheels/py3/rsa-4.9-py3-none-any.whl"
-            },
-            {
-                "module": "six",
-                "input_file": "wheels/shared/six-1.16.0-py2.py3-none-any.whl"
-            },
-            {
-                "module": "uritemplate",
-                "input_file": "wheels/shared/uritemplate-3.0.1-py2.py3-none-any.whl"
-            }
-        ]
-    },
     "configuration": {
         "login_email": {
             "description": "Login email",
@@ -3599,7 +3551,7 @@
         "wheel": [
             {
                 "module": "cachetools",
-                "input_file": "wheels/py3/cachetools-5.3.3-py3-none-any.whl"
+                "input_file": "wheels/py3/cachetools-5.5.2-py3-none-any.whl"
             },
             {
                 "module": "google_api_python_client",
@@ -3619,23 +3571,19 @@
             },
             {
                 "module": "pyasn1",
-                "input_file": "wheels/shared/pyasn1-0.5.1-py2.py3-none-any.whl"
+                "input_file": "wheels/py3/pyasn1-0.6.1-py3-none-any.whl"
             },
             {
                 "module": "pyasn1_modules",
-                "input_file": "wheels/shared/pyasn1_modules-0.3.0-py2.py3-none-any.whl"
+                "input_file": "wheels/py3/pyasn1_modules-0.4.2-py3-none-any.whl"
             },
             {
                 "module": "pyparsing",
-                "input_file": "wheels/py3/pyparsing-3.1.2-py3-none-any.whl"
+                "input_file": "wheels/py3/pyparsing-3.2.3-py3-none-any.whl"
             },
             {
                 "module": "rsa",
                 "input_file": "wheels/py3/rsa-4.9-py3-none-any.whl"
-            },
-            {
-                "module": "six",
-                "input_file": "wheels/shared/six-1.16.0-py2.py3-none-any.whl"
             },
             {
                 "module": "uritemplate",
