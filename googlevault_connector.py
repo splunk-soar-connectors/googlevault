@@ -150,7 +150,7 @@ class GoogleVaultConnector(BaseConnector):
 
         self.save_progress(MAKING_TEST_CALL_GOOGLE_VAULT)
 
-        method = client.matters().list(pageSize=10)
+        method = client.matters().list(pageSize=10)  # pylint: disable=no-member
         ret_val, matters = self.make_request(action_result, ERROR_WHILE_LISTING_MATTERS, method)
 
         if phantom.is_fail(ret_val):
@@ -281,7 +281,7 @@ class GoogleVaultConnector(BaseConnector):
             "description": description,
         }
 
-        method = client.matters().create(body=matter_content)
+        method = client.matters().create(body=matter_content)  # pylint: disable=no-member
         ret_val, matter = self.make_request(action_result, ERROR_WHILE_CREATING_MATTER, method)
 
         if phantom.is_fail(ret_val):
@@ -343,7 +343,7 @@ class GoogleVaultConnector(BaseConnector):
             return action_result.set_status(phantom.APP_ERROR, f"Matter already exists in {state} state")
 
         if not delete_flag:
-            method = client.matters().close(matterId=matter_id)
+            method = client.matters().close(matterId=matter_id)  # pylint: disable=no-member
             ret_val, matter = self.make_request(action_result, ERROR_WHILE_CLOSING_MATTER, method)
 
             if phantom.is_fail(ret_val):
@@ -440,7 +440,7 @@ class GoogleVaultConnector(BaseConnector):
                 if phantom.is_fail(ret_val):
                     return action_result.get_status()
 
-        method = client.matters().delete(matterId=matter_id)
+        method = client.matters().delete(matterId=matter_id)  # pylint: disable=no-member
         ret_val, matter = self.make_request(action_result, ERROR_WHILE_DELETING_MATTER, method)
 
         if phantom.is_fail(ret_val):
@@ -462,7 +462,7 @@ class GoogleVaultConnector(BaseConnector):
             self.debug_print(FAILED_CREATE_GVAULT)
             return ret_val
 
-        method = client.matters().undelete(matterId=matter_id)
+        method = client.matters().undelete(matterId=matter_id)  # pylint: disable=no-member
         ret_val, matter = self.make_request(action_result, ERROR_WHILE_RESTORING_MATTER, method)
 
         if phantom.is_fail(ret_val):
@@ -484,7 +484,7 @@ class GoogleVaultConnector(BaseConnector):
             self.debug_print(FAILED_CREATE_GVAULT)
             return ret_val
 
-        method = client.matters().reopen(matterId=matter_id)
+        method = client.matters().reopen(matterId=matter_id)  # pylint: disable=no-member
         ret_val, matter = self.make_request(action_result, ERROR_WHILE_REOPENING_MATTER, method)
 
         if phantom.is_fail(ret_val):
@@ -611,7 +611,7 @@ class GoogleVaultConnector(BaseConnector):
                 elif corpus == "GROUPS":
                     wanted_hold.update({"query": {"groupsQuery": query}})
 
-        method = client.matters().holds().create(matterId=matter_id, body=wanted_hold)
+        method = client.matters().holds().create(matterId=matter_id, body=wanted_hold)  # pylint: disable=no-member
         ret_val, hold = self.make_request(action_result, ERROR_WHILE_CREATING_HOLD, method)
 
         if phantom.is_fail(ret_val):
@@ -692,7 +692,7 @@ class GoogleVaultConnector(BaseConnector):
 
         held_account = {"accountId": account_id}
 
-        method = client.matters().holds().accounts().create(matterId=matter_id, holdId=hold_id, body=held_account)
+        method = client.matters().holds().accounts().create(matterId=matter_id, holdId=hold_id, body=held_account)  # pylint: disable=no-member
         ret_val, result = self.make_request(action_result, ERROR_WHILE_ADDING_HELD_ACCOUNT, method)
 
         if phantom.is_fail(ret_val):
@@ -718,7 +718,7 @@ class GoogleVaultConnector(BaseConnector):
             self.debug_print(FAILED_CREATE_GVAULT)
             return ret_val
 
-        method = client.matters().holds().accounts().delete(matterId=matter_id, holdId=hold_id, accountId=account_id)
+        method = client.matters().holds().accounts().delete(matterId=matter_id, holdId=hold_id, accountId=account_id)  # pylint: disable=no-member
         ret_val, result = self.make_request(action_result, ERROR_WHILE_REMOVING_HELD_ACCOUNT, method)
 
         if phantom.is_fail(ret_val):
@@ -1028,7 +1028,7 @@ class GoogleVaultConnector(BaseConnector):
         if export_options:
             wanted_export.update({"exportOptions": export_options})
 
-        method = client.matters().exports().create(matterId=matter_id, body=wanted_export)
+        method = client.matters().exports().create(matterId=matter_id, body=wanted_export)  # pylint: disable=no-member
         ret_val, export = self.make_request(action_result, ERROR_WHILE_CREATING_EXPORT, method)
 
         if phantom.is_fail(ret_val):
@@ -1052,7 +1052,7 @@ class GoogleVaultConnector(BaseConnector):
             self.debug_print(FAILED_CREATE_GVAULT)
             return ret_val
 
-        method = client.matters().exports().get(matterId=matter_id, exportId=export_id)
+        method = client.matters().exports().get(matterId=matter_id, exportId=export_id)  # pylint: disable=no-member
         ret_val, result = self.make_request(action_result, ERROR_WHILE_FETCHING_EXPORT, method)
 
         if phantom.is_fail(ret_val):
