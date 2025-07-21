@@ -57,15 +57,16 @@ def display_view(provides, all_app_runs, context):
                 continue
             results.append(ctx_result)
 
+    return_page = None
     if provides == "create hold":
         return_page = "googlevault_create_hold.html"
-    if provides == "list holds":
+    elif provides == "list holds":
         return_page = "googlevault_list_holds.html"
-    if provides == "list exports":
+    elif provides == "list exports":
         return_page = "googlevault_list_exports.html"
-    if provides == "create export":
+    elif provides == "create export":
         return_page = "googlevault_create_export.html"
-    if provides == "get export":
+    elif provides == "get export":
         return_page = "googlevault_get_export.html"
 
     return return_page
