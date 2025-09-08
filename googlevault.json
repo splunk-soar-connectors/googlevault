@@ -3575,7 +3575,7 @@
             },
             {
                 "module": "httplib2",
-                "input_file": "wheels/py3/httplib2-0.22.0-py3-none-any.whl"
+                "input_file": "wheels/py3/httplib2-0.30.0-py3-none-any.whl"
             },
             {
                 "module": "proto_plus",
