@@ -1,9 +1,9 @@
 # Google Vault
 
-Publisher: Splunk \
-Connector Version: 2.1.2 \
-Product Vendor: Google \
-Product Name: Google Vault \
+Publisher: Splunk <br>
+Connector Version: 2.1.2 <br>
+Product Vendor: Google <br>
+Product Name: Google Vault <br>
 Minimum Product Version: 5.3.5
 
 This app supports the actions to perform eDiscovery and provide a compliance solution for G Suite, allowing customers to retain, hold, search, and export their data
@@ -105,30 +105,30 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 
 ### Supported Actions
 
-[test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity using supplied configuration \
-[list matters](#action-list-matters) - List all open, closed, and deleted matters \
-[create matter](#action-create-matter) - Create a matter with OPEN state \
-[get matter](#action-get-matter) - Fetch information for the given matter ID \
-[close matter](#action-close-matter) - Move a matter to the CLOSED state \
-[delete matter](#action-delete-matter) - Move a matter to the DELETED state \
-[reopen matter](#action-reopen-matter) - Reopens a matter to move it from CLOSED to OPEN state \
-[restore matter](#action-restore-matter) - Restores a matter to move it from DELETED to CLOSED state \
-[list holds](#action-list-holds) - List all holds for the given matter ID \
-[create hold](#action-create-hold) - Create a hold within the given matter ID \
-[delete hold](#action-delete-hold) - Delete a hold \
-[remove held account](#action-remove-held-account) - Remove held account from the given hold ID \
-[add held account](#action-add-held-account) - Add held account to the given hold ID \
-[list exports](#action-list-exports) - List all exports for the given matter ID \
-[get export](#action-get-export) - Get information of an export from the given matter ID \
-[create export](#action-create-export) - Perform a search based on the provided criteria and create an export for the search results \
-[list organizations](#action-list-organizations) - List all organizations \
+[test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity using supplied configuration <br>
+[list matters](#action-list-matters) - List all open, closed, and deleted matters <br>
+[create matter](#action-create-matter) - Create a matter with OPEN state <br>
+[get matter](#action-get-matter) - Fetch information for the given matter ID <br>
+[close matter](#action-close-matter) - Move a matter to the CLOSED state <br>
+[delete matter](#action-delete-matter) - Move a matter to the DELETED state <br>
+[reopen matter](#action-reopen-matter) - Reopens a matter to move it from CLOSED to OPEN state <br>
+[restore matter](#action-restore-matter) - Restores a matter to move it from DELETED to CLOSED state <br>
+[list holds](#action-list-holds) - List all holds for the given matter ID <br>
+[create hold](#action-create-hold) - Create a hold within the given matter ID <br>
+[delete hold](#action-delete-hold) - Delete a hold <br>
+[remove held account](#action-remove-held-account) - Remove held account from the given hold ID <br>
+[add held account](#action-add-held-account) - Add held account to the given hold ID <br>
+[list exports](#action-list-exports) - List all exports for the given matter ID <br>
+[get export](#action-get-export) - Get information of an export from the given matter ID <br>
+[create export](#action-create-export) - Perform a search based on the provided criteria and create an export for the search results <br>
+[list organizations](#action-list-organizations) - List all organizations <br>
 [list groups](#action-list-groups) - List all groups of a domain
 
 ## action: 'test connectivity'
 
 Validate the asset configuration for connectivity using supplied configuration
 
-Type: **test** \
+Type: **test** <br>
 Read only: **True**
 
 Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery.readonly</li></ul>.
@@ -145,7 +145,7 @@ No Output
 
 List all open, closed, and deleted matters
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 Action uses the Admin SDK API to get a list of matters. Requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery.readonly</li></ul><br>The action will limit the number of matters returned to <b>limit</b> or (if not specified) 100.
@@ -177,7 +177,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Create a matter with OPEN state
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 Action uses the Admin SDK API to create a matter. Requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>.
@@ -210,7 +210,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Fetch information for the given matter ID
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 There are two views of a matter: BASIC (default) and FULL. The FULL view adds matter permissions in addition to the data received in the BASIC view. Requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery.readonly</li></ul>.
@@ -244,7 +244,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Move a matter to the CLOSED state
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 You can close the matter only if it is in the OPEN state. If the matter is in the OPEN state and contains any holds, then, to close the matter all holds must be deleted. For this, you have to checkmark the <b>Delete all holds</b> parameter and run the action. If you keep the parameter unchecked and run the action, it will fail due to undeleted holds in the matter. In that case, the user has to delete all the holds manually; run this action after that to close the matter.<br>Requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>.
@@ -276,7 +276,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Move a matter to the DELETED state
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 You can delete the matter only if it is in the CLOSED state. If the matter is in the OPEN state and contains any holds, then, to delete it all holds must be deleted and the matter must be moved to the CLOSED state. For this, you have to checkmark the 'Delete all holds' parameter and run the action. By doing this, action will close the matter after deleting all the holds (if any) associated with it and move it to the DELETED state. If you keep the parameter unchecked and run the action, it will fail due to the matter not being in the CLOSED state. In that case, the user has to move the matter to the CLOSED state by manually deleting all the associated holds; run this action after that to delete the matter.<br>Requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>.
@@ -308,7 +308,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Reopens a matter to move it from CLOSED to OPEN state
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>.
@@ -338,7 +338,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Restores a matter to move it from DELETED to CLOSED state
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>.
@@ -368,7 +368,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 List all holds for the given matter ID
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery.readonly</li></ul><br>The action will limit the number of holds returned to <b>limit</b> or (if not specified) 100.
@@ -415,7 +415,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Create a hold within the given matter ID
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>.
@@ -480,7 +480,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Delete a hold
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>.
@@ -509,7 +509,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Remove held account from the given hold ID
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 A held account can only be removed from the given hold_id if the search_method of the hold is either USER_ACCOUNT or GROUP_ACCOUNT.<br>Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>.
@@ -541,7 +541,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Add held account to the given hold ID
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 A held account can only be added to the given hold_id if the search_method of the hold is either USER_ACCOUNT or GROUP_ACCOUNT.<br>Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>.
@@ -576,7 +576,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 List all exports for the given matter ID
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery.readonly</li></ul><br>The action will limit the number of exports returned to <b>limit</b> or (if not specified) 100.
@@ -637,7 +637,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Get information of an export from the given matter ID
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery.readonly</li></ul>.
@@ -694,7 +694,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Perform a search based on the provided criteria and create an export for the search results
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 For ACCOUNT type search_method, you have to provide a valid list of email_ids. For ORG_UNIT type search_method, provide valid org_unit_id. For corpus type GROUPS, you have to select ACCOUNT search method and provide valid list of a group email_ids. The parameter export_format is supported only for the corpus type MAIL and GROUPS. The parameter exclude_drafts is supported only for the corpus type MAIL. The show_confidential_mode_content parameter is supported only for the corpus type MAIL. The parameters include_access_info and include_shared_drives are applicable only for the corpus type DRIVE. UNPROCESSED_DATA data_scope is not supported for corpus type DRIVE. The parameter version_date is only applicable for the corpus type DRIVE. If the corpus type is DRIVE and data scope is HELD_DATA, search_method TEAM_DRIVE is not allowed. Time zone is not applicable for the HELD_DATA data_scope. Terms parameter is not applicable for the UNPROCESSED_DATA data_scope. Google Vault selects the default data_region based on the region assigned to the owner of the matter. You can select one of the values from the United States(US) and Europe(EUROPE) to change the data_region of the created export. Exports are automatically deleted within 15 days of their creation.<br>Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/ediscovery</li></ul>.
@@ -783,7 +783,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 List all organizations
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/admin.directory.orgunit.readonly</li></ul><br>The action will limit the number of organizations returned to <b>limit</b> or (if not specified) 100.
@@ -817,7 +817,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 List all groups of a domain
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 Action requires authorization with the following scope:<ul><li>https://www.googleapis.com/auth/admin.directory.group.readonly</li></ul><br>The action will limit the number of groups returned to <b>limit</b> or (if not specified) 100.
