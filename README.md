@@ -1,7 +1,7 @@
 # Google Vault
 
 Publisher: Splunk <br>
-Connector Version: 2.1.2 <br>
+Connector Version: 2.1.3 <br>
 Product Vendor: Google <br>
 Product Name: Google Vault <br>
 Minimum Product Version: 5.3.5
