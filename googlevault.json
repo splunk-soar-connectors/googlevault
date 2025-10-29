@@ -13,7 +13,7 @@
     "app_version": "2.1.2",
     "python_version": "3.9, 3.13",
     "fips_compliant": true,
-    "utctime_updated": "2025-05-13T15:52:19.070206Z",
+    "utctime_updated": "2025-10-06T20:19:10.433914Z",
     "package_name": "phantom_googlevault",
     "main_module": "googlevault_connector.py",
     "min_phantom_version": "5.3.5",
