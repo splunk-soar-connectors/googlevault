@@ -3555,7 +3555,7 @@
             },
             {
                 "module": "google_api_core",
-                "input_file": "wheels/py3/google_api_core-2.25.1-py3-none-any.whl"
+                "input_file": "wheels/py3/google_api_core-2.28.1-py3-none-any.whl"
             },
             {
                 "module": "google_api_python_client",
@@ -3571,11 +3571,11 @@
             },
             {
                 "module": "googleapis_common_protos",
-                "input_file": "wheels/py3/googleapis_common_protos-1.70.0-py3-none-any.whl"
+                "input_file": "wheels/py3/googleapis_common_protos-1.71.0-py3-none-any.whl"
             },
             {
                 "module": "httplib2",
-                "input_file": "wheels/py3/httplib2-0.30.0-py3-none-any.whl"
+                "input_file": "wheels/py3/httplib2-0.31.0-py3-none-any.whl"
             },
             {
                 "module": "proto_plus",
@@ -3583,7 +3583,7 @@
             },
             {
                 "module": "protobuf",
-                "input_file": "wheels/py39/protobuf-6.32.0-cp39-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl"
+                "input_file": "wheels/py39/protobuf-6.33.0-cp39-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl"
             },
             {
                 "module": "pyasn1",
@@ -3595,7 +3595,67 @@
             },
             {
                 "module": "pyparsing",
-                "input_file": "wheels/py3/pyparsing-3.2.3-py3-none-any.whl"
+                "input_file": "wheels/py3/pyparsing-3.2.5-py3-none-any.whl"
+            },
+            {
+                "module": "rsa",
+                "input_file": "wheels/py3/rsa-4.9.1-py3-none-any.whl"
+            },
+            {
+                "module": "uritemplate",
+                "input_file": "wheels/py3/uritemplate-4.2.0-py3-none-any.whl"
+            }
+        ]
+    },
+    "pip313_dependencies": {
+        "wheel": [
+            {
+                "module": "cachetools",
+                "input_file": "wheels/py3/cachetools-5.5.2-py3-none-any.whl"
+            },
+            {
+                "module": "google_api_core",
+                "input_file": "wheels/py3/google_api_core-2.28.1-py3-none-any.whl"
+            },
+            {
+                "module": "google_api_python_client",
+                "input_file": "wheels/py3/google_api_python_client-2.179.0-py3-none-any.whl"
+            },
+            {
+                "module": "google_auth",
+                "input_file": "wheels/shared/google_auth-2.40.3-py2.py3-none-any.whl"
+            },
+            {
+                "module": "google_auth_httplib2",
+                "input_file": "wheels/shared/google_auth_httplib2-0.2.0-py2.py3-none-any.whl"
+            },
+            {
+                "module": "googleapis_common_protos",
+                "input_file": "wheels/py3/googleapis_common_protos-1.71.0-py3-none-any.whl"
+            },
+            {
+                "module": "httplib2",
+                "input_file": "wheels/py3/httplib2-0.31.0-py3-none-any.whl"
+            },
+            {
+                "module": "proto_plus",
+                "input_file": "wheels/py3/proto_plus-1.26.1-py3-none-any.whl"
+            },
+            {
+                "module": "protobuf",
+                "input_file": "wheels/py39/protobuf-6.33.0-cp39-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl"
+            },
+            {
+                "module": "pyasn1",
+                "input_file": "wheels/py3/pyasn1-0.6.1-py3-none-any.whl"
+            },
+            {
+                "module": "pyasn1_modules",
+                "input_file": "wheels/py3/pyasn1_modules-0.4.2-py3-none-any.whl"
+            },
+            {
+                "module": "pyparsing",
+                "input_file": "wheels/py3/pyparsing-3.2.5-py3-none-any.whl"
             },
             {
                 "module": "rsa",
