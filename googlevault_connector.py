@@ -374,7 +374,10 @@ class GoogleVaultConnector(BaseConnector):
         return phantom.APP_SUCCESS, response
 
     def _check_for_hold(self, action_result, client, matter_id):
-        holds = self._paginator(client, matter_id=matter_id, hold_flag=True)
+        try:
+            holds = self._paginator(client, matter_id=matter_id, hold_flag=True)
+        except RuntimeError as e:
+            return action_result.set_status(phantom.APP_ERROR, str(e))
 
         if not holds:
             return phantom.APP_SUCCESS
@@ -811,6 +814,9 @@ class GoogleVaultConnector(BaseConnector):
 
         list_items = list()
         page_token = None
+        page_count = 0
+        consecutive_empty_pages = 0
+        seen_page_tokens = set()
         action_id = self.get_action_identifier()
 
         kwargs = {}
@@ -827,8 +833,13 @@ class GoogleVaultConnector(BaseConnector):
             kwargs.update({"matterId": matter_id})
 
         while True:
+            if page_count >= 100:
+                raise RuntimeError("Pagination stopped after reaching the safety limit of 100 pages")
+
             if page_token:
                 kwargs.update({"pageToken": page_token})
+            item_count_before_request = len(list_items)
+            page_count += 1
             response = None
             if action_id == "list_matters":
                 response = client.matters().list(**kwargs).execute()
@@ -858,9 +869,23 @@ class GoogleVaultConnector(BaseConnector):
             if limit and len(list_items) >= limit:
                 return list_items[:limit]
 
-            page_token = response.get("nextPageToken")
-            if not page_token:
+            next_page_token = response.get("nextPageToken")
+            if not next_page_token:
                 break
+
+            if len(list_items) >= 10000:
+                raise RuntimeError("Pagination stopped after reaching the safety limit of 10000 items")
+            if next_page_token in seen_page_tokens:
+                raise RuntimeError("Pagination stopped because the API returned a repeated page token")
+            if len(list_items) == item_count_before_request:
+                consecutive_empty_pages += 1
+                if consecutive_empty_pages >= 3:
+                    raise RuntimeError("Pagination stopped after the API returned 3 consecutive empty pages")
+            else:
+                consecutive_empty_pages = 0
+
+            seen_page_tokens.add(next_page_token)
+            page_token = next_page_token
 
         return list_items
 
