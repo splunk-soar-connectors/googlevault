@@ -11,7 +11,7 @@
 {% block widget_content %}
   <!-- Main Start Block -->
   <!-- File: googlevault_get_export.html
-  Copyright (c) 2019-2025 Splunk Inc.
+  Copyright (c) 2019-2026 Splunk Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -92,7 +92,7 @@ and limitations under the License.
               <td>Matter ID</td>
               <td>
                 <a href="javascript:;"
-                   onclick="context_menu(this, [{'contains': ['gsvault matter id'], 'value': '{{ result.param.matter_id }}' }], 0, {{ container.id }}, null, false);">
+                   onclick="context_menu(this, [{'contains': ['gsvault matter id'], 'value': '{{ result.param.matter_id|escapejs }}' }], 0, {{ container.id }}, null, false);">
                   {{ result.param.matter_id }}
                   &nbsp;
                   <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -103,7 +103,7 @@ and limitations under the License.
               <td>Export ID</td>
               <td>
                 <a href="javascript:;"
-                   onclick="context_menu(this, [{'contains': ['gsvault export id'], 'value': '{{ result.param.export_id }}' }], 0, {{ container.id }}, null, false);">
+                   onclick="context_menu(this, [{'contains': ['gsvault export id'], 'value': '{{ result.param.export_id|escapejs }}' }], 0, {{ container.id }}, null, false);">
                   {{ result.param.export_id }}
                   &nbsp;
                   <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -135,7 +135,7 @@ and limitations under the License.
               <tr>
                 <td>
                   <a href="javascript:;"
-                     onclick="context_menu(this, [{'contains': ['gsvault export id'], 'value': '{{ finding_data.id }}' }], 0, {{ container.id }}, null, false);">
+                     onclick="context_menu(this, [{'contains': ['gsvault export id'], 'value': '{{ finding_data.id|escapejs }}' }], 0, {{ container.id }}, null, false);">
                     {{ finding_data.id }}
                     &nbsp;
                     <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -145,7 +145,7 @@ and limitations under the License.
                 <td>{{ finding_data.status }}</td>
                 <td>
                   <a href="javascript:;"
-                     onclick="context_menu(this, [{'contains': ['gsvault matter id'], 'value': '{{ finding_data.matterId }}' }], 0, {{ container.id }}, null, false);">
+                     onclick="context_menu(this, [{'contains': ['gsvault matter id'], 'value': '{{ finding_data.matterId|escapejs }}' }], 0, {{ container.id }}, null, false);">
                     {{ finding_data.matterId }}
                     &nbsp;
                     <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -166,7 +166,7 @@ and limitations under the License.
                           <tr>
                             <td>
                               <a href="javascript:;"
-                                 onclick="context_menu(this, [{'contains': ['gsvault org unit id'], 'value': '{{ finding_data.query.orgUnitInfo.orgUnitId }}' }], 0, {{ container.id }}, null, false);">
+                                 onclick="context_menu(this, [{'contains': ['gsvault org unit id'], 'value': '{{ finding_data.query.orgUnitInfo.orgUnitId|escapejs }}' }], 0, {{ container.id }}, null, false);">
                                 {{ finding_data.query.orgUnitInfo.orgUnitId }}
                                 &nbsp;
                                 <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -186,7 +186,7 @@ and limitations under the License.
                               <tr>
                                 <td>
                                   <a href="javascript:;"
-                                     onclick="context_menu(this, [{'contains': ['gsvault shared drive ids'], 'value': '{{ id }}' }], 0, {{ container.id }}, null, false);">
+                                     onclick="context_menu(this, [{'contains': ['gsvault shared drive ids'], 'value': '{{ id|escapejs }}' }], 0, {{ container.id }}, null, false);">
                                     {{ id }}
                                     &nbsp;
                                     <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -207,7 +207,7 @@ and limitations under the License.
                               <tr>
                                 <td>
                                   <a href="javascript:;"
-                                     onclick="context_menu(this, [{'contains': ['gsvault shared drive ids'], 'value': '{{ id }}' }], 0, {{ container.id }}, null, false);">
+                                     onclick="context_menu(this, [{'contains': ['gsvault shared drive ids'], 'value': '{{ id|escapejs }}' }], 0, {{ container.id }}, null, false);">
                                     {{ id }}
                                     &nbsp;
                                     <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -228,7 +228,7 @@ and limitations under the License.
                             <tr>
                               <td>
                                 <a href="javascript:;"
-                                   onclick="context_menu(this, [{'contains': ['email'], 'value': '{{ email }}' }], 0, {{ container.id }}, null, false);">
+                                   onclick="context_menu(this, [{'contains': ['email'], 'value': '{{ email|escapejs }}' }], 0, {{ container.id }}, null, false);">
                                   {{ email }}
                                   &nbsp;
                                   <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -248,7 +248,7 @@ and limitations under the License.
                             <tr>
                               <td>
                                 <a href="javascript:;"
-                                   onclick="context_menu(this, [{'contains': ['email'], 'value': '{{ email }}' }], 0, {{ container.id }}, null, false);">
+                                   onclick="context_menu(this, [{'contains': ['email'], 'value': '{{ email|escapejs }}' }], 0, {{ container.id }}, null, false);">
                                   {{ email }}
                                   &nbsp;
                                   <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -275,7 +275,7 @@ and limitations under the License.
                       <td>{{ finding_data.requester.displayName }}</td>
                       <td>
                         <a href="javascript:;"
-                           onclick="context_menu(this, [{'contains': ['gsvault email ids', 'email'], 'value': '{{ finding_data.requester.email }}' }], 0, {{ container.id }}, null, false);">
+                           onclick="context_menu(this, [{'contains': ['gsvault email ids', 'email'], 'value': '{{ finding_data.requester.email|escapejs }}' }], 0, {{ container.id }}, null, false);">
                           {{ finding_data.requester.email }}
                           &nbsp;
                           <span class="fa fa-caret-down" style="font-size: smaller;"></span>
